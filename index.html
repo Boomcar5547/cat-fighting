@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>大猫猫斗恶龙 Ver1.4.12102501beta</title>
+    <title>大猫猫斗恶龙 Ver1.5.12102501beta</title>
     <style>
         /* --- 全局样式 --- */
         body {
@@ -53,7 +53,6 @@
         .version { color: #7f8c8d; font-size: 12px; margin-bottom: 30px; }
         input { padding: 12px; border: 2px solid #3498db; border-radius: 8px; width: 70%; text-align: center; font-size: 16px; margin-bottom: 20px; }
         
-        /* 通用按钮 */
         button { padding: 12px 30px; background: #e67e22; color: white; border: none; border-radius: 25px; font-size: 18px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 0 #d35400; transition: all 0.1s; }
         button:active { transform: translateY(4px); box-shadow: 0 0 0 #d35400; }
         button:disabled { background: #95a5a6; box-shadow: none; cursor: not-allowed; transform: none; }
@@ -97,7 +96,7 @@
         .log-box { width: 100%; height: 120px; background: #f8f9fa; overflow-y: auto; padding: 10px; box-sizing: border-box; font-size: 12px; border-top: 1px solid #ccc; }
         .log-entry { margin-bottom: 3px; border-bottom: 1px dashed #eee; padding-bottom: 2px; line-height: 1.4;}
         
-        /* --- 卡牌选择 (横向布局) --- */
+        /* Roguelike 布局 */
         #rogueContainer { display: flex; flex-direction: row; justify-content: space-between; align-items: stretch; width: 100%; gap: 10px; margin-bottom: 20px;}
         .rogue-card { flex: 1; border: 2px solid #ccc; border-radius: 8px; padding: 10px 5px; background: #fff; cursor: pointer; box-shadow: 0 4px 8px rgba(0,0,0,0.1); position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: all 0.2s; }
         .rogue-card:hover { transform: translateY(-5px); box-shadow: 0 8px 16px rgba(0,0,0,0.2); }
@@ -106,8 +105,6 @@
         .rogue-card h3 { margin: 5px 0; font-size: 14px; text-align: center; }
         .rogue-card p { margin: 0; color: #555; font-size: 12px; text-align: center; }
         .card-icon { font-size: 32px; margin-bottom: 5px; }
-        
-        /* 卡牌颜色 */
         .card-white { border-top: 5px solid #bdc3c7; }
         .card-green { border-top: 5px solid #2ecc71; }
         .card-blue { border-top: 5px solid #3498db; }
@@ -122,7 +119,7 @@
     
     <div id="startLayer" class="layer active">
         <h1>大猫猫斗恶龙</h1>
-        <div class="version">Ver1.4.12102501beta</div>
+        <div class="version">Ver1.5.12102501beta</div>
         <svg width="150" height="150" viewBox="0 0 100 100">
             <circle cx="50" cy="50" r="40" fill="#f1c40f" stroke="#e67e22" stroke-width="3"/>
             <path d="M30 30 L40 10 L55 30 Z" fill="#f1c40f" stroke="#e67e22" stroke-width="2"/>
@@ -160,7 +157,6 @@
                 </div>
                 <div id="pVisual" class="fighter-svg"></div>
             </div>
-
             <div id="enemyEl" class="fighter">
                 <div class="status-box">
                     <div class="fighter-name" id="eName">怪物</div>
@@ -203,7 +199,6 @@
 </div>
 
 <script>
-    // --- 0. SVG 绘图库 (保持原样) ---
     const SVGS = {
         cat_resolute: `<svg viewBox="0 0 100 100"><g transform="translate(10,10)"><circle cx="40" cy="40" r="30" fill="#95a5a6" stroke="#2c3e50" stroke-width="2"/><path d="M20 20 L10 0 L35 15 Z" fill="#95a5a6" stroke="#2c3e50" stroke-width="2"/><path d="M60 20 L70 0 L45 15 Z" fill="#95a5a6" stroke="#2c3e50" stroke-width="2"/><circle cx="30" cy="35" r="3" fill="#2c3e50"/><circle cx="50" cy="35" r="3" fill="#2c3e50"/><path d="M35 45 Q40 50 45 45" stroke="#2c3e50" stroke-width="2" fill="none"/><path d="M65 40 L90 10" stroke="#bdc3c7" stroke-width="6"/><path d="M65 40 L90 10" stroke="#7f8c8d" stroke-width="2"/><line x1="60" y1="45" x2="70" y2="35" stroke="#e67e22" stroke-width="4"/></g></svg>`,
         cat_agile: `<svg viewBox="0 0 100 100"><g transform="translate(10,10)"><circle cx="40" cy="40" r="30" fill="#f1c40f" stroke="#2c3e50" stroke-width="2"/><path d="M20 20 L10 0 L35 15 Z" fill="#f1c40f" stroke="#2c3e50" stroke-width="2"/><path d="M60 20 L70 0 L45 15 Z" fill="#f1c40f" stroke="#2c3e50" stroke-width="2"/><circle cx="30" cy="35" r="3" fill="#2c3e50"/><circle cx="50" cy="35" r="3" fill="#2c3e50"/><path d="M35 45 Q40 50 45 45" stroke="#2c3e50" stroke-width="2" fill="none"/><path d="M70 40 L85 25" stroke="#3498db" stroke-width="4"/><path d="M10 40 L-5 25" stroke="#3498db" stroke-width="4"/></g></svg>`,
@@ -214,7 +209,6 @@
         monster_dragon: `<svg viewBox="0 0 100 100"><path d="M30 60 Q30 30 50 20 Q70 30 70 60" fill="#e74c3c" stroke="#c0392b" stroke-width="2"/><path d="M50 20 L50 5" stroke="#e74c3c" stroke-width="4"/><circle cx="40" cy="45" r="4" fill="#f1c40f"/><circle cx="60" cy="45" r="4" fill="#f1c40f"/><path d="M40 70 Q50 80 60 70" stroke="#000" stroke-width="2" fill="none"/></svg>`
     };
 
-    // --- 1. 游戏配置 (保持不变) ---
     const CLASSES = [
         {
             id: 'resolute', name: '坚毅猫', svg: SVGS.cat_resolute, color: '#95a5a6',
@@ -250,7 +244,6 @@
         { type: 'green', icon: '🍲', title: '应急干粮', desc: '回满生命值', effect: (p) => { p.hp = p.maxHp; } },
     ];
 
-    // --- 状态 ---
     let player = null;
     let enemy = null;
     let gameLevel = 1;
@@ -259,12 +252,8 @@
     let stageType = 'minion'; 
     let isPlayerTurn = true;
     let isPendingRogue = false;
-    
-    // 新增：记录当前选中的卡牌
     let selectedRogueCard = null;
-    let isFirstRogue = false;
 
-    // --- DOM ---
     const layers = {
         start: document.getElementById('startLayer'),
         select: document.getElementById('classLayer'),
@@ -308,7 +297,6 @@
         setTimeout(() => el.remove(), 300);
     }
 
-    // --- 1. 流程函数 ---
     function goToClassSelection() {
         const name = document.getElementById('playerNameInput').value.trim();
         if (!name) { alert("大侠请留名！"); return; }
@@ -375,9 +363,7 @@
         setTimeout(battleLoop, 800);
     }
 
-    // --- 怪物数值重构 (基于层数，不基于玩家) ---
     function generateEnemy() {
-        // 进度控制
         if (stageCount >= 5) {
             if (stageType === 'minion') stageType = 'elite'; 
         } else {
@@ -388,7 +374,6 @@
              stageCount = 0;
         }
         
-        // 检查是否精英击杀满足生成Boss
         if (!player.eliteKills) player.eliteKills = 0;
         if (stageCount >= 5) {
             if ((player.eliteKills + 1) % 5 === 0 && player.eliteKills > 0) {
@@ -398,16 +383,11 @@
             }
         }
 
-        // --- 核心数值修改 ---
-        // 怪物基准数值模型
-        // Level 1: HP ~80, Atk ~15, Def ~5
-        // 线性成长 + 小幅度浮动
         let baseHp = 80 + (gameLevel * 25);
         let baseAtk = 15 + (gameLevel * 4);
-        let baseDef = 5 + (gameLevel * 1); // 防御成长较慢，防止后期打不动
+        let baseDef = 5 + (gameLevel * 1); 
         let baseSpd = 8 + (gameLevel * 0.5);
 
-        // 类型修正
         let typeName = '小怪';
         let svg = SVGS.monster_slime;
         let hpMult = 1.0, atkMult = 1.0, defMult = 1.0;
@@ -453,7 +433,6 @@
         setTimeout(() => pEl.style.transform = 'translateX(0)', 200);
         showSlash(document.getElementById('enemyEl'));
 
-        // 智慧猫回蓝
         if (player.cls.id === 'wise') {
             let rec = Math.ceil(player.maxMp * 0.05);
             player.mp = Math.min(player.maxMp, player.mp + rec);
@@ -463,7 +442,6 @@
         let extraDmg = 0;
         let selfDmg = 0;
         
-        // 天赋逻辑
         if (player.cls.id === 'wise') {
             let cost = Math.floor(player.mp * 0.1);
             if (cost > 0) { player.mp -= cost; dmgMult += cost * 0.01; log(`[奥术超载] 消耗 ${cost} 猫能, 增伤 ${(cost*1).toFixed(0)}%`, '#9b59b6'); }
@@ -514,7 +492,6 @@
 
         let dmg = Math.max(1, Math.floor(enemy.atk - player.def));
         
-        // 坚毅猫反伤
         if (player.cls.id === 'resolute' && player.hp > 0) {
             let reflect = 0;
             if (player.def >= player.atk * 6) {
@@ -620,22 +597,18 @@
         startNextBattle();
     }
 
-    // --- 5. 抽卡系统 (确认逻辑修复) ---
     function showRogueSelection(first = false) {
-        isFirstRogue = first;
-        selectedRogueCard = null; // 重置选中状态
-        
+        selectedRogueCard = null;
         const container = document.getElementById('rogueContainer');
         const btn = document.getElementById('confirmCardBtn');
-        btn.disabled = true; // 默认禁用按钮
+        btn.disabled = true;
         btn.innerText = "请选择一项";
         container.innerHTML = '';
         
-        // 洗牌去重
         const shuffled = CARDS.sort(() => 0.5 - Math.random());
         const choices = shuffled.slice(0, 3);
 
-        choices.forEach((card, index) => {
+        choices.forEach(card => {
             const el = document.createElement('div');
             el.className = `rogue-card card-${card.type}`;
             el.innerHTML = `
@@ -643,14 +616,10 @@
                 <h3>${card.title}</h3>
                 <p>${card.desc}</p>
             `;
-            // 点击选中逻辑
             el.onclick = () => {
-                // 移除其他卡片的选中状态
-                Array.from(container.children).forEach(child => child.classList.remove('selected'));
-                // 选中当前
+                Array.from(container.children).forEach(c => c.classList.remove('selected'));
                 el.classList.add('selected');
                 selectedRogueCard = card;
-                // 启用按钮
                 btn.disabled = false;
                 btn.innerText = "确认选择";
             };
@@ -659,27 +628,20 @@
         showLayer('card');
     }
 
-    // 确认按钮的回调
     function confirmRogueSelection() {
-        if (!selectedRogueCard) return; // 双重保险
-        
+        if (!selectedRogueCard) return;
         selectedRogueCard.effect(player);
         log(`选择了 [${selectedRogueCard.title}]`, '#8e44ad');
         
-        // 恢复部分状态
         if(selectedRogueCard.type !== 'green') {
              player.hp = Math.min(player.maxHp, player.hp + player.maxHp * 0.3);
              player.mp = Math.min(player.maxMp, player.mp + player.maxMp * 0.3);
         }
-        
         updateUI();
         
-        if (isFirstRogue) {
-            startNextBattle();
-        } else {
-            showLayer('battle');
-            startNextBattle();
-        }
+        // 强制切换回战斗层 (修复Bug)
+        showLayer('battle');
+        startNextBattle();
     }
 
     function updateUI() {

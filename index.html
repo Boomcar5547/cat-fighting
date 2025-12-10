@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>大猫猫斗恶龙 Ver1.7.12102501beta</title>
+    <title>大猫猫斗恶龙 Ver1.7.12102502beta</title>
     <style>
         /* --- 全局样式 --- */
         body {
@@ -53,9 +53,36 @@
         .version { color: #7f8c8d; font-size: 12px; margin-bottom: 30px; }
         input { padding: 12px; border: 2px solid #3498db; border-radius: 8px; width: 70%; text-align: center; font-size: 16px; margin-bottom: 20px; }
         
-        button { padding: 12px 30px; background: #e67e22; color: white; border: none; border-radius: 25px; font-size: 18px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 0 #d35400; transition: all 0.1s; }
+        button { padding: 12px 30px; background: #e67e22; color: white; border: none; border-radius: 25px; font-size: 18px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 0 #d35400; transition: all 0.1s; margin: 5px; }
         button:active { transform: translateY(4px); box-shadow: 0 0 0 #d35400; }
         button:disabled { background: #95a5a6; box-shadow: none; cursor: not-allowed; transform: none; }
+        
+        /* 蓝色次级按钮 */
+        .btn-blue { background: #3498db; box-shadow: 0 4px 0 #2980b9; font-size: 14px; padding: 10px 20px; }
+        .btn-blue:active { transform: translateY(4px); box-shadow: 0 0 0 #2980b9; }
+
+        /* --- 更新日志界面 --- */
+        .changelog-box {
+            width: 100%;
+            flex-grow: 1; /* 占满剩余空间 */
+            background: #f9f9f9;
+            border: 2px solid #bdc3c7;
+            border-radius: 10px;
+            padding: 15px;
+            box-sizing: border-box;
+            overflow-y: auto; /* 允许滚动 */
+            margin-bottom: 20px;
+            text-align: left;
+            cursor: grab; /* 提示可拖拽 */
+        }
+        .changelog-box:active { cursor: grabbing; }
+        
+        .log-block { margin-bottom: 20px; border-bottom: 1px dashed #eee; padding-bottom: 15px; }
+        .log-ver { color: #e67e22; font-weight: 900; font-size: 16px; margin-bottom: 5px; }
+        .log-date { color: #95a5a6; font-size: 12px; margin-bottom: 8px; }
+        .log-list { padding-left: 20px; margin: 0; }
+        .log-list li { font-size: 13px; color: #34495e; margin-bottom: 4px; line-height: 1.5; }
+        .highlight { color: #c0392b; font-weight: bold; }
 
         /* --- 职业选择 --- */
         .card-container { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; width: 100%; overflow-y: auto; padding-bottom: 20px; }
@@ -119,7 +146,7 @@
     
     <div id="startLayer" class="layer active">
         <h1>大猫猫斗恶龙</h1>
-        <div class="version">Ver1.7.12102501beta</div>
+        <div class="version">Ver1.7.12102502beta</div>
         <svg width="150" height="150" viewBox="0 0 100 100">
             <circle cx="50" cy="50" r="40" fill="#f1c40f" stroke="#e67e22" stroke-width="3"/>
             <path d="M30 30 L40 10 L55 30 Z" fill="#f1c40f" stroke="#e67e22" stroke-width="2"/>
@@ -132,6 +159,76 @@
         <br>
         <input type="text" id="playerNameInput" placeholder="请输入你的勇者名" maxlength="8">
         <button onclick="goToClassSelection()">踏上征程</button>
+        <button class="btn-blue" onclick="showLayer('changelog')">更新日志</button>
+    </div>
+
+    <div id="changelogLayer" class="layer">
+        <h2>更新日志</h2>
+        <div class="changelog-box" id="changelogBox">
+            <div class="log-block">
+                <div class="log-ver">Ver 1.7.12102502</div>
+                <div class="log-date">当前版本</div>
+                <ul class="log-list">
+                    <li>新增 <span class="highlight">更新日志</span> 界面。</li>
+                    <li>新增日志界面鼠标拖拽滚屏功能。</li>
+                </ul>
+            </div>
+            <div class="log-block">
+                <div class="log-ver">Ver 1.7</div>
+                <div class="log-date">重大平衡性调整</div>
+                <ul class="log-list">
+                    <li><span class="highlight">怪物加强</span>：大幅提升怪物速度成长，只有灵活猫能轻易达成连击。</li>
+                    <li><span class="highlight">暴击系统</span>：新增暴击判定，初始爆伤150%。</li>
+                    <li><span class="highlight">卡牌池更新</span>：
+                        <br>- 移除：应急干粮。
+                        <br>- 新增：魔法源泉(猫能+10)、弱点看破(暴击+5%)、致命一击(爆伤+10%)。
+                    </li>
+                    <li><span class="highlight">智慧猫增强</span>：猫能成长 +5 -> +10，天赋护盾改为每场战斗限触发1次。</li>
+                </ul>
+            </div>
+            <div class="log-block">
+                <div class="log-ver">Ver 1.6</div>
+                <div class="log-date">Bug修复</div>
+                <ul class="log-list">
+                    <li>修复灵活猫天赋未造成二段伤害的问题。</li>
+                    <li>修复智慧猫增伤公式无效的问题。</li>
+                </ul>
+            </div>
+            <div class="log-block">
+                <div class="log-ver">Ver 1.5</div>
+                <div class="log-date">流程与数值优化</div>
+                <ul class="log-list">
+                    <li>抽卡界面新增 <span class="highlight">确认按钮</span>，防止卡死。</li>
+                    <li>怪物属性改为基于层数独立成长，不再随玩家属性浮动，解决卡关问题。</li>
+                </ul>
+            </div>
+            <div class="log-block">
+                <div class="log-ver">Ver 1.3</div>
+                <div class="log-date">战斗细节重构</div>
+                <ul class="log-list">
+                    <li>实装多段伤害判定（反伤/追加伤害）。</li>
+                    <li>战斗日志优化，伤害来源更清晰。</li>
+                </ul>
+            </div>
+            <div class="log-block">
+                <div class="log-ver">Ver 1.2</div>
+                <div class="log-date">术语统一</div>
+                <ul class="log-list">
+                    <li>全面统一游戏术语为：猫威/猫御/猫血/猫能/猫速。</li>
+                    <li>卡牌选择界面改为横向排列，且卡牌不重复。</li>
+                </ul>
+            </div>
+            <div class="log-block">
+                <div class="log-ver">Ver 1.1</div>
+                <div class="log-date">美术与机制升级</div>
+                <ul class="log-list">
+                    <li>画面升级为可爱SVG风格，场景更新。</li>
+                    <li>新增 <span class="highlight">死亡回退</span> 机制（层数-5）。</li>
+                    <li>新增经验条和等级显示。</li>
+                </ul>
+            </div>
+        </div>
+        <button onclick="showLayer('start')">返回主界面</button>
     </div>
 
     <div id="classLayer" class="layer">
@@ -199,6 +296,7 @@
 </div>
 
 <script>
+    // --- 0. SVG 绘图库 (保持原样) ---
     const SVGS = {
         cat_resolute: `<svg viewBox="0 0 100 100"><g transform="translate(10,10)"><circle cx="40" cy="40" r="30" fill="#95a5a6" stroke="#2c3e50" stroke-width="2"/><path d="M20 20 L10 0 L35 15 Z" fill="#95a5a6" stroke="#2c3e50" stroke-width="2"/><path d="M60 20 L70 0 L45 15 Z" fill="#95a5a6" stroke="#2c3e50" stroke-width="2"/><circle cx="30" cy="35" r="3" fill="#2c3e50"/><circle cx="50" cy="35" r="3" fill="#2c3e50"/><path d="M35 45 Q40 50 45 45" stroke="#2c3e50" stroke-width="2" fill="none"/><path d="M65 40 L90 10" stroke="#bdc3c7" stroke-width="6"/><path d="M65 40 L90 10" stroke="#7f8c8d" stroke-width="2"/><line x1="60" y1="45" x2="70" y2="35" stroke="#e67e22" stroke-width="4"/></g></svg>`,
         cat_agile: `<svg viewBox="0 0 100 100"><g transform="translate(10,10)"><circle cx="40" cy="40" r="30" fill="#f1c40f" stroke="#2c3e50" stroke-width="2"/><path d="M20 20 L10 0 L35 15 Z" fill="#f1c40f" stroke="#2c3e50" stroke-width="2"/><path d="M60 20 L70 0 L45 15 Z" fill="#f1c40f" stroke="#2c3e50" stroke-width="2"/><circle cx="30" cy="35" r="3" fill="#2c3e50"/><circle cx="50" cy="35" r="3" fill="#2c3e50"/><path d="M35 45 Q40 50 45 45" stroke="#2c3e50" stroke-width="2" fill="none"/><path d="M70 40 L85 25" stroke="#3498db" stroke-width="4"/><path d="M10 40 L-5 25" stroke="#3498db" stroke-width="4"/></g></svg>`,
@@ -209,6 +307,7 @@
         monster_dragon: `<svg viewBox="0 0 100 100"><path d="M30 60 Q30 30 50 20 Q70 30 70 60" fill="#e74c3c" stroke="#c0392b" stroke-width="2"/><path d="M50 20 L50 5" stroke="#e74c3c" stroke-width="4"/><circle cx="40" cy="45" r="4" fill="#f1c40f"/><circle cx="60" cy="45" r="4" fill="#f1c40f"/><path d="M40 70 Q50 80 60 70" stroke="#000" stroke-width="2" fill="none"/></svg>`
     };
 
+    // --- 1. 游戏配置 (术语修正) ---
     const CLASSES = [
         {
             id: 'resolute', name: '坚毅猫', svg: SVGS.cat_resolute, color: '#95a5a6',
@@ -225,7 +324,7 @@
         {
             id: 'wise', name: '智慧猫', svg: SVGS.cat_wise, color: '#9b59b6',
             base: { atk: 45, mp: 20, def: 10, hp: 70, spd: 10 },
-            growth: { atk: 15, mp: 10, def: 3, hp: 18, spd: 2 }, // [调整] 猫能成长 +5 -> +10
+            growth: { atk: 15, mp: 10, def: 3, hp: 18, spd: 2 },
             talent: '【奥术超载】消耗10%[猫能]增伤，1点[猫能]增加1%伤害。致死时消耗[猫能]抵挡伤害(1猫能抵2伤害，单场战斗限1次)。'
         },
         {
@@ -236,15 +335,14 @@
         }
     ];
 
-    // 更新后的卡牌池
     const CARDS = [
         { type: 'white', icon: '⚔️', title: '力量训练', desc: '猫威 +10', effect: (p) => { p.atk += 10; } },
         { type: 'white', icon: '❤️', title: '体能强化', desc: '猫血 +30', effect: (p) => { p.maxHp += 30; p.hp += 30; } },
         { type: 'white', icon: '🛡️', title: '硬化皮毛', desc: '猫御 +10', effect: (p) => { p.def += 10; } },
         { type: 'white', icon: '⚡', title: '敏捷步伐', desc: '猫速 +5', effect: (p) => { p.spd += 5; } },
-        { type: 'blue', icon: '💧', title: '魔法源泉', desc: '猫能 +10', effect: (p) => { p.mp += 10; p.maxMp += 10; } }, // [新增]
-        { type: 'green', icon: '🗡️', title: '弱点看破', desc: '暴击率 +5%', effect: (p) => { p.critRate += 0.05; } }, // [新增]
-        { type: 'green', icon: '⚔️', title: '致命一击', desc: '暴击伤害 +10%', effect: (p) => { p.critDmg += 0.1; } }, // [新增]
+        { type: 'blue', icon: '💧', title: '魔法源泉', desc: '猫能 +10', effect: (p) => { p.mp += 10; p.maxMp += 10; } }, 
+        { type: 'green', icon: '🗡️', title: '弱点看破', desc: '暴击率 +5%', effect: (p) => { p.critRate += 0.05; } },
+        { type: 'green', icon: '⚔️', title: '致命一击', desc: '暴击伤害 +10%', effect: (p) => { p.critDmg += 0.1; } },
     ];
 
     // --- 状态 ---
@@ -264,7 +362,8 @@
         select: document.getElementById('classLayer'),
         battle: document.getElementById('battleLayer'),
         card: document.getElementById('cardLayer'),
-        over: document.getElementById('gameOverLayer')
+        over: document.getElementById('gameOverLayer'),
+        changelog: document.getElementById('changelogLayer')
     };
     const logs = document.getElementById('battleLog');
 
@@ -339,8 +438,8 @@
             maxHp: cls.base.hp, hp: cls.base.hp,
             maxMp: cls.base.mp, mp: cls.base.mp,
             atk: cls.base.atk, def: cls.base.def, spd: cls.base.spd,
-            critRate: 0, critDmg: 1.5, // [新增] 暴击属性
-            shieldUsed: false // [新增] 智慧猫护盾标记
+            critRate: 0, critDmg: 1.5,
+            shieldUsed: false 
         };
         gameLevel = 1;
         killCount = 0;
@@ -361,7 +460,7 @@
             return;
         }
 
-        player.shieldUsed = false; // 每场战斗重置护盾
+        player.shieldUsed = false; 
         generateEnemy();
         updateUI();
         log(`<br><strong>=== 第 ${gameLevel} 层 ===</strong>`, '#3498db');
@@ -372,7 +471,6 @@
     }
 
     function generateEnemy() {
-        // ... (进度逻辑不变)
         if (stageCount >= 5) {
             if (stageType === 'minion') stageType = 'elite'; 
         } else {
@@ -394,7 +492,6 @@
         let baseHp = 80 + (gameLevel * 25);
         let baseAtk = 15 + (gameLevel * 4);
         let baseDef = 5 + (gameLevel * 1); 
-        // [核心调整] 怪物速度大幅成长
         let baseSpd = 10 + (gameLevel * 1.5); 
 
         let typeName = '小怪';
@@ -466,7 +563,6 @@
             extraDmg += player.spd * (1 + Math.floor(player.lvl/10)*0.2);
         }
 
-        // [暴击判定]
         let isCrit = Math.random() < player.critRate;
         let finalMult = dmgMult;
         if (isCrit) {
@@ -476,7 +572,6 @@
         let dmg = Math.max(1, Math.floor(player.atk * finalMult - enemy.def + extraDmg));
         enemy.hp -= dmg;
         
-        // 浮动文字特效
         let floatColor = isCrit ? '#e74c3c' : '#fff';
         let floatSize = isCrit ? '32px' : '24px';
         let floatMsg = isCrit ? `暴击! ${dmg}` : dmg;
@@ -485,7 +580,6 @@
         if(isCrit) log(`⚡【暴击】造成了 ${dmg} 点巨额伤害!`, '#c0392b');
         else log(`你对 ${enemy.name} 造成 ${dmg} 点伤害。`);
 
-        // 追加伤害
         if (player.cls.id === 'agile' && enemy.hp > 0) {
             let spdCoef = 1.0 + Math.floor(player.lvl/10)*0.2;
             let extra = Math.floor(player.spd * spdCoef);
@@ -529,14 +623,13 @@
 
         let dmg = Math.max(1, Math.floor(enemy.atk - player.def));
         
-        // 智慧猫抵挡 (单次限制)
         if (player.hp - dmg <= 0 && player.cls.id === 'wise' && player.mp > 0 && !player.shieldUsed) {
             let needBlock = dmg - (player.hp - 1);
             let manaCost = Math.ceil(needBlock / 2);
             if (player.mp >= manaCost) {
                 player.mp -= manaCost;
                 dmg -= needBlock;
-                player.shieldUsed = true; // 标记已使用
+                player.shieldUsed = true; 
                 log("🛡️ [奥术超载] 护盾抵挡了致命伤! (本战限1次)", '#3498db');
             }
         }
@@ -640,6 +733,7 @@
     }
 
     function showRogueSelection(first = false) {
+        isFirstRogue = first;
         selectedRogueCard = null;
         const container = document.getElementById('rogueContainer');
         const btn = document.getElementById('confirmCardBtn');
@@ -680,6 +774,7 @@
              player.mp = Math.min(player.maxMp, player.mp + player.maxMp * 0.3);
         }
         updateUI();
+        
         showLayer('battle');
         startNextBattle();
     }
@@ -699,6 +794,27 @@
         document.getElementById('killText').innerText = killCount;
         document.getElementById('pLvVal').innerText = player.lvl;
     }
+
+    // --- 滚动逻辑 ---
+    const slider = document.getElementById('changelogBox');
+    let isDown = false;
+    let startY;
+    let scrollTop;
+
+    slider.addEventListener('mousedown', (e) => {
+        isDown = true;
+        startY = e.pageY - slider.offsetTop;
+        scrollTop = slider.scrollTop;
+    });
+    slider.addEventListener('mouseleave', () => { isDown = false; });
+    slider.addEventListener('mouseup', () => { isDown = false; });
+    slider.addEventListener('mousemove', (e) => {
+        if (!isDown) return;
+        e.preventDefault();
+        const y = e.pageY - slider.offsetTop;
+        const walk = (y - startY) * 2; // 滚动速度
+        slider.scrollTop = scrollTop - walk;
+    });
 
 </script>
 </body>

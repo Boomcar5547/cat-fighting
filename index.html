@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>大猫猫斗恶龙 Ver1.6.12102501beta</title>
+    <title>大猫猫斗恶龙 Ver1.7.12102501beta</title>
     <style>
         /* --- 全局样式 --- */
         body {
@@ -119,7 +119,7 @@
     
     <div id="startLayer" class="layer active">
         <h1>大猫猫斗恶龙</h1>
-        <div class="version">Ver1.6.12102501beta</div>
+        <div class="version">Ver1.7.12102501beta</div>
         <svg width="150" height="150" viewBox="0 0 100 100">
             <circle cx="50" cy="50" r="40" fill="#f1c40f" stroke="#e67e22" stroke-width="3"/>
             <path d="M30 30 L40 10 L55 30 Z" fill="#f1c40f" stroke="#e67e22" stroke-width="2"/>
@@ -225,8 +225,8 @@
         {
             id: 'wise', name: '智慧猫', svg: SVGS.cat_wise, color: '#9b59b6',
             base: { atk: 45, mp: 20, def: 10, hp: 70, spd: 10 },
-            growth: { atk: 15, mp: 5, def: 3, hp: 18, spd: 2 },
-            talent: '【奥术超载】消耗10%[猫能]增伤，1点[猫能]增加1%伤害。致死时消耗[猫能]抵挡伤害(1猫能抵2伤害)。'
+            growth: { atk: 15, mp: 10, def: 3, hp: 18, spd: 2 }, // [调整] 猫能成长 +5 -> +10
+            talent: '【奥术超载】消耗10%[猫能]增伤，1点[猫能]增加1%伤害。致死时消耗[猫能]抵挡伤害(1猫能抵2伤害，单场战斗限1次)。'
         },
         {
             id: 'berserk', name: '狂暴猫', svg: SVGS.cat_berserk, color: '#c0392b',
@@ -236,14 +236,18 @@
         }
     ];
 
+    // 更新后的卡牌池
     const CARDS = [
         { type: 'white', icon: '⚔️', title: '力量训练', desc: '猫威 +10', effect: (p) => { p.atk += 10; } },
         { type: 'white', icon: '❤️', title: '体能强化', desc: '猫血 +30', effect: (p) => { p.maxHp += 30; p.hp += 30; } },
         { type: 'white', icon: '🛡️', title: '硬化皮毛', desc: '猫御 +10', effect: (p) => { p.def += 10; } },
         { type: 'white', icon: '⚡', title: '敏捷步伐', desc: '猫速 +5', effect: (p) => { p.spd += 5; } },
-        { type: 'green', icon: '🍲', title: '应急干粮', desc: '回满生命值', effect: (p) => { p.hp = p.maxHp; } },
+        { type: 'blue', icon: '💧', title: '魔法源泉', desc: '猫能 +10', effect: (p) => { p.mp += 10; p.maxMp += 10; } }, // [新增]
+        { type: 'green', icon: '🗡️', title: '弱点看破', desc: '暴击率 +5%', effect: (p) => { p.critRate += 0.05; } }, // [新增]
+        { type: 'green', icon: '⚔️', title: '致命一击', desc: '暴击伤害 +10%', effect: (p) => { p.critDmg += 0.1; } }, // [新增]
     ];
 
+    // --- 状态 ---
     let player = null;
     let enemy = null;
     let gameLevel = 1;
@@ -334,7 +338,9 @@
             maxExp: 2,
             maxHp: cls.base.hp, hp: cls.base.hp,
             maxMp: cls.base.mp, mp: cls.base.mp,
-            atk: cls.base.atk, def: cls.base.def, spd: cls.base.spd
+            atk: cls.base.atk, def: cls.base.def, spd: cls.base.spd,
+            critRate: 0, critDmg: 1.5, // [新增] 暴击属性
+            shieldUsed: false // [新增] 智慧猫护盾标记
         };
         gameLevel = 1;
         killCount = 0;
@@ -355,6 +361,7 @@
             return;
         }
 
+        player.shieldUsed = false; // 每场战斗重置护盾
         generateEnemy();
         updateUI();
         log(`<br><strong>=== 第 ${gameLevel} 层 ===</strong>`, '#3498db');
@@ -365,6 +372,7 @@
     }
 
     function generateEnemy() {
+        // ... (进度逻辑不变)
         if (stageCount >= 5) {
             if (stageType === 'minion') stageType = 'elite'; 
         } else {
@@ -374,7 +382,6 @@
              stageType = 'minion';
              stageCount = 0;
         }
-        
         if (!player.eliteKills) player.eliteKills = 0;
         if (stageCount >= 5) {
             if ((player.eliteKills + 1) % 5 === 0 && player.eliteKills > 0) {
@@ -387,7 +394,8 @@
         let baseHp = 80 + (gameLevel * 25);
         let baseAtk = 15 + (gameLevel * 4);
         let baseDef = 5 + (gameLevel * 1); 
-        let baseSpd = 8 + (gameLevel * 0.5);
+        // [核心调整] 怪物速度大幅成长
+        let baseSpd = 10 + (gameLevel * 1.5); 
 
         let typeName = '小怪';
         let svg = SVGS.monster_slime;
@@ -434,80 +442,75 @@
         setTimeout(() => pEl.style.transform = 'translateX(0)', 200);
         showSlash(document.getElementById('enemyEl'));
 
-        // 智慧猫回蓝
         if (player.cls.id === 'wise') {
             let rec = Math.ceil(player.maxMp * 0.05);
             player.mp = Math.min(player.maxMp, player.mp + rec);
         }
 
         let dmgMult = 1.0;
+        let extraDmg = 0;
         let selfDmg = 0;
         
-        // 增伤计算
         if (player.cls.id === 'wise') {
             let cost = Math.floor(player.mp * 0.1);
-            if (cost > 0) { 
-                player.mp -= cost; 
-                dmgMult += cost * 0.01; 
-                log(`[奥术超载] 消耗 ${cost} 猫能, 伤害倍率+${(cost*1).toFixed(0)}%`, '#9b59b6');
-            }
+            if (cost > 0) { player.mp -= cost; dmgMult += cost * 0.01; log(`[奥术超载] 消耗 ${cost} 猫能, 增伤 ${(cost*1).toFixed(0)}%`, '#9b59b6'); }
         }
         if (player.cls.id === 'berserk') {
             let cost = Math.floor(player.hp * 0.2);
             selfDmg = cost;
             let missingPct = (player.maxHp - player.hp)/player.maxHp * 100;
             dmgMult += missingPct * 0.01;
-            log(`[鲜血渴望] 消耗 ${cost} 猫血, 伤害倍率+${missingPct.toFixed(0)}%`, '#c0392b');
+            log(`[鲜血渴望] 消耗 ${cost} 猫血, 增伤 ${missingPct.toFixed(0)}%`, '#c0392b');
+        }
+        if (player.cls.id === 'agile') {
+            extraDmg += player.spd * (1 + Math.floor(player.lvl/10)*0.2);
         }
 
-        // --- 核心修复：分离式伤害计算 ---
-        
-        // 第一段：基础物理伤害
-        let rawDmg = Math.max(1, Math.floor(player.atk * dmgMult - enemy.def));
-        enemy.hp -= rawDmg;
-        floatText(rawDmg, document.getElementById('enemyEl'), '#fff');
-        log(`你对 ${enemy.name} 造成 ${rawDmg} 点伤害。`);
+        // [暴击判定]
+        let isCrit = Math.random() < player.critRate;
+        let finalMult = dmgMult;
+        if (isCrit) {
+            finalMult *= player.critDmg;
+        }
 
-        // 第二段：灵活猫追加伤害 (完全独立判定)
+        let dmg = Math.max(1, Math.floor(player.atk * finalMult - enemy.def + extraDmg));
+        enemy.hp -= dmg;
+        
+        // 浮动文字特效
+        let floatColor = isCrit ? '#e74c3c' : '#fff';
+        let floatSize = isCrit ? '32px' : '24px';
+        let floatMsg = isCrit ? `暴击! ${dmg}` : dmg;
+        floatText(floatMsg, document.getElementById('enemyEl'), floatColor, floatSize);
+        
+        if(isCrit) log(`⚡【暴击】造成了 ${dmg} 点巨额伤害!`, '#c0392b');
+        else log(`你对 ${enemy.name} 造成 ${dmg} 点伤害。`);
+
+        // 追加伤害
         if (player.cls.id === 'agile' && enemy.hp > 0) {
             let spdCoef = 1.0 + Math.floor(player.lvl/10)*0.2;
             let extra = Math.floor(player.spd * spdCoef);
-            
-            // 延迟触发
             setTimeout(() => {
                 enemy.hp -= extra;
-                floatText("+" + extra, document.getElementById('enemyEl'), '#f1c40f', '28px'); // 黄字大一点
+                floatText("+" + extra, document.getElementById('enemyEl'), '#f1c40f', '28px');
                 log(`[迅捷连击] 追加 ${extra} 点真实伤害!`, '#f1c40f');
                 updateUI();
-                
-                // 追加伤害可能致死
-                if (enemy.hp <= 0) {
-                    checkResult();
-                } else {
-                    // 如果没死，检查连击
-                    checkMultiHit(); 
-                }
+                if (enemy.hp <= 0) checkResult();
+                else checkMultiHit(); 
             }, 300);
         } else {
-            // 非灵活猫，或第一段已致死
-            if (selfDmg > 0) { // 狂暴猫吸血结算
+            if (selfDmg > 0) {
                 player.hp -= selfDmg;
-                let drain = Math.floor(rawDmg * 0.1);
+                let drain = Math.floor(dmg * 0.1);
                 player.hp += drain;
                 floatText(`+${drain}`, document.getElementById('playerEl'), '#2ecc71', '16px');
                 log(`吸血恢复 ${drain} 猫血`, '#2ecc71');
             }
             updateUI();
-            
-            if (enemy.hp > 0) {
-                checkMultiHit();
-            } else {
-                checkResult();
-            }
+            if (enemy.hp > 0) checkMultiHit();
+            else checkResult();
         }
     }
     
-    // 连击判定独立出来
     function checkMultiHit() {
         if (player.spd >= enemy.spd * 2 && Math.random() > 0.4) {
             log(">>> [猫速]碾压！发动连击！ <<<", '#f39c12');
@@ -526,14 +529,15 @@
 
         let dmg = Math.max(1, Math.floor(enemy.atk - player.def));
         
-        // 智慧猫抵挡
-        if (player.hp - dmg <= 0 && player.cls.id === 'wise' && player.mp > 0) {
+        // 智慧猫抵挡 (单次限制)
+        if (player.hp - dmg <= 0 && player.cls.id === 'wise' && player.mp > 0 && !player.shieldUsed) {
             let needBlock = dmg - (player.hp - 1);
             let manaCost = Math.ceil(needBlock / 2);
             if (player.mp >= manaCost) {
                 player.mp -= manaCost;
                 dmg -= needBlock;
-                log("[奥术超载] 消耗猫能抵挡了致命伤!", '#3498db');
+                player.shieldUsed = true; // 标记已使用
+                log("🛡️ [奥术超载] 护盾抵挡了致命伤! (本战限1次)", '#3498db');
             }
         }
 
@@ -543,7 +547,6 @@
         
         updateUI();
         
-        // 坚毅猫反伤 (后置)
         if (player.cls.id === 'resolute' && player.hp > 0) {
             let reflect = 0;
             if (player.def >= player.atk * 6) {
@@ -637,7 +640,6 @@
     }
 
     function showRogueSelection(first = false) {
-        isFirstRogue = first;
         selectedRogueCard = null;
         const container = document.getElementById('rogueContainer');
         const btn = document.getElementById('confirmCardBtn');
@@ -678,7 +680,6 @@
              player.mp = Math.min(player.maxMp, player.mp + player.maxMp * 0.3);
         }
         updateUI();
-        
         showLayer('battle');
         startNextBattle();
     }

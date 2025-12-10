@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>大猫猫斗恶龙 Ver1.1.12102501beta</title>
+    <title>大猫猫斗恶龙 Ver1.3.12102501beta</title>
     <style>
         /* --- 全局样式 --- */
         body {
@@ -33,13 +33,10 @@
             flex-direction: column;
         }
 
-        /* --- 界面层级控制 --- */
+        /* --- 界面层级 --- */
         .layer {
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            top: 0; left: 0; width: 100%; height: 100%;
             display: none;
             flex-direction: column;
             align-items: center;
@@ -49,255 +46,80 @@
             padding: 20px;
             box-sizing: border-box;
         }
-
         .active { display: flex; }
 
-        /* --- 开始界面 --- */
+        /* --- 样式复用 --- */
         h1 { color: #e67e22; text-shadow: 2px 2px #f1c40f; margin-bottom: 5px; text-align: center;}
         .version { color: #7f8c8d; font-size: 12px; margin-bottom: 30px; }
-        
-        input {
-            padding: 12px;
-            border: 2px solid #3498db;
-            border-radius: 8px;
-            width: 70%;
-            text-align: center;
-            font-size: 16px;
-            margin-bottom: 20px;
-        }
-
-        button {
-            padding: 12px 30px;
-            background: #e67e22;
-            color: white;
-            border: none;
-            border-radius: 25px;
-            font-size: 18px;
-            font-weight: bold;
-            cursor: pointer;
-            box-shadow: 0 4px 0 #d35400;
-            transition: all 0.1s;
-        }
+        input { padding: 12px; border: 2px solid #3498db; border-radius: 8px; width: 70%; text-align: center; font-size: 16px; margin-bottom: 20px; }
+        button { padding: 12px 30px; background: #e67e22; color: white; border: none; border-radius: 25px; font-size: 18px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 0 #d35400; transition: all 0.1s; }
         button:active { transform: translateY(4px); box-shadow: 0 0 0 #d35400; }
 
-        /* --- 职业选择界面 --- */
-        .card-container {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            width: 100%;
-            overflow-y: auto;
-            padding-bottom: 20px;
-        }
-
-        .class-card {
-            background: white;
-            border: 2px solid #bdc3c7;
-            border-radius: 10px;
-            padding: 10px;
-            text-align: center;
-            cursor: pointer;
-            transition: transform 0.2s;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            position: relative;
-        }
+        /* --- 职业选择 --- */
+        .card-container { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; width: 100%; overflow-y: auto; padding-bottom: 20px; }
+        .class-card { background: white; border: 2px solid #bdc3c7; border-radius: 10px; padding: 10px; text-align: center; cursor: pointer; transition: transform 0.2s; box-shadow: 0 2px 5px rgba(0,0,0,0.1); display: flex; flex-direction: column; align-items: center; }
         .class-card:hover { border-color: #3498db; transform: scale(1.02); }
         .class-card h3 { margin: 5px 0; color: #2c3e50; font-size: 16px; }
-        /* SVG 容器 */
-        .svg-icon { width: 80px; height: 80px; margin: 5px auto; }
-        
-        .stats-text { font-size: 10px; color: #7f8c8d; text-align: left; line-height: 1.4; }
-        .talent-text { font-size: 10px; color: #c0392b; margin-top: 5px; font-weight: bold; text-align: left; border-top: 1px dashed #eee; padding-top:5px;}
+        .svg-icon { width: 70px; height: 70px; margin: 5px auto; }
+        .stats-text { font-size: 10px; color: #7f8c8d; text-align: left; line-height: 1.4; width: 100%; }
+        .talent-text { font-size: 10px; color: #c0392b; margin-top: 8px; font-weight: bold; text-align: left; border-top: 1px dashed #eee; padding-top:5px; width: 100%; }
 
-        /* --- 战斗界面 (天空+草地) --- */
-        #battleLayer {
-            background: linear-gradient(to bottom, #87CEEB 0%, #87CEEB 70%, #90EE90 70%, #90EE90 100%);
-            justify-content: space-between;
-            padding: 0;
-        }
-        /* 云朵装饰 */
-        .cloud {
-            position: absolute;
-            background: white;
-            border-radius: 50px;
-            opacity: 0.8;
-            animation: floatCloud 20s linear infinite;
-        }
+        /* --- 战斗界面 --- */
+        #battleLayer { background: linear-gradient(to bottom, #87CEEB 0%, #87CEEB 70%, #90EE90 70%, #90EE90 100%); justify-content: space-between; padding: 0; }
+        .cloud { position: absolute; background: white; border-radius: 50px; opacity: 0.8; animation: floatCloud 20s linear infinite; }
         @keyframes floatCloud { from { left: -100px; } to { left: 100%; } }
-
-        .battle-hud {
-            width: 100%;
-            background: rgba(0,0,0,0.6);
-            color: white;
-            padding: 8px 15px;
-            box-sizing: border-box;
-            display: flex;
-            justify-content: space-between;
-            font-size: 14px;
-            z-index: 5;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
-        }
-
-        .battle-scene {
-            flex-grow: 1;
-            width: 100%;
-            position: relative;
-            display: flex;
-            justify-content: space-around; /* 左右分布 */
-            align-items: flex-end; /* 站在草地上 */
-            padding-bottom: 15%; /* 调整站立位置 */
-            z-index: 2;
-        }
-
-        .fighter {
-            width: 120px;
-            height: 120px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: flex-end;
-            position: relative;
-            transition: transform 0.2s;
-        }
+        .battle-hud { width: 100%; background: rgba(0,0,0,0.6); color: white; padding: 8px 15px; box-sizing: border-box; display: flex; justify-content: space-between; font-size: 14px; z-index: 5; box-shadow: 0 2px 5px rgba(0,0,0,0.3); }
         
+        .battle-scene { flex-grow: 1; width: 100%; position: relative; display: flex; justify-content: space-around; align-items: flex-end; padding-bottom: 15%; z-index: 2; }
+        .fighter { width: 120px; height: 120px; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; position: relative; transition: transform 0.2s; }
         .fighter-svg { width: 100%; height: 100%; filter: drop-shadow(0 5px 2px rgba(0,0,0,0.2)); }
-        
-        .status-box {
-            position: absolute;
-            top: -40px;
-            width: 100%;
-            text-align: center;
-        }
-        .fighter-name { 
-            background: rgba(0,0,0,0.5); color: #fff; padding: 2px 8px; border-radius: 10px; font-size: 12px; 
-            display: inline-block; margin-bottom: 2px;
-        }
-        
+        .status-box { position: absolute; top: -40px; width: 100%; text-align: center; }
+        .fighter-name { background: rgba(0,0,0,0.5); color: #fff; padding: 2px 8px; border-radius: 10px; font-size: 12px; display: inline-block; margin-bottom: 2px; }
         .bar-bg { width: 80px; height: 8px; background: #333; border-radius: 4px; margin: 1px auto; overflow: hidden; border:1px solid #fff;}
         .hp-fill { height: 100%; background: #e74c3c; width: 100%; transition: width 0.3s; }
         .mp-fill { height: 100%; background: #3498db; width: 100%; transition: width 0.3s; }
 
-        /* 经验条区域 */
-        .bottom-panel {
-            width: 100%;
-            background: #fff;
-            padding: 10px;
-            box-sizing: border-box;
-            border-top: 4px solid #f1c40f;
-            z-index: 5;
-        }
-        .exp-container {
-            width: 100%;
-            height: 15px;
-            background: #bdc3c7;
-            border-radius: 8px;
-            overflow: hidden;
-            position: relative;
-            box-shadow: inset 0 2px 5px rgba(0,0,0,0.2);
-        }
-        .exp-fill {
-            height: 100%;
-            background: linear-gradient(90deg, #f1c40f, #f39c12);
-            width: 0%;
-            transition: width 0.5s;
-        }
-        .exp-text {
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            text-align: center;
-            font-size: 10px;
-            line-height: 15px;
-            color: #333;
-            font-weight: bold;
+        .bottom-panel { width: 100%; background: #fff; padding: 10px; box-sizing: border-box; border-top: 4px solid #f1c40f; z-index: 5; }
+        .exp-container { width: 100%; height: 15px; background: #bdc3c7; border-radius: 8px; overflow: hidden; position: relative; box-shadow: inset 0 2px 5px rgba(0,0,0,0.2); }
+        .exp-fill { height: 100%; background: linear-gradient(90deg, #f1c40f, #f39c12); width: 0%; transition: width 0.5s; }
+        .exp-text { position: absolute; top: 0; left: 0; width: 100%; height: 100%; text-align: center; font-size: 10px; line-height: 15px; color: #333; font-weight: bold; }
+
+        /* 伤害数字动画 */
+        .floating-text { position: absolute; font-weight: 900; font-size: 28px; animation: floatUp 0.8s ease-out forwards; text-shadow: 2px 2px 0 #fff; z-index: 20; white-space: nowrap; }
+        @keyframes floatUp { 
+            0% { transform: translateY(0) scale(1); opacity: 1; } 
+            50% { transform: translateY(-30px) scale(1.2); opacity: 1; } 
+            100% { transform: translateY(-60px) scale(1); opacity: 0; } 
         }
 
-        /* 动画特效 */
-        .floating-text {
-            position: absolute;
-            font-weight: 900;
-            font-size: 28px;
-            animation: floatUp 0.8s ease-out forwards;
-            text-shadow: 2px 2px 0 #fff;
-            z-index: 20;
-            white-space: nowrap;
-        }
-        @keyframes floatUp {
-            0% { transform: translateY(0) scale(1); opacity: 1; }
-            50% { transform: translateY(-30px) scale(1.2); opacity: 1; }
-            100% { transform: translateY(-60px) scale(1); opacity: 0; }
-        }
+        .slash-effect { position: absolute; width: 150px; height: 150px; background: transparent; border: 2px solid transparent; z-index: 15; left: 50%; top: 50%; transform: translate(-50%, -50%); pointer-events: none; }
+        .slash-effect::before { content: ''; position: absolute; left: 0; top: 50%; width: 100%; height: 4px; background: #e74c3c; transform: rotate(-45deg); box-shadow: 0 0 10px #c0392b; animation: slashAnim 0.3s forwards; }
+        @keyframes slashAnim { 0% { width: 0; opacity: 0; } 50% { width: 100%; opacity: 1; } 100% { width: 100%; opacity: 0; } }
 
-        /* 血线动画 */
-        .slash-effect {
-            position: absolute;
-            width: 150px;
-            height: 150px;
-            background: transparent;
-            border: 2px solid transparent;
-            z-index: 15;
-            left: 50%; top: 50%;
-            transform: translate(-50%, -50%);
-            pointer-events: none;
-        }
-        .slash-effect::before {
-            content: ''; position: absolute; left: 0; top: 50%; width: 100%; height: 4px;
-            background: #e74c3c; transform: rotate(-45deg);
-            box-shadow: 0 0 10px #c0392b;
-            animation: slashAnim 0.3s forwards;
-        }
-        @keyframes slashAnim {
-            0% { width: 0; opacity: 0; }
-            50% { width: 100%; opacity: 1; }
-            100% { width: 100%; opacity: 0; }
-        }
-
-        /* 战斗日志 */
-        .log-box {
-            width: 100%;
-            height: 120px;
-            background: #f8f9fa;
-            overflow-y: auto;
-            padding: 10px;
-            box-sizing: border-box;
-            font-size: 12px;
-            border-top: 1px solid #ccc;
-        }
-        .log-entry { margin-bottom: 2px; border-bottom: 1px dashed #eee; padding-bottom: 2px;}
+        .log-box { width: 100%; height: 120px; background: #f8f9fa; overflow-y: auto; padding: 10px; box-sizing: border-box; font-size: 12px; border-top: 1px solid #ccc; }
+        .log-entry { margin-bottom: 3px; border-bottom: 1px dashed #eee; padding-bottom: 2px; line-height: 1.4;}
         
-        /* --- 卡牌选择 --- */
-        .rogue-card {
-            width: 100%;
-            border: 3px solid #ccc;
-            border-radius: 10px;
-            padding: 15px;
-            margin: 8px 0;
-            background: #fff;
-            cursor: pointer;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-            position: relative;
-        }
-        .rogue-card:hover { transform: translateY(-3px); box-shadow: 0 6px 12px rgba(0,0,0,0.15); }
-        
-        /* 卡牌颜色边框 */
-        .card-white { border-color: #bdc3c7; border-left-width: 10px; }
-        .card-green { border-color: #2ecc71; border-left-width: 10px; }
-        .card-blue { border-color: #3498db; border-left-width: 10px; }
-        .card-purple { border-color: #9b59b6; border-left-width: 10px; }
-        .card-orange { border-color: #e67e22; border-left-width: 10px; }
-
-        /* 角色被击动画 */
-        .shake { animation: shake 0.3s; }
-        @keyframes shake { 0% {transform: translateX(0);} 25% {transform: translateX(-5px);} 75% {transform: translateX(5px);} 100% {transform: translateX(0);} }
+        /* Roguelike 布局 */
+        #rogueContainer { display: flex; flex-direction: row; justify-content: space-between; align-items: stretch; width: 100%; gap: 10px; }
+        .rogue-card { flex: 1; border: 2px solid #ccc; border-radius: 8px; padding: 10px 5px; background: #fff; cursor: pointer; box-shadow: 0 4px 8px rgba(0,0,0,0.1); position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: transform 0.2s; }
+        .rogue-card:hover { transform: translateY(-5px); box-shadow: 0 8px 16px rgba(0,0,0,0.2); }
+        .rogue-card h3 { margin: 5px 0; font-size: 14px; text-align: center; }
+        .rogue-card p { margin: 0; color: #555; font-size: 12px; text-align: center; }
+        .card-icon { font-size: 32px; margin-bottom: 5px; }
+        .card-white { border-color: #bdc3c7; border-top: 5px solid #bdc3c7; }
+        .card-green { border-color: #2ecc71; border-top: 5px solid #2ecc71; }
+        .card-blue { border-color: #3498db; border-top: 5px solid #3498db; }
+        .card-purple { border-color: #9b59b6; border-top: 5px solid #9b59b6; }
+        .card-orange { border-color: #e67e22; border-top: 5px solid #e67e22; }
 
     </style>
 </head>
 <body>
 
 <div id="gameContainer">
-    
     <div id="startLayer" class="layer active">
         <h1>大猫猫斗恶龙</h1>
-        <div class="version">Ver1.1.12102501beta</div>
+        <div class="version">Ver1.3.12102501beta</div>
         <svg width="150" height="150" viewBox="0 0 100 100">
             <circle cx="50" cy="50" r="40" fill="#f1c40f" stroke="#e67e22" stroke-width="3"/>
             <path d="M30 30 L40 10 L55 30 Z" fill="#f1c40f" stroke="#e67e22" stroke-width="2"/>
@@ -313,7 +135,7 @@
     </div>
 
     <div id="classLayer" class="layer">
-        <h2 style="color:#2c3e50">选择你的天命</h2>
+        <h2 style="color:#2c3e50; font-size: 20px;">请选择你的职业</h2>
         <div class="card-container" id="classContainer"></div>
     </div>
 
@@ -335,7 +157,6 @@
                 </div>
                 <div id="pVisual" class="fighter-svg"></div>
             </div>
-
             <div id="enemyEl" class="fighter">
                 <div class="status-box">
                     <div class="fighter-name" id="eName">怪物</div>
@@ -361,9 +182,9 @@
     </div>
 
     <div id="cardLayer" class="layer">
-        <h2>🎁 命运的馈赠</h2>
-        <p style="color:#7f8c8d; font-size:12px;">请从下方选择一项强化 (3选1)</p>
-        <div id="rogueContainer" style="width:100%"></div>
+        <h2 style="color:#8e44ad; font-size:22px;">🎁 命运的馈赠</h2>
+        <p style="color:#7f8c8d; font-size:12px; margin-bottom:15px;">请从下方选择一项强化 (3选1)</p>
+        <div id="rogueContainer"></div>
     </div>
 
     <div id="gameOverLayer" class="layer">
@@ -373,132 +194,57 @@
         <p style="color:#7f8c8d; font-size:14px;">大猫猫施展了时间回溯魔法！<br>层数回退5层，状态回满。</p>
         <button onclick="revivePlayer()" style="background:#2ecc71; box-shadow:0 4px 0 #27ae60">复活再战</button>
     </div>
-
 </div>
 
 <script>
-    // --- 0. SVG 绘图库 (卡通形象) ---
+    // --- 0. SVG 绘图库 ---
     const SVGS = {
-        // 玩家形象
-        cat_resolute: `
-            <svg viewBox="0 0 100 100">
-                <g transform="translate(10,10)">
-                    <circle cx="40" cy="40" r="30" fill="#95a5a6" stroke="#2c3e50" stroke-width="2"/>
-                    <path d="M20 20 L10 0 L35 15 Z" fill="#95a5a6" stroke="#2c3e50" stroke-width="2"/>
-                    <path d="M60 20 L70 0 L45 15 Z" fill="#95a5a6" stroke="#2c3e50" stroke-width="2"/>
-                    <circle cx="30" cy="35" r="3" fill="#2c3e50"/>
-                    <circle cx="50" cy="35" r="3" fill="#2c3e50"/>
-                    <path d="M35 45 Q40 50 45 45" stroke="#2c3e50" stroke-width="2" fill="none"/>
-                    <path d="M65 40 L90 10" stroke="#bdc3c7" stroke-width="6"/>
-                    <path d="M65 40 L90 10" stroke="#7f8c8d" stroke-width="2"/>
-                    <line x1="60" y1="45" x2="70" y2="35" stroke="#e67e22" stroke-width="4"/>
-                </g>
-            </svg>`,
-        cat_agile: `
-            <svg viewBox="0 0 100 100">
-                <g transform="translate(10,10)">
-                    <circle cx="40" cy="40" r="30" fill="#f1c40f" stroke="#2c3e50" stroke-width="2"/>
-                    <path d="M20 20 L10 0 L35 15 Z" fill="#f1c40f" stroke="#2c3e50" stroke-width="2"/>
-                    <path d="M60 20 L70 0 L45 15 Z" fill="#f1c40f" stroke="#2c3e50" stroke-width="2"/>
-                    <circle cx="30" cy="35" r="3" fill="#2c3e50"/>
-                    <circle cx="50" cy="35" r="3" fill="#2c3e50"/>
-                    <path d="M35 45 Q40 50 45 45" stroke="#2c3e50" stroke-width="2" fill="none"/>
-                    <path d="M70 40 L85 25" stroke="#3498db" stroke-width="4"/>
-                    <path d="M10 40 L-5 25" stroke="#3498db" stroke-width="4"/>
-                </g>
-            </svg>`,
-        cat_wise: `
-            <svg viewBox="0 0 100 100">
-                <g transform="translate(10,10)">
-                    <circle cx="40" cy="40" r="30" fill="#9b59b6" stroke="#2c3e50" stroke-width="2"/>
-                    <path d="M20 20 L10 0 L35 15 Z" fill="#9b59b6" stroke="#2c3e50" stroke-width="2"/>
-                    <path d="M60 20 L70 0 L45 15 Z" fill="#9b59b6" stroke="#2c3e50" stroke-width="2"/>
-                    <circle cx="30" cy="35" r="3" fill="#2c3e50"/>
-                    <circle cx="50" cy="35" r="3" fill="#2c3e50"/>
-                    <path d="M35 45 Q40 50 45 45" stroke="#2c3e50" stroke-width="2" fill="none"/>
-                    <line x1="75" y1="20" x2="75" y2="80" stroke="#8e44ad" stroke-width="4"/>
-                    <circle cx="75" cy="20" r="8" fill="#e74c3c"/>
-                </g>
-            </svg>`,
-        cat_berserk: `
-            <svg viewBox="0 0 100 100">
-                <g transform="translate(10,10)">
-                    <circle cx="40" cy="40" r="30" fill="#c0392b" stroke="#2c3e50" stroke-width="2"/>
-                    <path d="M20 20 L10 0 L35 15 Z" fill="#c0392b" stroke="#2c3e50" stroke-width="2"/>
-                    <path d="M60 20 L70 0 L45 15 Z" fill="#c0392b" stroke="#2c3e50" stroke-width="2"/>
-                    <line x1="25" y1="30" x2="35" y2="38" stroke="#000" stroke-width="2"/>
-                    <line x1="55" y1="30" x2="45" y2="38" stroke="#000" stroke-width="2"/>
-                    <path d="M35 50 Q40 45 45 50" stroke="#2c3e50" stroke-width="2" fill="none"/>
-                    <path d="M80 40 L80 70 M70 40 L90 40 L80 50 Z" fill="#7f8c8d" stroke="#000" stroke-width="1"/>
-                    <path d="M0 40 L0 70 M-10 40 L10 40 L0 50 Z" fill="#7f8c8d" stroke="#000" stroke-width="1"/>
-                </g>
-            </svg>`,
-        // 怪物形象
-        monster_slime: `
-            <svg viewBox="0 0 100 100">
-                <path d="M20 80 Q20 20 50 20 Q80 20 80 80 Z" fill="#2ecc71" stroke="#27ae60" stroke-width="2"/>
-                <circle cx="40" cy="50" r="5" fill="#000"/>
-                <circle cx="60" cy="50" r="5" fill="#000"/>
-            </svg>`,
-        monster_bat: `
-            <svg viewBox="0 0 100 100">
-                <circle cx="50" cy="50" r="15" fill="#34495e"/>
-                <path d="M35 50 Q10 20 10 50 Q20 70 35 55" fill="#34495e"/>
-                <path d="M65 50 Q90 20 90 50 Q80 70 65 55" fill="#34495e"/>
-                <circle cx="45" cy="50" r="2" fill="#e74c3c"/>
-                <circle cx="55" cy="50" r="2" fill="#e74c3c"/>
-            </svg>`,
-        monster_dragon: `
-            <svg viewBox="0 0 100 100">
-                <path d="M30 60 Q30 30 50 20 Q70 30 70 60" fill="#e74c3c" stroke="#c0392b" stroke-width="2"/>
-                <path d="M50 20 L50 5" stroke="#e74c3c" stroke-width="4"/>
-                <circle cx="40" cy="45" r="4" fill="#f1c40f"/>
-                <circle cx="60" cy="45" r="4" fill="#f1c40f"/>
-                <path d="M40 70 Q50 80 60 70" stroke="#000" stroke-width="2" fill="none"/>
-            </svg>`
+        cat_resolute: `<svg viewBox="0 0 100 100"><g transform="translate(10,10)"><circle cx="40" cy="40" r="30" fill="#95a5a6" stroke="#2c3e50" stroke-width="2"/><path d="M20 20 L10 0 L35 15 Z" fill="#95a5a6" stroke="#2c3e50" stroke-width="2"/><path d="M60 20 L70 0 L45 15 Z" fill="#95a5a6" stroke="#2c3e50" stroke-width="2"/><circle cx="30" cy="35" r="3" fill="#2c3e50"/><circle cx="50" cy="35" r="3" fill="#2c3e50"/><path d="M35 45 Q40 50 45 45" stroke="#2c3e50" stroke-width="2" fill="none"/><path d="M65 40 L90 10" stroke="#bdc3c7" stroke-width="6"/><path d="M65 40 L90 10" stroke="#7f8c8d" stroke-width="2"/><line x1="60" y1="45" x2="70" y2="35" stroke="#e67e22" stroke-width="4"/></g></svg>`,
+        cat_agile: `<svg viewBox="0 0 100 100"><g transform="translate(10,10)"><circle cx="40" cy="40" r="30" fill="#f1c40f" stroke="#2c3e50" stroke-width="2"/><path d="M20 20 L10 0 L35 15 Z" fill="#f1c40f" stroke="#2c3e50" stroke-width="2"/><path d="M60 20 L70 0 L45 15 Z" fill="#f1c40f" stroke="#2c3e50" stroke-width="2"/><circle cx="30" cy="35" r="3" fill="#2c3e50"/><circle cx="50" cy="35" r="3" fill="#2c3e50"/><path d="M35 45 Q40 50 45 45" stroke="#2c3e50" stroke-width="2" fill="none"/><path d="M70 40 L85 25" stroke="#3498db" stroke-width="4"/><path d="M10 40 L-5 25" stroke="#3498db" stroke-width="4"/></g></svg>`,
+        cat_wise: `<svg viewBox="0 0 100 100"><g transform="translate(10,10)"><circle cx="40" cy="40" r="30" fill="#9b59b6" stroke="#2c3e50" stroke-width="2"/><path d="M20 20 L10 0 L35 15 Z" fill="#9b59b6" stroke="#2c3e50" stroke-width="2"/><path d="M60 20 L70 0 L45 15 Z" fill="#9b59b6" stroke="#2c3e50" stroke-width="2"/><circle cx="30" cy="35" r="3" fill="#2c3e50"/><circle cx="50" cy="35" r="3" fill="#2c3e50"/><path d="M35 45 Q40 50 45 45" stroke="#2c3e50" stroke-width="2" fill="none"/><line x1="75" y1="20" x2="75" y2="80" stroke="#8e44ad" stroke-width="4"/><circle cx="75" cy="20" r="8" fill="#e74c3c"/></g></svg>`,
+        cat_berserk: `<svg viewBox="0 0 100 100"><g transform="translate(10,10)"><circle cx="40" cy="40" r="30" fill="#c0392b" stroke="#2c3e50" stroke-width="2"/><path d="M20 20 L10 0 L35 15 Z" fill="#c0392b" stroke="#2c3e50" stroke-width="2"/><path d="M60 20 L70 0 L45 15 Z" fill="#c0392b" stroke="#2c3e50" stroke-width="2"/><line x1="25" y1="30" x2="35" y2="38" stroke="#000" stroke-width="2"/><line x1="55" y1="30" x2="45" y2="38" stroke="#000" stroke-width="2"/><path d="M35 50 Q40 45 45 50" stroke="#2c3e50" stroke-width="2" fill="none"/><path d="M80 40 L80 70 M70 40 L90 40 L80 50 Z" fill="#7f8c8d" stroke="#000" stroke-width="1"/><path d="M0 40 L0 70 M-10 40 L10 40 L0 50 Z" fill="#7f8c8d" stroke="#000" stroke-width="1"/></g></svg>`,
+        monster_slime: `<svg viewBox="0 0 100 100"><path d="M20 80 Q20 20 50 20 Q80 20 80 80 Z" fill="#2ecc71" stroke="#27ae60" stroke-width="2"/><circle cx="40" cy="50" r="5" fill="#000"/><circle cx="60" cy="50" r="5" fill="#000"/></svg>`,
+        monster_bat: `<svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="15" fill="#34495e"/><path d="M35 50 Q10 20 10 50 Q20 70 35 55" fill="#34495e"/><path d="M65 50 Q90 20 90 50 Q80 70 65 55" fill="#34495e"/><circle cx="45" cy="50" r="2" fill="#e74c3c"/><circle cx="55" cy="50" r="2" fill="#e74c3c"/></svg>`,
+        monster_dragon: `<svg viewBox="0 0 100 100"><path d="M30 60 Q30 30 50 20 Q70 30 70 60" fill="#e74c3c" stroke="#c0392b" stroke-width="2"/><path d="M50 20 L50 5" stroke="#e74c3c" stroke-width="4"/><circle cx="40" cy="45" r="4" fill="#f1c40f"/><circle cx="60" cy="45" r="4" fill="#f1c40f"/><path d="M40 70 Q50 80 60 70" stroke="#000" stroke-width="2" fill="none"/></svg>`
     };
 
-    // --- 1. 游戏数据配置 ---
+    // --- 1. 游戏配置 (术语修正) ---
     const CLASSES = [
         {
             id: 'resolute', name: '坚毅猫', svg: SVGS.cat_resolute, color: '#95a5a6',
-            desc: '坦克型，高防反伤。',
-            // 【调整】猫威 32+3，猫御 25+15
             base: { atk: 32, mp: 5, def: 25, hp: 200, spd: 10 },
             growth: { atk: 3, mp: 1, def: 15, hp: 50, spd: 1 },
-            talent: '【荆棘】被击时反伤。防>攻3倍反100%防，>6倍反200%防+20%血。'
+            talent: '【荆棘甲壳】若自身[猫御]≥[猫威]x3，敌人攻击后反弹[猫御]x1伤害；若[猫御]≥[猫威]x6，反弹[猫御]x2+[猫血]x0.2伤害。'
         },
         {
             id: 'agile', name: '灵活猫', svg: SVGS.cat_agile, color: '#f1c40f',
-            desc: '刺客型，极速连击。',
             base: { atk: 40, mp: 8, def: 10, hp: 80, spd: 20 },
             growth: { atk: 10, mp: 2, def: 3, hp: 20, spd: 4 },
-            talent: '【迅捷】攻击附带速度x1伤害。速度碾压可多次攻击。'
+            talent: '【迅捷连击】攻击后追加一段[猫速]x1的真实伤害。每升10级系数+0.2。'
         },
         {
             id: 'wise', name: '智慧猫', svg: SVGS.cat_wise, color: '#9b59b6',
-            desc: '法师型，蓝量化盾。',
             base: { atk: 45, mp: 20, def: 10, hp: 70, spd: 10 },
             growth: { atk: 15, mp: 5, def: 3, hp: 18, spd: 2 },
-            talent: '【超载】耗蓝增伤。致死时法力抵伤(1蓝抵2血)。每回合自动回蓝。'
+            talent: '【奥术超载】消耗10%[猫能]增伤，1点[猫能]增加1%伤害。致死时消耗[猫能]抵挡伤害(1猫能抵2伤害)。'
         },
         {
             id: 'berserk', name: '狂暴猫', svg: SVGS.cat_berserk, color: '#c0392b',
-            desc: '狂战型，卖血暴击。',
             base: { atk: 50, mp: 6, def: 8, hp: 100, spd: 15 },
             growth: { atk: 20, mp: 1, def: 3, hp: 25, spd: 2 },
-            talent: '【血怒】攻击耗20%血。血越少伤越高。自带10%吸血。'
+            talent: '【鲜血渴望】消耗20%[猫血]攻击。血量越低伤害越高。攻击附带10%吸血。'
         }
     ];
 
     const CARDS = [
-        { type: 'white', title: '力量训练', desc: '猫威 +10', effect: (p) => { p.atk += 10; } },
-        { type: 'white', title: '体能强化', desc: '猫血 +30', effect: (p) => { p.maxHp += 30; p.hp += 30; } },
-        { type: 'white', title: '硬化皮毛', desc: '猫御 +10', effect: (p) => { p.def += 10; } },
-        { type: 'white', title: '敏捷步伐', desc: '猫速 +5', effect: (p) => { p.spd += 5; } },
+        { type: 'white', icon: '⚔️', title: '力量训练', desc: '猫威 +10', effect: (p) => { p.atk += 10; } },
+        { type: 'white', icon: '❤️', title: '体能强化', desc: '猫血 +30', effect: (p) => { p.maxHp += 30; p.hp += 30; } },
+        { type: 'white', icon: '🛡️', title: '硬化皮毛', desc: '猫御 +10', effect: (p) => { p.def += 10; } },
+        { type: 'white', icon: '⚡', title: '敏捷步伐', desc: '猫速 +5', effect: (p) => { p.spd += 5; } },
+        { type: 'green', icon: '🍲', title: '应急干粮', desc: '回满生命值', effect: (p) => { p.hp = p.maxHp; } },
     ];
 
-    // --- 游戏状态 ---
+    // --- 状态 ---
     let player = null;
     let enemy = null;
     let gameLevel = 1;
@@ -506,9 +252,9 @@
     let stageCount = 0; 
     let stageType = 'minion'; 
     let isPlayerTurn = true;
-    let isPendingRogue = false; // 是否等待抽卡
+    let isPendingRogue = false;
 
-    // --- 界面元素 ---
+    // --- DOM ---
     const layers = {
         start: document.getElementById('startLayer'),
         select: document.getElementById('classLayer'),
@@ -540,7 +286,6 @@
         el.style.fontSize = fontSize;
         el.style.left = '50%';
         el.style.top = '20%';
-        // 随机偏移一点点，防重叠
         el.style.marginLeft = (Math.random() * 40 - 20) + 'px';
         targetEl.appendChild(el);
         setTimeout(() => el.remove(), 800);
@@ -553,7 +298,7 @@
         setTimeout(() => el.remove(), 300);
     }
 
-    // --- 1. 开始流程 ---
+    // --- 逻辑 ---
     function goToClassSelection() {
         const name = document.getElementById('playerNameInput').value.trim();
         if (!name) { alert("大侠请留名！"); return; }
@@ -581,14 +326,13 @@
         showLayer('select');
     }
 
-    // --- 2. 初始化 ---
     function initGame(name, cls) {
         player = {
             name: name,
             cls: cls,
             lvl: 1,
             exp: 0,
-            maxExp: 2, // 初始升级所需经验
+            maxExp: 2,
             maxHp: cls.base.hp, hp: cls.base.hp,
             maxMp: cls.base.mp, mp: cls.base.mp,
             atk: cls.base.atk, def: cls.base.def, spd: cls.base.spd
@@ -601,12 +345,10 @@
         document.getElementById('pName').innerText = player.name;
         document.getElementById('pVisual').innerHTML = cls.svg;
         
-        // 【新增】开局赠送一次抽卡
-        log("冒险开始！请选择你的初始天赋...", '#f39c12');
+        log("冒险开始！", '#f39c12');
         showRogueSelection(true); 
     }
 
-    // --- 3. 战斗循环 ---
     function startNextBattle() {
         if (isPendingRogue) {
             isPendingRogue = false;
@@ -624,47 +366,24 @@
     }
 
     function generateEnemy() {
-        // 进阶逻辑: 5小怪 -> 1精英 -> 5小怪 -> 1精英 -> 5小怪 -> 1BOSS (循环)
-        // 简化: 每5个怪是一个阶段。
-        // 为了方便，这里用计数器简单判断：
-        // stageCount: 0-4 (Minion), 5 (Elite/Boss)
-        
         if (stageCount >= 5) {
-            // 每击杀5只小怪，出大怪
-            if (stageType === 'minion') {
-                stageType = 'elite'; 
-            } else if (stageType === 'elite') {
-                // 如果上个大怪是精英，再杀5小怪后是BOSS吗？
-                // 简化逻辑：每击杀5个小怪出精英，每击杀5个精英出BOSS（需求描述）
-                // 这里我们暂且按需求：
-                // 实际上我们可以用 killCount 来算。
-                // 只是为了演示简单，我们随机生成。
-            }
-            // 修正为：每5个小怪必出精英，精英计数在掉落逻辑处理
+            if (stageType === 'minion') stageType = 'elite'; 
         } else {
             stageType = 'minion';
         }
         
-        // 实际上需求说：5小怪 -> 精英。5精英 -> BOSS。
-        // 我们用独立变量统计精英击杀数
-        
-        // 重新梳理刷怪逻辑
         if (stageType === 'boss') {
-             // boss 刚死，重置回小怪
              stageType = 'minion';
              stageCount = 0;
         }
         
-        // 动态属性 (基于玩家属性波动)
-        let diffMult = 0.7; // 小怪弱一点
+        let diffMult = 0.7;
         let typeName = '小怪';
         let svg = SVGS.monster_slime;
         
-        // 我们维护一个 eliteKills
         if (!player.eliteKills) player.eliteKills = 0;
 
         if (stageCount >= 5) {
-            // 该出大怪了
             if ((player.eliteKills + 1) % 5 === 0 && player.eliteKills > 0) {
                 stageType = 'boss';
                 diffMult = 2.0;
@@ -685,83 +404,96 @@
             maxHp: Math.floor(player.maxHp * diffMult * (0.9 + Math.random()*0.2)),
             hp: 0,
             atk: Math.floor(player.atk * diffMult * 0.9),
-            def: Math.floor(player.def * diffMult * 0.5), // 怪物防御低一点，防止刮痧
+            def: Math.floor(player.def * diffMult * 0.5),
             spd: Math.floor(player.spd * diffMult),
             visual: svg
         };
         enemy.hp = enemy.maxHp;
         
-        // 更新怪物UI
         document.getElementById('eName').innerText = enemy.name;
         document.getElementById('eVisual').innerHTML = enemy.visual;
     }
 
     function battleLoop() {
         if (player.hp <= 0 || enemy.hp <= 0) return;
-
-        if (isPlayerTurn) {
-            performPlayerAttack();
-        } else {
-            performEnemyAttack();
-        }
+        if (isPlayerTurn) performPlayerAttack();
+        else performEnemyAttack();
     }
 
     function performPlayerAttack() {
-        // 动画
         const pEl = document.getElementById('playerEl');
         pEl.style.transform = 'translateX(30px)';
         setTimeout(() => pEl.style.transform = 'translateX(0)', 200);
-        showSlash(document.getElementById('enemyEl')); // 刀光
+        showSlash(document.getElementById('enemyEl'));
 
-        // 智慧猫每回合回蓝
         if (player.cls.id === 'wise') {
             let rec = Math.ceil(player.maxMp * 0.05);
             player.mp = Math.min(player.maxMp, player.mp + rec);
         }
 
-        // 计算伤害
         let dmgMult = 1.0;
-        let extraDmg = 0;
         let selfDmg = 0;
-
-        // 天赋逻辑
+        
+        // 增伤计算
         if (player.cls.id === 'wise') {
             let cost = Math.floor(player.mp * 0.1);
-            if (cost > 0) { player.mp -= cost; dmgMult += cost * 0.01; }
+            if (cost > 0) { 
+                player.mp -= cost; 
+                dmgMult += cost * 0.01; 
+                log(`[奥术超载] 消耗 ${cost} 猫能, 增伤 ${(cost*1).toFixed(0)}%`, '#9b59b6');
+            }
         }
         if (player.cls.id === 'berserk') {
             let cost = Math.floor(player.hp * 0.2);
             selfDmg = cost;
             let missingPct = (player.maxHp - player.hp)/player.maxHp * 100;
             dmgMult += missingPct * 0.01;
-        }
-        if (player.cls.id === 'agile') {
-            extraDmg += player.spd * (1 + Math.floor(player.lvl/10)*0.2);
+            log(`[鲜血渴望] 消耗 ${cost} 猫血, 增伤 ${missingPct.toFixed(0)}%`, '#c0392b');
         }
 
-        let dmg = Math.max(1, Math.floor(player.atk * dmgMult - enemy.def + extraDmg));
+        // 基础伤害
+        let dmg = Math.max(1, Math.floor(player.atk * dmgMult - enemy.def));
         enemy.hp -= dmg;
         floatText(dmg, document.getElementById('enemyEl'), '#fff');
+        log(`你对 ${enemy.name} 造成 ${dmg} 点伤害。`);
+
+        // 灵活猫追加伤害 (多段)
+        if (player.cls.id === 'agile' && enemy.hp > 0) {
+            // 系数成长
+            let spdCoef = 1.0 + Math.floor(player.lvl/10)*0.2;
+            let extraDmg = Math.floor(player.spd * spdCoef);
+            // 延迟触发
+            setTimeout(() => {
+                enemy.hp -= extraDmg;
+                floatText("+" + extraDmg, document.getElementById('enemyEl'), '#f1c40f');
+                log(`[迅捷连击] 追加 ${extraDmg} 点真实伤害!`, '#f1c40f');
+                updateUI();
+                checkResult(); // 可能追加致死
+            }, 300);
+        }
         
-        // 狂暴猫吸血
+        // 自伤与吸血
         if (selfDmg > 0) {
             player.hp -= selfDmg;
             let drain = Math.floor(dmg * 0.1);
             player.hp += drain;
             floatText(`+${drain}`, document.getElementById('playerEl'), '#2ecc71', '16px');
+            log(`吸血恢复 ${drain} 猫血`, '#2ecc71');
         }
 
         updateUI();
-        checkResult();
+        // 如果不是灵活猫，或者灵活猫第一段就打死了，检查结果
+        if (player.cls.id !== 'agile' || enemy.hp <= 0) {
+            checkResult();
+        }
 
         if (enemy.hp > 0) {
-            // 连击判定
             if (player.spd >= enemy.spd * 2 && Math.random() > 0.4) {
-                log(">>> 极速连击! <<<", '#f39c12');
-                setTimeout(performPlayerAttack, 400);
+                log(">>> [猫速]碾压！发动连击！ <<<", '#f39c12');
+                setTimeout(performPlayerAttack, 600); // 间隔拉长给追加伤害留时间
             } else {
                 isPlayerTurn = false;
-                setTimeout(battleLoop, 800);
+                setTimeout(battleLoop, 1000);
             }
         }
     }
@@ -774,32 +506,46 @@
 
         let dmg = Math.max(1, Math.floor(enemy.atk - player.def));
         
-        // 反伤
-        if (player.cls.id === 'resolute') {
-            let reflect = 0;
-            if (player.def >= player.atk * 6) reflect = player.def*2 + player.hp*0.2;
-            else if (player.def >= player.atk * 3) reflect = player.def;
-            
-            if (reflect > 0) {
-                enemy.hp -= Math.floor(reflect);
-                floatText(`反伤${Math.floor(reflect)}`, document.getElementById('enemyEl'), '#f1c40f');
-            }
-        }
-
-        // 智慧猫护盾 (简单实现：致死才抵扣)
+        // 智慧猫抵挡
         if (player.hp - dmg <= 0 && player.cls.id === 'wise' && player.mp > 0) {
             let needBlock = dmg - (player.hp - 1);
             let manaCost = Math.ceil(needBlock / 2);
             if (player.mp >= manaCost) {
                 player.mp -= manaCost;
                 dmg -= needBlock;
-                log("法力护盾发动!", '#3498db');
+                log("[奥术超载] 消耗猫能抵挡了致命伤!", '#3498db');
             }
         }
 
         player.hp -= dmg;
         floatText(dmg, document.getElementById('playerEl'), '#c0392b');
+        log(`${enemy.name} 造成了 ${dmg} 点伤害。`);
         
+        // 坚毅猫反伤判定 (后置触发)
+        if (player.cls.id === 'resolute' && player.hp > 0) {
+            let reflect = 0;
+            // 判定阈值
+            if (player.def >= player.atk * 6) {
+                reflect = player.def * 2 + player.hp * 0.2;
+                log(`[荆棘甲壳] 触发高阶反伤!`, '#f1c40f');
+            } else if (player.def >= player.atk * 3) {
+                reflect = player.def;
+                log(`[荆棘甲壳] 触发反伤!`, '#f1c40f');
+            }
+            
+            if (reflect > 0) {
+                reflect = Math.floor(reflect);
+                // 延迟弹出反伤
+                setTimeout(() => {
+                    enemy.hp -= reflect;
+                    floatText(`反伤${reflect}`, document.getElementById('enemyEl'), '#e67e22');
+                    log(`反弹给予 ${enemy.name} ${reflect} 点伤害!`, '#e67e22');
+                    updateUI();
+                    checkResult();
+                }, 300);
+            }
+        }
+
         updateUI();
         checkResult();
 
@@ -810,39 +556,33 @@
     }
 
     function checkResult() {
-        if (enemy.hp <= 0) {
-            enemy.hp = 0;
-            log(`${enemy.name} 倒下了!`, '#27ae60');
-            
-            // 结算奖励
+        // 防止多次触发
+        if(enemy.hp <= 0 && document.getElementById('eName').innerText !== "已击败") {
+            // 标记已击败
+            let rawName = enemy.name;
+            document.getElementById('eName').innerText = "已击败";
+            log(`${rawName} 倒下了!`, '#27ae60');
             killCount++;
             stageCount++; 
             
-            // 经验值处理
-            // 公式: LV1 需2, 怪给2. LV2 需4, 怪给3. 
-            // 设 升级所需 = LV * 2. 怪物经验 = LV + 1.
             let gainExp = player.lvl + 1;
             player.exp += gainExp;
-            
-            // 升级循环
             while (player.exp >= player.maxExp) {
                 player.exp -= player.maxExp;
                 levelUp();
             }
             
-            // 战斗胜利回血
             let heal = Math.floor(player.maxHp * 0.1);
             player.hp = Math.min(player.maxHp, player.hp + heal);
-            log(`战斗胜利! 恢复 ${heal} HP`, '#2ecc71');
+            log(`胜利恢复 ${heal} [猫血]`, '#2ecc71');
 
             gameLevel++;
             updateUI();
 
-            // 精英/BOSS 掉落检测
             if (stageType === 'elite' || stageType === 'boss') {
                 player.eliteKills = (player.eliteKills || 0) + 1;
-                isPendingRogue = true; // 下回合前抽卡
-                stageCount = 0; // 重置小怪计数
+                isPendingRogue = true; 
+                stageCount = 0; 
             }
 
             setTimeout(startNextBattle, 1500);
@@ -857,25 +597,22 @@
 
     function levelUp() {
         player.lvl++;
-        player.maxExp = player.lvl * 2; // 升级所需经验增加
-        
+        player.maxExp = player.lvl * 2; 
         const g = player.cls.growth;
         player.atk += g.atk;
         player.mp += g.mp; player.maxMp += g.mp;
         player.def += g.def;
         player.hp += g.hp; player.maxHp += g.hp;
         player.spd += g.spd;
-        
         floatText("LV UP!", document.getElementById('playerEl'), '#f1c40f', '32px');
         log(`升级! 等级 ${player.lvl}`, '#f1c40f');
     }
 
-    // --- 4. 死亡复活 ---
     function revivePlayer() {
         gameLevel = Math.max(1, gameLevel - 5);
         player.hp = player.maxHp;
         player.mp = player.maxMp;
-        stageCount = 0; // 重置当前波次
+        stageCount = 0;
         log("=== 时光倒流，重新开始 ===", '#3498db');
         showLayer('battle');
         startNextBattle();
@@ -886,15 +623,20 @@
         const container = document.getElementById('rogueContainer');
         container.innerHTML = '';
         
-        // 随机3张
-        for(let i=0; i<3; i++) {
-            const card = CARDS[Math.floor(Math.random() * CARDS.length)];
+        const shuffled = CARDS.sort(() => 0.5 - Math.random());
+        const choices = shuffled.slice(0, 3);
+
+        choices.forEach(card => {
             const el = document.createElement('div');
             el.className = `rogue-card card-${card.type}`;
-            el.innerHTML = `<h3>${card.title}</h3><p>${card.desc}</p>`;
+            el.innerHTML = `
+                <div class="card-icon">${card.icon}</div>
+                <h3>${card.title}</h3>
+                <p>${card.desc}</p>
+            `;
             el.onclick = () => {
                 card.effect(player);
-                log(`获得了 [${card.title}]`, '#9b59b6');
+                log(`获得了 [${card.title}]`, '#8e44ad');
                 updateUI();
                 if(isFirst) startNextBattle();
                 else {
@@ -903,7 +645,7 @@
                 }
             };
             container.appendChild(el);
-        }
+        });
         showLayer('card');
     }
 

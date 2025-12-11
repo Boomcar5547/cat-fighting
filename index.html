@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>大猫猫斗恶龙 Ver3.06</title>
+    <title>大猫猫斗恶龙 Ver3.07</title>
     <style>
         /* --- 全局样式 --- */
         body {
@@ -62,20 +62,47 @@
         .version { color: #7f8c8d; font-size: 12px; margin-bottom: 20px; flex-shrink: 0;}
         input { padding: 12px; border: 2px solid #3498db; border-radius: 8px; width: 70%; text-align: center; font-size: 16px; margin-bottom: 20px; flex-shrink: 0;}
         
-        button { padding: 10px 25px; background: #e67e22; color: white; border: none; border-radius: 20px; font-size: 16px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 0 #d35400; transition: all 0.1s; margin: 5px; flex-shrink: 0;}
+        button { padding: 12px 25px; background: #e67e22; color: white; border: none; border-radius: 20px; font-size: 18px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 0 #d35400; transition: all 0.1s; margin: 10px; flex-shrink: 0; width: 70%; }
         button:active { transform: translateY(4px); box-shadow: 0 0 0 #d35400; }
         button:disabled { background: #bdc3c7; box-shadow: none; cursor: not-allowed; transform: none; color: #fff; }
         
         .btn-blue { background: #3498db; box-shadow: 0 4px 0 #2980b9; }
         .btn-blue:active { transform: translateY(4px); box-shadow: 0 0 0 #2980b9; }
-        .btn-green { background: #2ecc71; box-shadow: 0 4px 0 #27ae60; width: 80%; }
+        .btn-green { background: #2ecc71; box-shadow: 0 4px 0 #27ae60; }
         .btn-green:active { transform: translateY(4px); box-shadow: 0 0 0 #27ae60; }
+        .btn-gray { background: #95a5a6; box-shadow: 0 4px 0 #7f8c8d; font-size: 14px; padding: 8px 20px; }
         
         .btn-home {
-            position: absolute; top: 10px; left: 10px; width: 36px; height: 36px; border-radius: 50%;
+            position: absolute;
+            top: 10px; left: 10px; width: 36px; height: 36px; border-radius: 50%;
             background: #fff; border: 2px solid #bdc3c7; color: #7f8c8d; font-size: 20px;
             display: flex; align-items: center; justify-content: center; cursor: pointer;
             z-index: 20; padding: 0; margin: 0; box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        /* --- 存档槽位样式 --- */
+        .slot-container { width: 100%; display: flex; flex-direction: column; gap: 15px; }
+        .save-slot {
+            background: #fff;
+            border: 2px solid #bdc3c7;
+            border-radius: 10px;
+            padding: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            transition: all 0.2s;
+            position: relative;
+        }
+        .save-slot:hover { border-color: #3498db; transform: scale(1.01); }
+        .save-slot.empty { border-style: dashed; background: #f9f9f9; color: #95a5a6; justify-content: center; }
+        .slot-info { display: flex; flex-direction: column; align-items: flex-start; }
+        .slot-title { font-weight: bold; color: #2c3e50; font-size: 16px; display: flex; align-items: center; gap: 5px; }
+        .slot-detail { font-size: 12px; color: #7f8c8d; margin-top: 5px; }
+        .slot-icon { width: 30px; height: 30px; }
+        .delete-btn {
+            padding: 5px 10px; font-size: 12px; background: #e74c3c; border-radius: 5px; margin-left: 10px; z-index: 5; color: white; width: auto; box-shadow: none;
         }
 
         /* --- 日志 & 属性 --- */
@@ -94,14 +121,12 @@
             min-height: 200px;
         }
         .scroll-box:active { cursor: grabbing; }
-        .log-block { margin-bottom: 25px; border-bottom: 1px dashed #bbb; padding-bottom: 15px; }
+        .log-block { margin-bottom: 20px; border-bottom: 1px dashed #eee; padding-bottom: 15px; }
         .log-ver { color: #e67e22; font-weight: 900; font-size: 16px; margin-bottom: 5px; }
-        .log-date { color: #95a5a6; font-size: 12px; margin-bottom: 8px; font-style: italic; }
+        .log-date { color: #95a5a6; font-size: 12px; margin-bottom: 8px; }
         .log-list { padding-left: 20px; margin: 0; }
-        .log-list li { font-size: 13px; color: #34495e; margin-bottom: 6px; line-height: 1.5; }
+        .log-list li { font-size: 13px; color: #34495e; margin-bottom: 4px; line-height: 1.5; }
         .highlight { color: #c0392b; font-weight: bold; }
-        .apology { color: #c0392b; font-weight: bold; background: #fadbd8; padding: 10px; border-radius: 5px; margin-top: 5px; border: 1px solid #e6b0aa; font-size: 13px; line-height: 1.5; }
-        
         .attr-row { display: flex; justify-content: space-between; border-bottom: 1px solid #eee; padding: 8px 0; font-size: 14px; color: #34495e; }
         .attr-val { color: #2980b9; font-family: monospace; font-size: 16px; }
 
@@ -149,17 +174,6 @@
         .log-box { width: 100%; height: 120px; background: #f8f9fa; overflow-y: auto; padding: 10px; box-sizing: border-box; font-size: 12px; border-top: 1px solid #ccc; }
         .log-entry { margin-bottom: 3px; border-bottom: 1px dashed #eee; padding-bottom: 2px; line-height: 1.4;}
         
-        /* 存档槽位 */
-        .slot-container { width: 100%; display: flex; flex-direction: column; gap: 15px; }
-        .save-slot { background: #fff; border: 2px solid #bdc3c7; border-radius: 10px; padding: 15px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; box-shadow: 0 2px 5px rgba(0,0,0,0.05); transition: all 0.2s; position: relative; }
-        .save-slot:hover { border-color: #3498db; transform: scale(1.01); }
-        .save-slot.empty { border-style: dashed; background: #f9f9f9; color: #95a5a6; justify-content: center; }
-        .slot-info { display: flex; flex-direction: column; align-items: flex-start; }
-        .slot-title { font-weight: bold; color: #2c3e50; font-size: 16px; display: flex; align-items: center; gap: 5px; }
-        .slot-detail { font-size: 12px; color: #7f8c8d; margin-top: 5px; }
-        .slot-icon { width: 30px; height: 30px; }
-        .delete-btn { padding: 5px 10px; font-size: 12px; background: #e74c3c; border-radius: 5px; margin-left: 10px; z-index: 5; color: white;}
-        
         #rogueContainer { display: flex; flex-direction: row; justify-content: space-between; align-items: stretch; width: 100%; gap: 10px; margin-bottom: 20px;}
         .rogue-card { flex: 1; border: 2px solid #ccc; border-radius: 8px; padding: 10px 5px; background: #fff; cursor: pointer; box-shadow: 0 4px 8px rgba(0,0,0,0.1); position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: all 0.2s; }
         .rogue-card:hover { transform: translateY(-5px); box-shadow: 0 8px 16px rgba(0,0,0,0.2); }
@@ -179,7 +193,7 @@
     
     <div id="startLayer" class="layer active layer-scroll">
         <h1>大猫猫斗恶龙</h1>
-        <div class="version">Ver3.06.12112502beta</div>
+        <div class="version">Ver3.07.12112502beta</div>
         <svg width="150" height="150" viewBox="0 0 100 100">
             <circle cx="50" cy="50" r="40" fill="#f1c40f" stroke="#e67e22" stroke-width="3"/>
             <path d="M30 30 L40 10 L55 30 Z" fill="#f1c40f" stroke="#e67e22" stroke-width="2"/>
@@ -190,11 +204,9 @@
             <path d="M10 50 L90 50" stroke="#bdc3c7" stroke-width="5" opacity="0.5"/>
         </svg>
         <br>
-        <button class="btn-green" id="continueBtn" onclick="openSlotMenu('load')" disabled>暂无存档</button>
-        <br>
-        <input type="text" id="playerNameInput" placeholder="请输入你的勇者名" maxlength="8">
-        <button onclick="goToClassSelection()">新游戏</button>
-        <button class="btn-blue" onclick="showLayer('changelog')">更新日志</button>
+        <button class="btn-green" onclick="openSlotMenu('load')">读取存档</button>
+        <button class="btn-blue" onclick="openSlotMenu('new')">新游戏</button>
+        <button class="btn-gray" onclick="showLayer('changelog')">更新日志</button>
     </div>
 
     <div id="slotLayer" class="layer layer-scroll">
@@ -213,14 +225,21 @@
     <div id="changelogLayer" class="layer layer-scroll">
         <h2>更新日志</h2>
         <div class="scroll-box" id="changelogBox">
-             <div class="log-block">
-                <div class="log-ver">Ver 3.06.12112502beta</div>
-                <div class="log-date">核心逻辑重构</div>
+            <div class="log-block">
+                <div class="log-ver">Ver 3.07.12112502beta</div>
+                <div class="log-date">核心修复</div>
                 <ul class="log-list">
-                    <li><span class="highlight">机械猫修正</span>：移除猫能消耗的取整逻辑，改为精确的浮点运算，确保低蓝量下依然可以发射火箭弹，永不卡死。</li>
-                    <li><span class="highlight">多存档修复</span>：修复了新游戏开始时存档槽位未被正确锁定导致无法保存的问题。</li>
-                    <li><span class="highlight">数值增强</span>：机械猫火箭弹系数提升 (0.25/0.75)。</li>
-                    <li><span class="highlight">显示优化</span>：战斗日志恢复彩色详细显示；伤害数字移至头顶正上方。</li>
+                    <li><span class="highlight">多存档修复</span>：修复了新游戏和读取存档的逻辑断层，现在可以正常保存和读取三个槽位。</li>
+                    <li><span class="highlight">机械猫修正</span>：移除猫能消耗的取整逻辑，改为精确浮点运算，彻底解决空蓝卡死问题。</li>
+                    <li><span class="highlight">UI回滚</span>：恢复了稳定好用的多存档主界面。</li>
+                </ul>
+            </div>
+            <div class="log-block">
+                <div class="log-ver">Ver 3.06</div>
+                <div class="log-date">数值微调</div>
+                <ul class="log-list">
+                    <li>机械猫火箭弹系数提升 (0.25/0.75)。</li>
+                    <li>伤害数字移至头顶正上方，字体缩小。</li>
                 </ul>
             </div>
             <div class="log-block">
@@ -232,26 +251,11 @@
                 </ul>
             </div>
             <div class="log-block">
-                <div class="log-ver">Ver 3.04</div>
-                <div class="log-date">版本修正</div>
-                <ul class="log-list">
-                    <li>修复版本号混乱。</li>
-                    <li>整合美术资源。</li>
-                </ul>
-            </div>
-            <div class="log-block">
                 <div class="log-ver">Ver 3.0</div>
                 <div class="log-date">职业觉醒</div>
                 <ul class="log-list">
                     <li>新增血骑猫、机械猫。</li>
                     <li>卡牌池重构，新增唯一卡。</li>
-                </ul>
-            </div>
-            <div class="log-block">
-                <div class="log-ver">Ver 2.1</div>
-                <div class="log-date">多存档</div>
-                <ul class="log-list">
-                    <li>支持3个独立存档槽位。</li>
                 </ul>
             </div>
             <div class="log-block">
@@ -409,7 +413,7 @@
             id: 'wise', name: '智慧猫', svg: SVGS.cat_wise, color: '#9b59b6',
             base: { atk: 45, mp: 20, def: 10, hp: 70, spd: 10 },
             growth: { atk: 15, mp: 10, def: 3, hp: 18, spd: 2 },
-            talent: '【奥术超载】消耗10%[猫能]增伤。致死时消耗[猫能]抵挡伤害(单场限1次)。'
+            talent: '【奥术超载】消耗10%[猫能]增伤，1点[猫能]增加1%伤害。致死时消耗[猫能]抵挡伤害(单场限1次)。'
         },
         {
             id: 'berserk', name: '狂暴猫', svg: SVGS.cat_berserk, color: '#c0392b',
@@ -497,7 +501,7 @@
         if (legacySave && !slot0) {
             localStorage.setItem('bigCatQuest_slot_0', legacySave);
         }
-        checkSave();
+        
         const slider = document.getElementById('changelogBox');
         let isDown = false; let startY; let scrollTop;
         if (slider) {
@@ -674,15 +678,6 @@
         };
         localStorage.setItem(`bigCatQuest_slot_${currentSlotId}`, JSON.stringify(saveData));
         if (manual) { alert("存档成功！"); } 
-        else { checkSave(); }
-    }
-
-    function checkSave() {
-        let hasSave = false;
-        for(let i=0; i<3; i++) {
-            if(localStorage.getItem(`bigCatQuest_slot_${i}`)) hasSave = true;
-        }
-        document.getElementById('continueBtn').disabled = !hasSave;
     }
     
     function loadGame() {
@@ -716,7 +711,6 @@
             isGameActive = false;
             if(bloodInterval) clearInterval(bloodInterval);
             if(mechInterval) clearInterval(mechInterval);
-            checkSave(); 
             showLayer('start');
         }
     }
@@ -760,8 +754,8 @@
             mechInterval = setInterval(() => {
                 if (!isGameActive) return;
                 if (player.hp > 0 && enemy.hp > 0) {
-                    // Ver3.06: 精确浮点扣蓝
-                    let cost = player.mp * 0.02;
+                    let cost = Math.floor(player.mp * 0.02); // 2% current mp
+                    // 保护机制：如果当前蓝量>0，至少能发射
                     if (player.mp > 0) {
                         player.mp -= cost;
                         if(player.mp < 0) player.mp = 0;
@@ -775,6 +769,12 @@
                         floatText(finalDmg, document.getElementById('enemyEl'), color, '16px');
                         updateUI();
                         if (enemy.hp <= 0) checkResult();
+                    } else {
+                        // 蓝量为0，尝试回蓝
+                        let charge = Math.max(1, Math.floor(player.maxMp * 0.05));
+                        player.mp += charge;
+                        log(`[系统] 能源耗尽，紧急充能 ${charge} 点`, '#2980b9');
+                        updateUI();
                     }
                 }
             }, 200);
@@ -960,7 +960,7 @@
         setTimeout(() => eEl.style.transform = 'translateX(0)', 200);
         showSlash(document.getElementById('playerEl'));
 
-        // [Ver3.06] 穿透机制调整
+        // [Ver3.06] 穿透
         let rawDmg = enemy.atk - player.def;
         let minRate = 0.1; 
         if(stageType === 'elite') minRate = 0.25;
@@ -1185,7 +1185,7 @@
         document.getElementById('attrClass').innerText = player.cls.name;
         document.getElementById('attrLvl').innerText = player.lvl;
         document.getElementById('attrHp').innerText = Math.floor(player.hp) + "/" + player.maxHp;
-        // 支持浮点显示
+        // 浮点显示
         document.getElementById('attrMp').innerText = (Math.floor(player.mp * 10) / 10).toFixed(1) + "/" + player.maxMp;
         document.getElementById('attrAtk').innerText = player.atk;
         document.getElementById('attrDef').innerText = player.def;
@@ -1204,7 +1204,6 @@
         testTotalDamage = 0;
         testTimer = 10;
         
-        // 满状态开始
         player.hp = player.maxHp;
         player.mp = player.maxMp;
         
@@ -1277,7 +1276,7 @@
         document.getElementById('eVisual').innerHTML = enemy.visual;
         
         player.hp = player.maxHp;
-        player.mp = player.maxMp; // 补满蓝
+        player.mp = player.maxMp; 
         updateUI();
         
         if (enemy.hp <= 0) { 

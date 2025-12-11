@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>大猫猫斗恶龙 Ver3.0.12102501beta</title>
+    <title>大猫猫斗恶龙 Ver2.1.12102501beta</title>
     <style>
         /* --- 全局样式 --- */
         body {
@@ -25,7 +25,7 @@
             width: 100%;
             height: 100%;
             max-width: 480px;
-            max-height: 900px; /* 稍微增加高度上限适配长屏 */
+            max-height: 900px;
             background: #fff;
             box-shadow: 0 0 30px rgba(0,0,0,0.5);
             overflow: hidden;
@@ -33,25 +33,24 @@
             flex-direction: column;
         }
 
-        /* --- 界面层级 (UI适配修复) --- */
+        /* --- 界面层级 --- */
         .layer {
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
             display: none;
             flex-direction: column;
             align-items: center;
-            justify-content: center; /* 默认居中，但内容多时会被挤开 */
+            justify-content: center;
             background: rgba(255,255,255,0.98);
             z-index: 10;
             padding: 20px;
             box-sizing: border-box;
-            overflow-y: auto; /* 关键：允许内容过多时滚动 */
+            overflow-y: auto;
             -webkit-overflow-scrolling: touch;
         }
         .active { display: flex; }
-
-        /* 内容过多时由 flex-start 排列，防止两头切掉 */
-        .layer-scrollable {
+        
+        .layer-scroll {
             justify-content: flex-start;
             padding-top: 40px;
             padding-bottom: 60px;
@@ -59,6 +58,7 @@
 
         /* --- 基础组件 --- */
         h1 { color: #e67e22; text-shadow: 2px 2px #f1c40f; margin-bottom: 5px; text-align: center; flex-shrink: 0;}
+        h2 { color: #2c3e50; margin-bottom: 20px; text-align: center; }
         .version { color: #7f8c8d; font-size: 12px; margin-bottom: 20px; flex-shrink: 0;}
         input { padding: 12px; border: 2px solid #3498db; border-radius: 8px; width: 70%; text-align: center; font-size: 16px; margin-bottom: 20px; flex-shrink: 0;}
         
@@ -68,13 +68,46 @@
         
         .btn-blue { background: #3498db; box-shadow: 0 4px 0 #2980b9; }
         .btn-blue:active { transform: translateY(4px); box-shadow: 0 0 0 #2980b9; }
-        .btn-green { background: #2ecc71; box-shadow: 0 4px 0 #27ae60; width: 80%; height: 60px; display: flex; flex-direction: column; align-items: center; justify-content: center; line-height: 1.2; }
+        .btn-green { background: #2ecc71; box-shadow: 0 4px 0 #27ae60; }
         .btn-green:active { transform: translateY(4px); box-shadow: 0 0 0 #27ae60; }
+        .btn-red { background: #c0392b; box-shadow: 0 4px 0 #96281b; }
+        .btn-red:active { transform: translateY(4px); box-shadow: 0 0 0 #96281b; }
+
+        .btn-home {
+            position: absolute; top: 10px; left: 10px; width: 36px; height: 36px; border-radius: 50%;
+            background: #fff; border: 2px solid #bdc3c7; color: #7f8c8d; font-size: 20px;
+            display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 20; padding: 0; margin: 0; box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        /* --- 存档槽位样式 --- */
+        .slot-container { width: 100%; display: flex; flex-direction: column; gap: 15px; }
+        .save-slot {
+            background: #fff;
+            border: 2px solid #bdc3c7;
+            border-radius: 10px;
+            padding: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            transition: all 0.2s;
+            position: relative;
+        }
+        .save-slot:hover { border-color: #3498db; transform: scale(1.01); }
+        .save-slot.empty { border-style: dashed; background: #f9f9f9; color: #95a5a6; justify-content: center; }
+        .slot-info { display: flex; flex-direction: column; align-items: flex-start; }
+        .slot-title { font-weight: bold; color: #2c3e50; font-size: 16px; display: flex; align-items: center; gap: 5px; }
+        .slot-detail { font-size: 12px; color: #7f8c8d; margin-top: 5px; }
+        .slot-icon { width: 30px; height: 30px; }
+        .delete-btn {
+            padding: 5px 10px; font-size: 12px; background: #e74c3c; border-radius: 5px; margin-left: 10px; z-index: 5;
+        }
 
         /* --- 日志 & 属性 --- */
         .scroll-box {
             width: 100%;
-            flex-grow: 1; /* 占据剩余空间 */
+            flex-grow: 1;
             background: #f9f9f9;
             border: 2px solid #bdc3c7;
             border-radius: 10px;
@@ -84,7 +117,7 @@
             margin-bottom: 20px;
             text-align: left;
             cursor: grab;
-            min-height: 200px; /* 保证最小高度 */
+            min-height: 200px;
         }
         .log-block { margin-bottom: 20px; border-bottom: 1px dashed #eee; padding-bottom: 15px; }
         .log-ver { color: #e67e22; font-weight: 900; font-size: 16px; margin-bottom: 5px; }
@@ -95,7 +128,7 @@
         .attr-row { display: flex; justify-content: space-between; border-bottom: 1px solid #eee; padding: 8px 0; font-size: 14px; color: #34495e; }
         .attr-val { color: #2980b9; font-family: monospace; font-size: 16px; }
 
-        /* --- 职业选择 (2列布局) --- */
+        /* --- 职业选择 --- */
         .card-container { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; width: 100%; padding-bottom: 20px; }
         .class-card { background: white; border: 2px solid #bdc3c7; border-radius: 10px; padding: 8px; text-align: center; cursor: pointer; transition: transform 0.2s; box-shadow: 0 2px 5px rgba(0,0,0,0.1); display: flex; flex-direction: column; align-items: center; }
         .class-card:hover { border-color: #3498db; transform: scale(1.02); }
@@ -108,7 +141,7 @@
         #battleLayer { background: linear-gradient(to bottom, #87CEEB 0%, #87CEEB 70%, #90EE90 70%, #90EE90 100%); justify-content: space-between; padding: 0; overflow: hidden;}
         .cloud { position: absolute; background: white; border-radius: 50px; opacity: 0.8; animation: floatCloud 20s linear infinite; }
         @keyframes floatCloud { from { left: -100px; } to { left: 100%; } }
-        .battle-hud { width: 100%; background: rgba(0,0,0,0.6); color: white; padding: 8px 15px; box-sizing: border-box; display: flex; justify-content: space-between; font-size: 14px; z-index: 5; box-shadow: 0 2px 5px rgba(0,0,0,0.3); }
+        .battle-hud { width: 100%; background: rgba(0,0,0,0.6); color: white; padding: 8px 15px; padding-left: 50px; box-sizing: border-box; display: flex; justify-content: space-between; font-size: 14px; z-index: 5; box-shadow: 0 2px 5px rgba(0,0,0,0.3); }
         
         .battle-scene { flex-grow: 1; width: 100%; position: relative; display: flex; justify-content: space-around; align-items: flex-end; padding-bottom: 25%; z-index: 2; }
         .fighter { width: 120px; height: 120px; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; position: relative; transition: transform 0.2s; }
@@ -156,9 +189,9 @@
 
 <div id="gameContainer">
     
-    <div id="startLayer" class="layer active layer-scrollable">
+    <div id="startLayer" class="layer active layer-scroll">
         <h1>大猫猫斗恶龙</h1>
-        <div class="version">Ver3.0.12102501beta</div>
+        <div class="version">Ver2.1.12102501beta</div>
         <svg width="150" height="150" viewBox="0 0 100 100">
             <circle cx="50" cy="50" r="40" fill="#f1c40f" stroke="#e67e22" stroke-width="3"/>
             <path d="M30 30 L40 10 L55 30 Z" fill="#f1c40f" stroke="#e67e22" stroke-width="2"/>
@@ -169,123 +202,82 @@
             <path d="M10 50 L90 50" stroke="#bdc3c7" stroke-width="5" opacity="0.5"/>
         </svg>
         <br>
-        <button class="btn-green" id="continueBtn" onclick="loadGame()" disabled>暂无存档</button>
-        <br>
-        <input type="text" id="playerNameInput" placeholder="请输入你的勇者名" maxlength="8">
-        <button onclick="goToClassSelection()">新游戏</button>
-        <button class="btn-blue" onclick="showLayer('changelog')">更新日志</button>
+        <button class="btn-green" onclick="openSlotMenu('load')" style="width:70%">读取存档</button>
+        <button class="btn-blue" onclick="openSlotMenu('new')" style="width:70%">新游戏</button>
+        <button onclick="showLayer('changelog')" style="width:70%; margin-top:15px; background:#95a5a6">更新日志</button>
     </div>
 
-    <div id="changelogLayer" class="layer layer-scrollable">
+    <div id="slotLayer" class="layer layer-scroll">
+        <h2 id="slotTitle">选择存档</h2>
+        <div id="slotList" class="slot-container">
+            </div>
+        <button onclick="showLayer('start')" style="margin-top:20px; background:#95a5a6;">返回</button>
+    </div>
+
+    <div id="nameInputLayer" class="layer">
+        <h2>创建角色</h2>
+        <input type="text" id="playerNameInput" placeholder="请输入你的勇者名" maxlength="8">
+        <button onclick="goToClassSelection()">下一步</button>
+        <button onclick="showLayer('start')" style="background:#95a5a6;">取消</button>
+    </div>
+
+    <div id="changelogLayer" class="layer layer-scroll">
         <h2>更新日志</h2>
         <div class="scroll-box" id="changelogBox">
             <div class="log-block">
-                <div class="log-ver">Ver 3.0.12102501beta</div>
-                <div class="log-date">重大版本更新</div>
+                <div class="log-ver">Ver 2.1.12102501beta</div>
+                <div class="log-date">多存档支持</div>
                 <ul class="log-list">
-                    <li><span class="highlight">新职业：血骑猫</span> - 鲜血魔法，每秒造成真实伤害光环。</li>
-                    <li><span class="highlight">新职业：机械猫</span> - 无法普攻，无法享受猫速。发射火箭弹幕，独立暴击。</li>
-                    <li><span class="highlight">卡牌池重构</span>：
-                        <br>- 白色：数值加强，猫能/猫速图标分离。
-                        <br>- 绿色：新增暴击/爆伤，数值全面提升。
-                        <br>- 蓝色：100层后解锁，超模数值。
-                    </li>
-                    <li><span class="highlight">新机制</span>：
-                        <br>- 真实伤害不触发暴击。
-                        <br>- 唯一卡牌机制（以战养战/背水一战）。
-                    </li>
-                    <li><span class="highlight">UI修复</span>：优化全面屏手机适配，增加列表滚动。</li>
+                    <li><span class="highlight">多存档</span>：开放3个存档槽位，支持独立进度。</li>
+                    <li><span class="highlight">智能迁移</span>：旧版本存档会自动迁移到槽位1。</li>
+                    <li><span class="highlight">存档管理</span>：支持查看存档详情与删除废弃存档。</li>
+                </ul>
+            </div>
+            <div class="log-block">
+                <div class="log-ver">Ver 2.04</div>
+                <div class="log-date">美术与交互优化</div>
+                <ul class="log-list">
+                    <li>血骑猫/机械猫形象重绘。</li>
+                    <li>战斗界面新增返回主菜单功能。</li>
+                </ul>
+            </div>
+            <div class="log-block">
+                <div class="log-ver">Ver 2.03</div>
+                <div class="log-date">核心Bug修复</div>
+                <ul class="log-list">
+                    <li>机械猫/灵活猫战斗逻辑修正。</li>
+                    <li>蓝卡掉落限制实装。</li>
                 </ul>
             </div>
             <div class="log-block">
                 <div class="log-ver">Ver 2.0</div>
-                <div class="log-date">存档与完善</div>
+                <div class="log-date">存档系统</div>
                 <ul class="log-list">
                     <li>新增自动/手动存档。</li>
-                    <li>修复打桩卡死BUG。</li>
-                    <li>完善历史日志。</li>
-                </ul>
-            </div>
-            <div class="log-block">
-                <div class="log-ver">Ver 1.8</div>
-                <div class="log-date">系统扩充</div>
-                <ul class="log-list">
-                    <li>坚毅猫加强：反伤阈值降低(2倍/5倍)。</li>
-                    <li>新增伤害测试(打桩)功能。</li>
-                    <li>魔王形象重绘。</li>
-                </ul>
-            </div>
-            <div class="log-block">
-                <div class="log-ver">Ver 1.7</div>
-                <div class="log-date">数值平衡</div>
-                <ul class="log-list">
-                    <li>怪物速度提升，连击变难。</li>
-                    <li>新增暴击系统(绿卡)。</li>
-                    <li>智慧猫猫能成长加强。</li>
-                </ul>
-            </div>
-            <div class="log-block">
-                <div class="log-ver">Ver 1.6</div>
-                <div class="log-date">Bug修复</div>
-                <ul class="log-list">
-                    <li>修复灵活猫追加伤害丢失。</li>
-                    <li>修复智慧猫增伤失效。</li>
-                </ul>
-            </div>
-            <div class="log-block">
-                <div class="log-ver">Ver 1.5</div>
-                <div class="log-date">流程优化</div>
-                <ul class="log-list">
-                    <li>抽卡增加确认按钮。</li>
-                    <li>怪物属性改为基于层数独立成长。</li>
-                </ul>
-            </div>
-            <div class="log-block">
-                <div class="log-ver">Ver 1.3</div>
-                <div class="log-date">多段伤害</div>
-                <ul class="log-list">
-                    <li>实装多段伤害判定。</li>
-                    <li>战斗日志优化。</li>
-                </ul>
-            </div>
-            <div class="log-block">
-                <div class="log-ver">Ver 1.2</div>
-                <div class="log-date">术语统一</div>
-                <ul class="log-list">
-                    <li>统一游戏术语(猫威/猫御等)。</li>
-                    <li>卡牌选择UI改为横向。</li>
-                </ul>
-            </div>
-            <div class="log-block">
-                <div class="log-ver">Ver 1.1</div>
-                <div class="log-date">画面升级</div>
-                <ul class="log-list">
-                    <li>SVG卡通画风。</li>
-                    <li>死亡回退机制。</li>
-                    <li>经验条系统。</li>
                 </ul>
             </div>
             <div class="log-block">
                 <div class="log-ver">Ver 1.0</div>
                 <div class="log-date">公测版</div>
                 <ul class="log-list">
-                    <li>基础4职业实装。</li>
-                    <li>肉鸽卡牌雏形。</li>
+                    <li>游戏发布。</li>
                 </ul>
             </div>
         </div>
         <button onclick="showLayer('start')">返回主界面</button>
     </div>
 
-    <div id="classLayer" class="layer layer-scrollable">
+    <div id="classLayer" class="layer layer-scroll">
         <h2 style="color:#2c3e50; font-size: 20px;">请选择你的职业</h2>
         <div class="card-container" id="classContainer"></div>
-        <button onclick="showLayer('start')" style="margin-top:20px; background:#95a5a6;">返回</button>
+        <button onclick="showLayer('nameInputLayer')" style="margin-top:20px; background:#95a5a6;">返回</button>
     </div>
 
     <div id="battleLayer" class="layer">
         <div class="cloud" style="top:20px; width:80px; height:30px; animation-duration:25s;"></div>
         <div class="cloud" style="top:60px; width:120px; height:40px; animation-duration:35s; animation-delay:-10s"></div>
+
+        <button class="btn-home" onclick="goToMainMenu()" title="返回主菜单">🏠</button>
 
         <div class="battle-hud">
             <div>📍 第 <span id="levelText" style="color:#f1c40f; font-weight:bold">1</span> 层</div>
@@ -343,7 +335,7 @@
         </div>
     </div>
 
-    <div id="cardLayer" class="layer layer-scrollable">
+    <div id="cardLayer" class="layer layer-scroll">
         <h2 style="color:#8e44ad; font-size:22px;">🎁 命运的馈赠</h2>
         <p style="color:#7f8c8d; font-size:12px; margin-bottom:15px;">请点击卡牌选中，然后确认</p>
         <div id="rogueContainer"></div>
@@ -358,7 +350,7 @@
         <button onclick="revivePlayer()" style="background:#2ecc71; box-shadow:0 4px 0 #27ae60">复活再战</button>
     </div>
 
-    <div id="attrLayer" class="layer layer-scrollable">
+    <div id="attrLayer" class="layer layer-scroll">
         <h2>角色属性</h2>
         <div class="scroll-box" style="margin-bottom:20px;">
             <div class="attr-row"><span class="attr-label">名称</span><span class="attr-val" id="attrName">---</span></div>
@@ -378,23 +370,20 @@
 </div>
 
 <script>
-    // --- 0. SVG 绘图库 ---
+    // --- 0. SVG 绘图库 (保持原样) ---
     const SVGS = {
-        cat_resolute: `<svg viewBox="0 0 100 100"><g transform="translate(10,10)"><circle cx="40" cy="40" r="30" fill="#95a5a6" stroke="#2c3e50" stroke-width="2"/><path d="M20 20 L10 0 L35 15 Z" fill="#95a5a6" stroke="#2c3e50" stroke-width="2"/><path d="M60 20 L70 0 L45 15 Z" fill="#95a5a6" stroke="#2c3e50" stroke-width="2"/><circle cx="30" cy="35" r="3" fill="#2c3e50"/><circle cx="50" cy="35" r="3" fill="#2c3e50"/><path d="M35 45 Q40 50 45 45" stroke="#2c3e50" stroke-width="2" fill="none"/><path d="M65 40 L90 10" stroke="#bdc3c7" stroke-width="6"/><path d="M65 40 L90 10" stroke="#7f8c8d" stroke-width="2"/><line x1="60" y1="45" x2="70" y2="35" stroke="#e67e22" stroke-width="4"/></g></svg>`,
+        cat_resolute: `<svg viewBox="0 0 100 100"><g transform="translate(10,10)"><circle cx="40" cy="40" r="30" fill="#bdc3c7" stroke="#2c3e50" stroke-width="2"/><path d="M20 20 L10 0 L35 15 Z" fill="#bdc3c7" stroke="#2c3e50" stroke-width="2"/><path d="M60 20 L70 0 L45 15 Z" fill="#bdc3c7" stroke="#2c3e50" stroke-width="2"/><rect x="30" y="15" width="20" height="25" rx="5" fill="none" stroke="#2c3e50" stroke-width="2"/><line x1="40" y1="15" x2="40" y2="40" stroke="#2c3e50" stroke-width="1"/><line x1="30" y1="27" x2="50" y2="27" stroke="#2c3e50" stroke-width="1"/><path d="M65 40 L90 10" stroke="#95a5a6" stroke-width="6"/><path d="M65 40 L90 10" stroke="#2c3e50" stroke-width="2"/><line x1="60" y1="45" x2="70" y2="35" stroke="#f1c40f" stroke-width="4"/></g></svg>`,
         cat_agile: `<svg viewBox="0 0 100 100"><g transform="translate(10,10)"><circle cx="40" cy="40" r="30" fill="#f1c40f" stroke="#2c3e50" stroke-width="2"/><path d="M20 20 L10 0 L35 15 Z" fill="#f1c40f" stroke="#2c3e50" stroke-width="2"/><path d="M60 20 L70 0 L45 15 Z" fill="#f1c40f" stroke="#2c3e50" stroke-width="2"/><circle cx="30" cy="35" r="3" fill="#2c3e50"/><circle cx="50" cy="35" r="3" fill="#2c3e50"/><path d="M35 45 Q40 50 45 45" stroke="#2c3e50" stroke-width="2" fill="none"/><path d="M70 40 L85 25" stroke="#3498db" stroke-width="4"/><path d="M10 40 L-5 25" stroke="#3498db" stroke-width="4"/></g></svg>`,
         cat_wise: `<svg viewBox="0 0 100 100"><g transform="translate(10,10)"><circle cx="40" cy="40" r="30" fill="#9b59b6" stroke="#2c3e50" stroke-width="2"/><path d="M20 20 L10 0 L35 15 Z" fill="#9b59b6" stroke="#2c3e50" stroke-width="2"/><path d="M60 20 L70 0 L45 15 Z" fill="#9b59b6" stroke="#2c3e50" stroke-width="2"/><circle cx="30" cy="35" r="3" fill="#2c3e50"/><circle cx="50" cy="35" r="3" fill="#2c3e50"/><path d="M35 45 Q40 50 45 45" stroke="#2c3e50" stroke-width="2" fill="none"/><line x1="75" y1="20" x2="75" y2="80" stroke="#8e44ad" stroke-width="4"/><circle cx="75" cy="20" r="8" fill="#e74c3c"/></g></svg>`,
         cat_berserk: `<svg viewBox="0 0 100 100"><g transform="translate(10,10)"><circle cx="40" cy="40" r="30" fill="#c0392b" stroke="#2c3e50" stroke-width="2"/><path d="M20 20 L10 0 L35 15 Z" fill="#c0392b" stroke="#2c3e50" stroke-width="2"/><path d="M60 20 L70 0 L45 15 Z" fill="#c0392b" stroke="#2c3e50" stroke-width="2"/><line x1="25" y1="30" x2="35" y2="38" stroke="#000" stroke-width="2"/><line x1="55" y1="30" x2="45" y2="38" stroke="#000" stroke-width="2"/><path d="M35 50 Q40 45 45 50" stroke="#2c3e50" stroke-width="2" fill="none"/><path d="M80 40 L80 70 M70 40 L90 40 L80 50 Z" fill="#7f8c8d" stroke="#000" stroke-width="1"/><path d="M0 40 L0 70 M-10 40 L10 40 L0 50 Z" fill="#7f8c8d" stroke="#000" stroke-width="1"/></g></svg>`,
-        // [新增] 血骑猫
-        cat_blood: `<svg viewBox="0 0 100 100"><g transform="translate(10,10)"><circle cx="40" cy="40" r="30" fill="#8e44ad" stroke="#2c3e50" stroke-width="2"/><path d="M20 20 L10 0 L35 15 Z" fill="#8e44ad" stroke="#2c3e50" stroke-width="2"/><path d="M60 20 L70 0 L45 15 Z" fill="#8e44ad" stroke="#2c3e50" stroke-width="2"/><circle cx="30" cy="35" r="3" fill="#e74c3c"/><circle cx="50" cy="35" r="3" fill="#e74c3c"/><path d="M35 45 Q40 50 45 45" stroke="#2c3e50" stroke-width="2" fill="none"/><path d="M70 40 L90 20 L80 10 Z" fill="#c0392b" stroke="#2c3e50" stroke-width="1"/><path d="M70 40 L80 70" stroke="#555" stroke-width="3"/></g></svg>`,
-        // [新增] 机械猫
-        cat_mech: `<svg viewBox="0 0 100 100"><g transform="translate(10,10)"><circle cx="40" cy="40" r="30" fill="#bdc3c7" stroke="#2c3e50" stroke-width="2"/><path d="M20 20 L10 0 L35 15 Z" fill="#7f8c8d" stroke="#2c3e50" stroke-width="2"/><path d="M60 20 L70 0 L45 15 Z" fill="#7f8c8d" stroke="#2c3e50" stroke-width="2"/><circle cx="30" cy="35" r="3" fill="#3498db"/><circle cx="50" cy="35" r="3" fill="#3498db"/><rect x="25" y="45" width="30" height="5" fill="#2c3e50"/><rect x="75" y="30" width="10" height="20" fill="#e74c3c" stroke="#2c3e50"/><circle cx="40" cy="40" r="10" stroke="#3498db" fill="none" opacity="0.5"/></g></svg>`,
+        cat_blood: `<svg viewBox="0 0 100 100"><g transform="translate(10,10)"><circle cx="40" cy="40" r="30" fill="#2c3e50" stroke="#c0392b" stroke-width="2"/><path d="M20 20 L10 0 L35 15 Z" fill="#2c3e50" stroke="#c0392b" stroke-width="2"/><path d="M60 20 L70 0 L45 15 Z" fill="#2c3e50" stroke="#c0392b" stroke-width="2"/><path d="M25 35 Q30 25 35 35" stroke="#e74c3c" stroke-width="3" fill="none"/><path d="M45 35 Q50 25 55 35" stroke="#e74c3c" stroke-width="3" fill="none"/><circle cx="30" cy="38" r="2" fill="#e74c3c"/><circle cx="50" cy="38" r="2" fill="#e74c3c"/><path d="M70 50 Q80 20 50 10" stroke="#c0392b" stroke-width="4" fill="none"/><line x1="70" y1="50" x2="80" y2="80" stroke="#95a5a6" stroke-width="3"/></g></svg>`,
+        cat_mech: `<svg viewBox="0 0 100 100"><g transform="translate(10,10)"><path d="M15 20 L65 20 L75 35 L75 70 L50 80 L25 70 L5 70 L5 35 Z" fill="#7f8c8d" stroke="#34495e" stroke-width="2"/><rect x="15" y="35" width="50" height="10" fill="#3498db"/><line x1="10" y1="20" x2="5" y2="0" stroke="#34495e" stroke-width="3"/><line x1="70" y1="20" x2="75" y2="0" stroke="#34495e" stroke-width="3"/><rect x="75" y="50" width="20" height="10" fill="#2c3e50"/><circle cx="95" cy="55" r="3" fill="#e74c3c"/></g></svg>`,
         monster_slime: `<svg viewBox="0 0 100 100"><path d="M20 80 Q20 20 50 20 Q80 20 80 80 Z" fill="#2ecc71" stroke="#27ae60" stroke-width="2"/><circle cx="40" cy="50" r="5" fill="#000"/><circle cx="60" cy="50" r="5" fill="#000"/></svg>`,
         monster_bat: `<svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="15" fill="#34495e"/><path d="M35 50 Q10 20 10 50 Q20 70 35 55" fill="#34495e"/><path d="M65 50 Q90 20 90 50 Q80 70 65 55" fill="#34495e"/><circle cx="45" cy="50" r="2" fill="#e74c3c"/><circle cx="55" cy="50" r="2" fill="#e74c3c"/></svg>`,
         monster_dragon: `<svg viewBox="0 0 100 100"><path d="M30 60 Q30 30 50 20 Q70 30 70 60" fill="#e74c3c" stroke="#c0392b" stroke-width="2"/><path d="M50 20 L50 5" stroke="#e74c3c" stroke-width="4"/><circle cx="40" cy="45" r="4" fill="#f1c40f"/><circle cx="60" cy="45" r="4" fill="#f1c40f"/><path d="M40 70 Q50 80 60 70" stroke="#000" stroke-width="2" fill="none"/></svg>`,
         stake: `<svg viewBox="0 0 100 100"><rect x="35" y="20" width="30" height="70" fill="#d35400" stroke="#5d4037" stroke-width="2"/><circle cx="50" cy="40" r="8" fill="#fff" opacity="0.8"/><circle cx="50" cy="40" r="3" fill="#000"/><path d="M35 20 L50 5 L65 20 Z" fill="#d35400" stroke="#5d4037" stroke-width="2"/></svg>`
     };
 
-    // --- 1. 职业配置 (Ver3.0) ---
     const CLASSES = [
         {
             id: 'resolute', name: '坚毅猫', svg: SVGS.cat_resolute, color: '#95a5a6',
@@ -420,7 +409,6 @@
             growth: { atk: 20, mp: 1, def: 3, hp: 25, spd: 2 },
             talent: '【鲜血渴望】消耗20%[猫血]攻击，血越少伤越高，带10%吸血。'
         },
-        // 新职业
         {
             id: 'blood', name: '血骑猫', svg: SVGS.cat_blood, color: '#8e44ad',
             base: { atk: 25, mp: 6, def: 12, hp: 200, spd: 10 },
@@ -431,36 +419,33 @@
             id: 'mech', name: '机械猫', svg: SVGS.cat_mech, color: '#34495e',
             base: { atk: 30, mp: 12, def: 25, hp: 120, spd: 0 },
             growth: { atk: 15, mp: 4, def: 3, hp: 20, spd: 0 },
-            talent: '【Ω火箭弹】无法普攻/享受猫速。每0.2秒消耗3%[猫能]造成[猫威]x0.2+剩余[猫能]x0.7伤害，可爆击。'
+            talent: '【CAAATΩ火箭弹】无法普攻/享受猫速。每0.2秒消耗3%当前[猫能]造成[猫威]x0.2+剩余[猫能]x0.7伤害，可爆击。'
         }
     ];
 
-    // --- 2. 卡牌池 (Ver3.0) ---
-    // 增加 unique: true 表示唯一卡，minLvl 表示掉落门槛
     const CARDS = [
-        // 白色
         { type: 'white', icon: '⚔️', title: '力量训练', desc: '猫威 +10', effect: (p) => { p.atk += 10; } },
         { type: 'white', icon: '❤️', title: '体能强化', desc: '猫血 +60', effect: (p) => { p.maxHp += 60; p.hp += 60; } },
         { type: 'white', icon: '🛡️', title: '硬化皮毛', desc: '猫御 +10', effect: (p) => { p.def += 10; } },
         { type: 'white', icon: '⚡', title: '敏捷步伐', desc: '猫速 +5', effect: (p) => { p.spd += 5; } },
         { type: 'white', icon: '💧', title: '冥想', desc: '猫能 +5', effect: (p) => { p.mp += 5; p.maxMp += 5; } },
-        // 绿色
+        
         { type: 'green', icon: '🎯', title: '弱点看破', desc: '暴击率 +5%', effect: (p) => { p.critRate += 0.05; } },
         { type: 'green', icon: '💥', title: '致命一击', desc: '爆伤 +10%', effect: (p) => { p.critDmg += 0.1; } },
         { type: 'green', icon: '💚', title: '生命源泉', desc: '猫血 +200', effect: (p) => { p.maxHp += 200; p.hp += 200; } },
         { type: 'green', icon: '🔰', title: '钢铁意志', desc: '猫御 +40', effect: (p) => { p.def += 40; } },
         { type: 'green', icon: '👟', title: '极速', desc: '猫速 +12', effect: (p) => { p.spd += 12; } },
         { type: 'green', icon: '🧪', title: '魔力扩容', desc: '猫能 +15', effect: (p) => { p.mp += 15; p.maxMp += 15; } },
-        // 蓝色 (100层后)
+        
         { type: 'blue', minLvl: 100, icon: '👁️', title: '鹰眼', desc: '暴击 +8%', effect: (p) => { p.critRate += 0.08; } },
         { type: 'blue', minLvl: 100, icon: '💣', title: '毁灭打击', desc: '爆伤 +20%', effect: (p) => { p.critDmg += 0.2; } },
         { type: 'blue', minLvl: 100, icon: '💗', title: '泰坦之心', desc: '猫血 +500', effect: (p) => { p.maxHp += 500; p.hp += 500; } },
         { type: 'blue', minLvl: 100, icon: '🏰', title: '不动如山', desc: '猫御 +80', effect: (p) => { p.def += 80; } },
         { type: 'blue', minLvl: 100, icon: '🚀', title: '光速', desc: '猫速 +20', effect: (p) => { p.spd += 20; } },
         { type: 'blue', minLvl: 100, icon: '🌌', title: '虚空魔能', desc: '猫能 +30', effect: (p) => { p.mp += 30; p.maxMp += 30; } },
-        // 功能类 (唯一)
-        { type: 'orange', id: 'heal_kill', unique: true, icon: '🧛', title: '以战养战', desc: '胜利回复60%损耗', effect: (p) => { p.hasHealKill = true; } },
-        { type: 'orange', id: 'low_hp_spd', unique: true, icon: '🔥', title: '背水一战', desc: '低血量加猫速', effect: (p) => { p.hasLowHpSpd = true; } },
+        
+        { type: 'blue', minLvl: 100, unique: true, id: 'heal_kill', icon: '🧛', title: '以战养战', desc: '胜利回复60%损耗', effect: (p) => { p.hasHealKill = true; } },
+        { type: 'blue', minLvl: 100, unique: true, id: 'low_hp_spd', icon: '🔥', title: '背水一战', desc: '低血量加猫速', effect: (p) => { p.hasLowHpSpd = true; } },
     ];
 
     // --- 状态 ---
@@ -474,8 +459,9 @@
     let isPendingRogue = false;
     let selectedRogueCard = null;
     let isFirstRogue = false;
+    let isGameActive = false;
+    let currentSlotId = null; // 当前使用的存档槽位(0,1,2)
     
-    // 特殊职业计时器
     let bloodInterval = null;
     let mechInterval = null;
     
@@ -486,6 +472,8 @@
 
     const layers = {
         start: document.getElementById('startLayer'),
+        slot: document.getElementById('slotLayer'),
+        name: document.getElementById('nameInputLayer'),
         select: document.getElementById('classLayer'),
         battle: document.getElementById('battleLayer'),
         card: document.getElementById('cardLayer'),
@@ -495,9 +483,15 @@
     };
     const logs = document.getElementById('battleLog');
 
-    // --- 初始化 ---
+    // --- 0. 初始化 ---
     window.onload = function() {
-        checkSave();
+        // 自动迁移旧存档到 Slot 0
+        const legacySave = localStorage.getItem('bigCatQuestSave');
+        const slot0 = localStorage.getItem('bigCatQuest_slot_0');
+        if (legacySave && !slot0) {
+            localStorage.setItem('bigCatQuest_slot_0', legacySave);
+        }
+        
         const slider = document.getElementById('changelogBox');
         let isDown = false; let startY; let scrollTop;
         if (slider) {
@@ -542,6 +536,78 @@
         setTimeout(() => el.remove(), 300);
     }
 
+    // --- 1. 多存档逻辑 ---
+    let slotMode = 'load'; // 'load' or 'new'
+
+    function openSlotMenu(mode) {
+        slotMode = mode;
+        const container = document.getElementById('slotList');
+        const title = document.getElementById('slotTitle');
+        title.innerText = mode === 'load' ? "读取存档" : "选择存档槽位";
+        container.innerHTML = '';
+
+        for(let i=0; i<3; i++) {
+            const saveStr = localStorage.getItem(`bigCatQuest_slot_${i}`);
+            const el = document.createElement('div');
+            el.className = 'save-slot';
+            
+            if (saveStr) {
+                const data = JSON.parse(saveStr);
+                const cls = CLASSES.find(c => c.id === data.clsId);
+                const clsIcon = cls ? cls.svg : '❓';
+                const clsName = cls ? cls.name : '未知';
+                
+                el.innerHTML = `
+                    <div style="display:flex; align-items:center; gap:10px;">
+                        <div class="slot-icon">${clsIcon}</div>
+                        <div class="slot-info">
+                            <div class="slot-title">${clsName} <span style="font-size:12px; color:#27ae60">Lv.${data.player.lvl}</span></div>
+                            <div class="slot-detail">第 ${data.gameLevel} 层 | ${data.timestamp.split(' ')[0]}</div>
+                        </div>
+                    </div>
+                `;
+                
+                // 删除按钮
+                const delBtn = document.createElement('div');
+                delBtn.innerHTML = '🗑️';
+                delBtn.style.cursor = 'pointer';
+                delBtn.onclick = (e) => {
+                    e.stopPropagation();
+                    if(confirm("确定要删除这个存档吗？")) {
+                        localStorage.removeItem(`bigCatQuest_slot_${i}`);
+                        openSlotMenu(mode); // 刷新
+                    }
+                };
+                el.appendChild(delBtn);
+
+                el.onclick = () => {
+                    if (mode === 'load') {
+                        currentSlotId = i;
+                        loadGameFromSlot(data);
+                    } else {
+                        if(confirm("该槽位已有存档，确定覆盖吗？")) {
+                            currentSlotId = i;
+                            showLayer('name');
+                        }
+                    }
+                };
+            } else {
+                el.className += ' empty';
+                el.innerHTML = '<div>+ 空槽位</div>';
+                el.onclick = () => {
+                    currentSlotId = i;
+                    if (mode === 'load') {
+                        showLayer('name'); // 直接开始新游戏
+                    } else {
+                        showLayer('name');
+                    }
+                };
+            }
+            container.appendChild(el);
+        }
+        showLayer('slot');
+    }
+
     function goToClassSelection() {
         const name = document.getElementById('playerNameInput').value.trim();
         if (!name) { alert("大侠请留名！"); return; }
@@ -579,7 +645,7 @@
             atk: cls.base.atk, def: cls.base.def, spd: cls.base.spd,
             critRate: 0, critDmg: 1.5,
             shieldUsed: false,
-            uniqueCards: [], // 记录获得的唯一卡
+            uniqueCards: [],
             hasHealKill: false,
             hasLowHpSpd: false
         };
@@ -597,7 +663,7 @@
     }
 
     function saveGame(manual = false) {
-        if (!player) return;
+        if (!player || currentSlotId === null) return;
         const saveData = {
             player: player,
             clsId: player.cls.id, 
@@ -607,30 +673,26 @@
             stageType: stageType,
             timestamp: new Date().toLocaleString()
         };
-        localStorage.setItem('bigCatQuestSave', JSON.stringify(saveData));
-        if (manual) { alert("存档成功！"); } 
-        else { checkSave(); }
+        localStorage.setItem(`bigCatQuest_slot_${currentSlotId}`, JSON.stringify(saveData));
+        if (manual) { alert("存档成功！"); }
     }
 
+    // 以前的 checkSave 和 loadGame 被 openSlotMenu 和 loadGameFromSlot 替代
     function checkSave() {
-        const saveStr = localStorage.getItem('bigCatQuestSave');
-        const btn = document.getElementById('continueBtn');
-        if (saveStr) {
-            const data = JSON.parse(saveStr);
-            const cls = CLASSES.find(c => c.id === data.clsId);
-            const clsName = cls ? cls.name : "未知";
-            btn.disabled = false;
-            btn.innerHTML = `继续: ${clsName} Lv.${data.player.lvl}<br><span style="font-size:12px; font-weight:normal">第 ${data.gameLevel} 层</span>`;
-        } else {
-            btn.disabled = true;
-            btn.innerText = "暂无存档";
+        // 仅检查是否有任意存档以亮起按钮
+        let hasSave = false;
+        for(let i=0; i<3; i++) {
+            if(localStorage.getItem(`bigCatQuest_slot_${i}`)) hasSave = true;
         }
+        document.getElementById('continueBtn').disabled = !hasSave;
+    }
+    
+    function loadGame() {
+        // 兼容旧按钮逻辑：点击继续直接打开 Load 菜单
+        openSlotMenu('load');
     }
 
-    function loadGame() {
-        const saveStr = localStorage.getItem('bigCatQuestSave');
-        if (!saveStr) return;
-        const data = JSON.parse(saveStr);
+    function loadGameFromSlot(data) {
         player = data.player;
         player.cls = CLASSES.find(c => c.id === data.clsId);
         gameLevel = data.gameLevel;
@@ -638,7 +700,6 @@
         stageCount = data.stageCount;
         stageType = data.stageType;
         
-        // 兼容补丁
         if(player.critRate === undefined) player.critRate = 0;
         if(player.critDmg === undefined) player.critDmg = 1.5;
         if(player.uniqueCards === undefined) player.uniqueCards = [];
@@ -651,8 +712,19 @@
         startNextBattle();
     }
 
+    function goToMainMenu() {
+        if(confirm("确定要返回主菜单吗？进度将自动保存。")) {
+            saveGame();
+            isGameActive = false;
+            if(bloodInterval) clearInterval(bloodInterval);
+            if(mechInterval) clearInterval(mechInterval);
+            checkSave(); // 刷新按钮状态
+            showLayer('start');
+        }
+    }
+
     function startNextBattle() {
-        // 清理旧定时器
+        isGameActive = true;
         if(bloodInterval) clearInterval(bloodInterval);
         if(mechInterval) clearInterval(mechInterval);
 
@@ -668,15 +740,14 @@
         log(`<br><strong>=== 第 ${gameLevel} 层 ===</strong>`, '#3498db');
         log(`遭遇了 ${enemy.name}!`, '#e74c3c');
 
-        // 特殊职业逻辑
         if (player.cls.id === 'blood') {
             log("[魔血奔涌] 开启，每秒灼烧敌人！", "#8e44ad");
             bloodInterval = setInterval(() => {
+                if (!isGameActive) return;
                 if (player.hp > 0 && enemy.hp > 0) {
                     let dot = Math.floor(player.atk * 0.8 + player.hp * 0.2);
                     enemy.hp -= dot;
                     floatText(`-${dot}`, document.getElementById('enemyEl'), '#8e44ad', '20px');
-                    // log(`[魔血] 灼烧造成 ${dot} 真实伤害`);
                     updateUI();
                     if (enemy.hp <= 0) checkResult();
                 }
@@ -686,41 +757,34 @@
         if (player.cls.id === 'mech') {
             log("[Ω火箭] 启动，弹幕压制！", "#34495e");
             mechInterval = setInterval(() => {
+                if (!isGameActive) return;
                 if (player.hp > 0 && enemy.hp > 0) {
-                    // 消耗3%当前蓝
-                    let cost = Math.ceil(player.mp * 0.03);
-                    if (player.mp >= cost) {
+                    let cost = Math.ceil(player.mp * 0.03); 
+                    if (player.mp >= cost && cost > 0) {
                         player.mp -= cost;
-                        // 伤害公式
                         let dmgBase = player.atk * 0.2 + player.mp * 0.7;
-                        // 独立暴击判定
                         let isCrit = Math.random() < player.critRate;
                         let finalDmg = Math.max(1, Math.floor(dmgBase * (isCrit ? player.critDmg : 1)));
-                        
                         enemy.hp -= finalDmg;
                         let color = isCrit ? '#e74c3c' : '#fff';
                         floatText(finalDmg, document.getElementById('enemyEl'), color, '16px');
-                        
                         updateUI();
                         if (enemy.hp <= 0) checkResult();
                     }
                 }
-            }, 200); // 0.2s
+            }, 200);
         }
 
-        // 标准回合制 (如果不是机械猫)
         if (player.cls.id !== 'mech') {
-            // 背水一战计算速度
             let effectiveSpd = player.spd;
             if (player.hasLowHpSpd) {
                 let missingPct = (player.maxHp - player.hp) / player.maxHp;
-                let boost = Math.min(0.6, missingPct); // max 60%
+                let boost = Math.min(0.6, missingPct);
                 effectiveSpd = Math.floor(player.spd * (1 + boost));
             }
             isPlayerTurn = effectiveSpd >= enemy.spd;
             setTimeout(battleLoop, 800);
         } else {
-            // 机械猫不参与普通回合，只等怪物打它
             setTimeout(battleLoop, 800);
         }
     }
@@ -764,11 +828,11 @@
     }
 
     function battleLoop() {
+        if (!isGameActive) return;
         if (!isTestingDamage && (player.hp <= 0 || enemy.hp <= 0)) return;
         if (isTestingDamage && enemy.hp <= 0) enemy.hp = enemy.maxHp;
         if (isTestingDamage && player.hp <= 0) player.hp = 1; 
 
-        // 机械猫特殊逻辑：只执行敌人攻击 (玩家攻击由setInterval负责)
         if (player.cls.id === 'mech') {
             performEnemyAttack();
         } else {
@@ -783,7 +847,6 @@
         setTimeout(() => pEl.style.transform = 'translateX(0)', 200);
         showSlash(document.getElementById('enemyEl'));
 
-        // 智慧猫回蓝
         if (player.cls.id === 'wise') {
             let rec = Math.ceil(player.maxMp * 0.05);
             player.mp = Math.min(player.maxMp, player.mp + rec);
@@ -808,41 +871,15 @@
             extraDmg += player.spd * (1 + Math.floor(player.lvl/10)*0.2);
         }
 
-        // 血骑猫普攻系数(虽然有DoT但依然可以普攻，未禁止)
-        
         let isCrit = Math.random() < player.critRate;
         let finalMult = dmgMult;
         if (isCrit) finalMult *= player.critDmg;
 
-        let dmg = Math.max(1, Math.floor(player.atk * finalMult - enemy.def));
-        // 灵活猫追加
-        if (player.cls.id === 'agile') {
-             // 灵活猫第一段伤害
-             enemy.hp -= dmg;
-             if(!isTestingDamage) log(isCrit ? `⚡暴击 ${dmg}!` : `造成 ${dmg} 伤害。`);
-             floatText(dmg, document.getElementById('enemyEl'), isCrit ? '#e74c3c' : '#fff');
-             
-             // 第二段真实伤害 (不吃暴击)
-             setTimeout(() => {
-                 if(enemy.hp > 0) {
-                     let spdCoef = 1.0 + Math.floor(player.lvl/10)*0.2;
-                     let trueDmg = Math.floor(player.spd * spdCoef);
-                     enemy.hp -= trueDmg;
-                     floatText("+" + trueDmg, document.getElementById('enemyEl'), '#f1c40f', '28px');
-                     if(!isTestingDamage) log(`[迅捷] 追加 ${trueDmg} 真伤`);
-                     updateUI();
-                     if(enemy.hp <= 0 && !isTestingDamage) checkResult();
-                     else checkMultiHit();
-                 }
-             }, 300);
-             if(isTestingDamage) testTotalDamage += (dmg); // 简单计入
-             return; // 退出，由setTimeout接管后续
-        }
-
-        // 普通结算
+        let dmg = Math.max(1, Math.floor(player.atk * finalMult - enemy.def + extraDmg));
         enemy.hp -= dmg;
-        if(isTestingDamage) testTotalDamage += dmg;
         
+        if(isTestingDamage) testTotalDamage += dmg;
+
         let floatColor = isCrit ? '#e74c3c' : '#fff';
         let floatSize = isCrit ? '32px' : '24px';
         let floatMsg = isCrit ? `暴击! ${dmg}` : dmg;
@@ -850,20 +887,38 @@
         
         if(!isTestingDamage) log(isCrit ? `⚡暴击 ${dmg}!` : `造成 ${dmg} 伤害。`);
 
-        if (selfDmg > 0) {
-            player.hp -= selfDmg;
-            let drain = Math.floor(dmg * 0.1);
-            player.hp += drain;
-            if(!isTestingDamage) floatText(`+${drain}`, document.getElementById('playerEl'), '#2ecc71', '16px');
+        if (enemy.hp <= 0 && !isTestingDamage) {
+            checkResult();
+            return;
         }
-        updateUI();
-        if (enemy.hp > 0) checkMultiHit();
-        else if (!isTestingDamage) checkResult();
+
+        if (player.cls.id === 'agile' && enemy.hp > 0) {
+            let spdCoef = 1.0 + Math.floor(player.lvl/10)*0.2;
+            let extra = Math.floor(player.spd * spdCoef);
+            setTimeout(() => {
+                if(enemy.hp <= 0) return;
+                enemy.hp -= extra;
+                if(isTestingDamage) testTotalDamage += extra;
+                floatText("+" + extra, document.getElementById('enemyEl'), '#f1c40f', '28px');
+                if(!isTestingDamage) log(`[迅捷] 追加 ${extra} 真伤`);
+                updateUI();
+                if (!isTestingDamage && enemy.hp <= 0) checkResult();
+                else checkMultiHit(); 
+            }, 300);
+        } else {
+            if (selfDmg > 0) {
+                player.hp -= selfDmg;
+                let drain = Math.floor(dmg * 0.1);
+                player.hp += drain;
+                if(!isTestingDamage) floatText(`+${drain}`, document.getElementById('playerEl'), '#2ecc71', '16px');
+            }
+            updateUI();
+            if (enemy.hp > 0) checkMultiHit();
+            else if (!isTestingDamage) checkResult();
+        }
     }
     
     function checkMultiHit() {
-        // 血骑猫/狂暴/智慧/坚毅 的连击判定
-        // 机械猫不进这里
         let effectiveSpd = player.spd;
         if (player.hasLowHpSpd) {
              let missingPct = (player.maxHp - player.hp) / player.maxHp;
@@ -929,7 +984,6 @@
 
     function checkResult() {
         if(enemy.hp <= 0 && document.getElementById('eName').innerText !== "已击败") {
-            // 清理特殊职业定时器
             if(bloodInterval) clearInterval(bloodInterval);
             if(mechInterval) clearInterval(mechInterval);
 
@@ -946,17 +1000,12 @@
                 levelUp();
             }
             
-            let healRate = player.hasHealKill ? 0.6 : 0.1;
-            let healHp = Math.floor((player.maxHp - player.hp) * healRate) + (player.hasHealKill ? 0 : Math.floor(player.maxHp * 0.1));
-            // 修正：以战养战回复已损失的60%，普通回复最大生命10%。这里简单叠加逻辑
+            let healHp = Math.floor(player.maxHp * 0.1);
             if(player.hasHealKill) {
-                 healHp = Math.floor((player.maxHp - player.hp) * 0.6);
+                 healHp += Math.floor((player.maxHp - player.hp) * 0.6);
                  let healMp = Math.floor((player.maxMp - player.mp) * 0.6);
                  player.mp += healMp;
-            } else {
-                 healHp = Math.floor(player.maxHp * 0.1);
             }
-            
             player.hp = Math.min(player.maxHp, player.hp + healHp);
             log(`胜利恢复状态`, '#2ecc71');
 
@@ -1014,7 +1063,6 @@
         btn.innerText = "请选择一项";
         container.innerHTML = '';
         
-        // 筛选池
         let pool = CARDS.filter(c => {
             if (c.unique && player.uniqueCards && player.uniqueCards.includes(c.id)) return false;
             if (c.minLvl && gameLevel < c.minLvl) return false;
@@ -1051,9 +1099,7 @@
             if(!player.uniqueCards) player.uniqueCards = [];
             player.uniqueCards.push(selectedRogueCard.id);
         }
-        
         log(`选择了 [${selectedRogueCard.title}]`, '#8e44ad');
-        
         if(selectedRogueCard.type !== 'green' && !selectedRogueCard.unique) {
              player.hp = Math.min(player.maxHp, player.hp + player.maxHp * 0.3);
              player.mp = Math.min(player.maxMp, player.mp + player.maxMp * 0.3);
@@ -1094,7 +1140,6 @@
         updateUI();
         log("=== 开始伤害测试 (10s) ===", '#3498db');
         
-        // 特殊职业打桩启动
         if(player.cls.id === 'blood') {
              bloodInterval = setInterval(() => {
                 let dot = Math.floor(player.atk * 0.8 + player.hp * 0.2);
@@ -1142,7 +1187,7 @@
                 isPlayerTurn = player.spd >= enemy.spd; 
                 setTimeout(battleLoop, 1000); 
             } else {
-                startNextBattle(); // 机械猫重置循环
+                startNextBattle(); 
             }
         }
     }

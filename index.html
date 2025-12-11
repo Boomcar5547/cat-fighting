@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>大猫猫斗恶龙 Ver3.05.12112501beta</title>
+    <title>大猫猫斗恶龙 Ver3.06</title>
     <style>
         /* --- 全局样式 --- */
         body {
@@ -68,7 +68,7 @@
         
         .btn-blue { background: #3498db; box-shadow: 0 4px 0 #2980b9; }
         .btn-blue:active { transform: translateY(4px); box-shadow: 0 0 0 #2980b9; }
-        .btn-green { background: #2ecc71; box-shadow: 0 4px 0 #27ae60; width: 80%; height: 60px; display: flex; flex-direction: column; align-items: center; justify-content: center; line-height: 1.2; }
+        .btn-green { background: #2ecc71; box-shadow: 0 4px 0 #27ae60; width: 80%; }
         .btn-green:active { transform: translateY(4px); box-shadow: 0 0 0 #27ae60; }
         
         .btn-home {
@@ -94,17 +94,13 @@
             min-height: 200px;
         }
         .scroll-box:active { cursor: grabbing; }
-        
         .log-block { margin-bottom: 25px; border-bottom: 1px dashed #bbb; padding-bottom: 15px; }
         .log-ver { color: #e67e22; font-weight: 900; font-size: 16px; margin-bottom: 5px; }
         .log-date { color: #95a5a6; font-size: 12px; margin-bottom: 8px; font-style: italic; }
         .log-list { padding-left: 20px; margin: 0; }
         .log-list li { font-size: 13px; color: #34495e; margin-bottom: 6px; line-height: 1.5; }
         .highlight { color: #c0392b; font-weight: bold; }
-        
-        /* 致歉与警告样式 */
         .apology { color: #c0392b; font-weight: bold; background: #fadbd8; padding: 10px; border-radius: 5px; margin-top: 5px; border: 1px solid #e6b0aa; font-size: 13px; line-height: 1.5; }
-        .refactor-warning { color: #d35400; font-weight: bold; background: #fdebd0; padding: 10px; border-radius: 5px; margin-bottom: 10px; border: 1px solid #edbb99; font-size: 13px; }
         
         .attr-row { display: flex; justify-content: space-between; border-bottom: 1px solid #eee; padding: 8px 0; font-size: 14px; color: #34495e; }
         .attr-val { color: #2980b9; font-family: monospace; font-size: 16px; }
@@ -143,8 +139,8 @@
         .exp-fill { height: 100%; background: linear-gradient(90deg, #f1c40f, #f39c12); width: 0%; transition: width 0.5s; }
         .exp-text { position: absolute; top: 0; left: 0; width: 100%; height: 100%; text-align: center; font-size: 10px; line-height: 15px; color: #333; font-weight: bold; }
 
-        .floating-text { position: absolute; font-weight: 900; font-size: 28px; animation: floatUp 0.8s ease-out forwards; text-shadow: 2px 2px 0 #fff; z-index: 20; white-space: nowrap; left: 50%; transform: translateX(-50%); pointer-events: none;}
-        @keyframes floatUp { 0% { top: 0; opacity: 1; transform: translateX(-50%) scale(1); } 50% { top: -30px; opacity: 1; transform: translateX(-50%) scale(1.2); } 100% { top: -60px; opacity: 0; transform: translateX(-50%) scale(1); } }
+        .floating-text { position: absolute; font-weight: 900; font-size: 20px; animation: floatUp 0.8s ease-out forwards; text-shadow: 1px 1px 0 #fff, -1px -1px 0 #fff; z-index: 20; white-space: nowrap; pointer-events: none; left: 50%; transform: translateX(-50%); top: -40px; }
+        @keyframes floatUp { 0% { top: -40px; opacity: 1; transform: translateX(-50%) scale(1); } 100% { top: -90px; opacity: 0; transform: translateX(-50%) scale(1.2); } }
 
         .slash-effect { position: absolute; width: 150px; height: 150px; background: transparent; border: 2px solid transparent; z-index: 15; left: 50%; top: 50%; transform: translate(-50%, -50%); pointer-events: none; }
         .slash-effect::before { content: ''; position: absolute; left: 0; top: 50%; width: 100%; height: 4px; background: #e74c3c; transform: rotate(-45deg); box-shadow: 0 0 10px #c0392b; animation: slashAnim 0.3s forwards; }
@@ -152,6 +148,17 @@
 
         .log-box { width: 100%; height: 120px; background: #f8f9fa; overflow-y: auto; padding: 10px; box-sizing: border-box; font-size: 12px; border-top: 1px solid #ccc; }
         .log-entry { margin-bottom: 3px; border-bottom: 1px dashed #eee; padding-bottom: 2px; line-height: 1.4;}
+        
+        /* 存档槽位 */
+        .slot-container { width: 100%; display: flex; flex-direction: column; gap: 15px; }
+        .save-slot { background: #fff; border: 2px solid #bdc3c7; border-radius: 10px; padding: 15px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; box-shadow: 0 2px 5px rgba(0,0,0,0.05); transition: all 0.2s; position: relative; }
+        .save-slot:hover { border-color: #3498db; transform: scale(1.01); }
+        .save-slot.empty { border-style: dashed; background: #f9f9f9; color: #95a5a6; justify-content: center; }
+        .slot-info { display: flex; flex-direction: column; align-items: flex-start; }
+        .slot-title { font-weight: bold; color: #2c3e50; font-size: 16px; display: flex; align-items: center; gap: 5px; }
+        .slot-detail { font-size: 12px; color: #7f8c8d; margin-top: 5px; }
+        .slot-icon { width: 30px; height: 30px; }
+        .delete-btn { padding: 5px 10px; font-size: 12px; background: #e74c3c; border-radius: 5px; margin-left: 10px; z-index: 5; color: white;}
         
         #rogueContainer { display: flex; flex-direction: row; justify-content: space-between; align-items: stretch; width: 100%; gap: 10px; margin-bottom: 20px;}
         .rogue-card { flex: 1; border: 2px solid #ccc; border-radius: 8px; padding: 10px 5px; background: #fff; cursor: pointer; box-shadow: 0 4px 8px rgba(0,0,0,0.1); position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: all 0.2s; }
@@ -164,17 +171,6 @@
         .card-purple { border-top: 5px solid #9b59b6; }
         .card-orange { border-top: 5px solid #e67e22; }
 
-        /* 存档槽位 */
-        .slot-container { width: 100%; display: flex; flex-direction: column; gap: 15px; }
-        .save-slot { background: #fff; border: 2px solid #bdc3c7; border-radius: 10px; padding: 15px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; box-shadow: 0 2px 5px rgba(0,0,0,0.05); transition: all 0.2s; position: relative; }
-        .save-slot:hover { border-color: #3498db; transform: scale(1.01); }
-        .save-slot.empty { border-style: dashed; background: #f9f9f9; color: #95a5a6; justify-content: center; }
-        .slot-info { display: flex; flex-direction: column; align-items: flex-start; }
-        .slot-title { font-weight: bold; color: #2c3e50; font-size: 16px; display: flex; align-items: center; gap: 5px; }
-        .slot-detail { font-size: 12px; color: #7f8c8d; margin-top: 5px; }
-        .slot-icon { width: 30px; height: 30px; }
-        .delete-btn { padding: 5px 10px; font-size: 12px; background: #e74c3c; border-radius: 5px; margin-left: 10px; z-index: 5; color: white;}
-
     </style>
 </head>
 <body>
@@ -183,7 +179,7 @@
     
     <div id="startLayer" class="layer active layer-scroll">
         <h1>大猫猫斗恶龙</h1>
-        <div class="version">Ver3.05.12112501beta</div>
+        <div class="version">Ver3.06.12112502beta</div>
         <svg width="150" height="150" viewBox="0 0 100 100">
             <circle cx="50" cy="50" r="40" fill="#f1c40f" stroke="#e67e22" stroke-width="3"/>
             <path d="M30 30 L40 10 L55 30 Z" fill="#f1c40f" stroke="#e67e22" stroke-width="2"/>
@@ -217,159 +213,61 @@
     <div id="changelogLayer" class="layer layer-scroll">
         <h2>更新日志</h2>
         <div class="scroll-box" id="changelogBox">
-            <div class="log-block">
-                <div class="log-ver">Ver 3.05.12112501beta</div>
-                <div class="log-date">稳定版发布</div>
-                <div class="refactor-warning">
-                    ⚠️ 由于此版本为基于旧版本的代码重构，有可能导致此前出现过的bug复现，大猫猫将在后续版本中陆续修复。
-                </div>
+             <div class="log-block">
+                <div class="log-ver">Ver 3.06.12112502beta</div>
+                <div class="log-date">核心逻辑重构</div>
                 <ul class="log-list">
-                    <li><span class="highlight">百层BOSS - 邪龙</span>：每100层遭遇远古邪龙，拥有7%真实伤害龙息，击败必掉蓝卡。</li>
-                    <li><span class="highlight">穿透机制</span>：怪物获得保底穿透(小怪10%/精英25%/BOSS 40%)。</li>
-                    <li><span class="highlight">机械猫加强</span>：火箭弹伤害系数提升至 0.25/0.75。</li>
-                    <li><span class="highlight">掉落优化</span>：BOSS战后不再掉落白卡。</li>
-                    <li><span class="highlight">版本修正</span>：彻底梳理了混乱的版本号，恢复正统 3.0x 序列。</li>
+                    <li><span class="highlight">机械猫修正</span>：移除猫能消耗的取整逻辑，改为精确的浮点运算，确保低蓝量下依然可以发射火箭弹，永不卡死。</li>
+                    <li><span class="highlight">多存档修复</span>：修复了新游戏开始时存档槽位未被正确锁定导致无法保存的问题。</li>
+                    <li><span class="highlight">数值增强</span>：机械猫火箭弹系数提升 (0.25/0.75)。</li>
+                    <li><span class="highlight">显示优化</span>：战斗日志恢复彩色详细显示；伤害数字移至头顶正上方。</li>
                 </ul>
             </div>
-            
             <div class="log-block">
-                <div class="log-ver">Ver 3.04 (撤回)</div>
-                <div class="log-date">重大事故与致歉</div>
-                <div class="apology">
-                    致各位勇者：<br>
-                    在 Ver3.04 的更新中，由于大猫猫的疏忽，导致了 UI 逻辑冲突，使得新老玩家均无法开始游戏或读取存档。<br>
-                    我们已紧急回滚并修复了此问题。对于给大家带来的糟糕体验，我们致以最诚挚的歉意！<br>
-                    承诺：未来我们会更加严谨地测试每一行代码。
-                </div>
-            </div>
-
-            <div class="log-block">
-                <div class="log-ver">Ver 3.03 (原2.06)</div>
-                <div class="log-date">平衡调整</div>
+                <div class="log-ver">Ver 3.05</div>
+                <div class="log-date">邪龙降临</div>
                 <ul class="log-list">
-                    <li>调整了火箭弹和穿透伤害的基础数值。</li>
+                    <li>新增百层BOSS【邪龙】，拥有真实伤害龙息。</li>
+                    <li>新增怪物穿透机制。</li>
                 </ul>
             </div>
-
             <div class="log-block">
-                <div class="log-ver">Ver 3.02 (原2.05)</div>
-                <div class="log-date">修复与还原</div>
+                <div class="log-ver">Ver 3.04</div>
+                <div class="log-date">版本修正</div>
                 <ul class="log-list">
-                    <li>恢复了多彩详细战斗日志。</li>
-                    <li>坚毅猫反伤现在可以正确触发暴击。</li>
-                    <li>修复机械猫打桩时空蓝卡死的问题（自动补满）。</li>
+                    <li>修复版本号混乱。</li>
+                    <li>整合美术资源。</li>
                 </ul>
             </div>
-
             <div class="log-block">
-                <div class="log-ver">Ver 3.01 (原2.04)</div>
-                <div class="log-date">美术与交互</div>
+                <div class="log-ver">Ver 3.0</div>
+                <div class="log-date">职业觉醒</div>
                 <ul class="log-list">
-                    <li>美术重绘：血骑猫(暗黑风)、机械猫(机甲风)形象更新。</li>
-                    <li>交互：战斗界面新增[返回主菜单]按钮。</li>
-                    <li>文本：机械猫天赋更名【CAAATΩ火箭弹】。</li>
+                    <li>新增血骑猫、机械猫。</li>
+                    <li>卡牌池重构，新增唯一卡。</li>
                 </ul>
             </div>
-
-            <div class="log-block">
-                <div class="log-ver">Ver 3.0 (原2.02/2.03)</div>
-                <div class="log-date">新时代 - 职业觉醒</div>
-                <ul class="log-list">
-                    <li><span class="highlight">新职业：血骑猫</span> - 烧血流，真实伤害光环。</li>
-                    <li><span class="highlight">新职业：机械猫</span> - 弹幕流，独立暴击判定。</li>
-                    <li><span class="highlight">卡牌池重构</span>：新增暴击/爆伤卡、回蓝卡；实装唯一卡机制。</li>
-                    <li>机制修正：真实伤害不再触发暴击；修复灵活猫二段伤害卡死Bug。</li>
-                </ul>
-            </div>
-
             <div class="log-block">
                 <div class="log-ver">Ver 2.1</div>
                 <div class="log-date">多存档</div>
                 <ul class="log-list">
-                    <li>新增3个独立存档槽位，支持删除与覆盖。</li>
+                    <li>支持3个独立存档槽位。</li>
                 </ul>
             </div>
-
             <div class="log-block">
                 <div class="log-ver">Ver 2.0</div>
                 <div class="log-date">存档系统</div>
                 <ul class="log-list">
                     <li>新增自动/手动存档功能。</li>
-                    <li>主界面新增继续游戏按钮，显示进度。</li>
                 </ul>
             </div>
-
-            <div class="log-block">
-                <div class="log-ver">Ver 1.8</div>
-                <div class="log-date">系统扩充</div>
+             <div class="log-block">
+                <div class="log-ver">Ver 1.0~1.9</div>
+                <div class="log-date">早期版本</div>
                 <ul class="log-list">
-                    <li>坚毅猫加强：反伤阈值降低(2倍/5倍)。</li>
-                    <li>新增伤害测试(打桩)功能。</li>
-                    <li>魔王形象重绘，更具压迫感。</li>
-                </ul>
-            </div>
-
-            <div class="log-block">
-                <div class="log-ver">Ver 1.7</div>
-                <div class="log-date">数值平衡</div>
-                <ul class="log-list">
-                    <li>怪物速度大幅提升，连击难度增加。</li>
-                    <li>新增暴击系统(绿卡)。</li>
-                    <li>智慧猫加强：猫能成长提升。</li>
-                </ul>
-            </div>
-
-            <div class="log-block">
-                <div class="log-ver">Ver 1.6</div>
-                <div class="log-date">战斗修正</div>
-                <ul class="log-list">
-                    <li>修复灵活猫追加伤害丢失的问题。</li>
-                    <li>修复智慧猫增伤公式无效。</li>
-                </ul>
-            </div>
-
-            <div class="log-block">
-                <div class="log-ver">Ver 1.5</div>
-                <div class="log-date">流程优化</div>
-                <ul class="log-list">
-                    <li>抽卡界面增加确认按钮，防止误触。</li>
-                    <li>怪物属性改为基于层数独立成长。</li>
-                </ul>
-            </div>
-
-            <div class="log-block">
-                <div class="log-ver">Ver 1.3</div>
-                <div class="log-date">多段伤害</div>
-                <ul class="log-list">
-                    <li>实装多段伤害判定系统。</li>
-                    <li>战斗日志优化，区分伤害类型。</li>
-                </ul>
-            </div>
-
-            <div class="log-block">
-                <div class="log-ver">Ver 1.2</div>
-                <div class="log-date">术语统一</div>
-                <ul class="log-list">
-                    <li>统一游戏术语(猫威/猫御等)。</li>
-                    <li>优化卡牌选择UI布局。</li>
-                </ul>
-            </div>
-
-            <div class="log-block">
-                <div class="log-ver">Ver 1.1</div>
-                <div class="log-date">画面升级</div>
-                <ul class="log-list">
-                    <li>全新SVG卡通画风。</li>
-                    <li>新增死亡回退机制。</li>
-                    <li>新增经验条显示。</li>
-                </ul>
-            </div>
-
-            <div class="log-block">
-                <div class="log-ver">Ver 1.0</div>
-                <div class="log-date">公测版</div>
-                <ul class="log-list">
-                    <li>游戏基础框架上线。</li>
+                    <li>基础玩法与职业构建。</li>
+                    <li>卡牌肉鸽系统。</li>
+                    <li>SVG美术升级。</li>
                 </ul>
             </div>
         </div>
@@ -399,6 +297,7 @@
                     <div class="fighter-name" id="pName">勇者</div>
                     <div class="bar-bg"><div class="hp-fill" id="pHpBar"></div></div>
                     <div class="bar-bg" style="margin-top:1px; height:4px; border:none;"><div class="mp-fill" id="pMpBar"></div></div>
+                    <div style="font-size:10px; color:#fff; text-shadow:1px 1px 0 #000;" id="pMpVal"></div>
                 </div>
                 <div id="pVisual" class="fighter-svg"></div>
             </div>
@@ -479,7 +378,6 @@
 </div>
 
 <script>
-    // --- 0. SVG 绘图库 ---
     const SVGS = {
         cat_resolute: `<svg viewBox="0 0 100 100"><g transform="translate(10,10)"><circle cx="40" cy="40" r="30" fill="#bdc3c7" stroke="#2c3e50" stroke-width="2"/><path d="M20 20 L10 0 L35 15 Z" fill="#bdc3c7" stroke="#2c3e50" stroke-width="2"/><path d="M60 20 L70 0 L45 15 Z" fill="#bdc3c7" stroke="#2c3e50" stroke-width="2"/><rect x="30" y="15" width="20" height="25" rx="5" fill="none" stroke="#2c3e50" stroke-width="2"/><line x1="40" y1="15" x2="40" y2="40" stroke="#2c3e50" stroke-width="1"/><line x1="30" y1="27" x2="50" y2="27" stroke="#2c3e50" stroke-width="1"/><path d="M65 40 L90 10" stroke="#95a5a6" stroke-width="6"/><path d="M65 40 L90 10" stroke="#2c3e50" stroke-width="2"/><line x1="60" y1="45" x2="70" y2="35" stroke="#f1c40f" stroke-width="4"/></g></svg>`,
         cat_agile: `<svg viewBox="0 0 100 100"><g transform="translate(10,10)"><circle cx="40" cy="40" r="30" fill="#f1c40f" stroke="#2c3e50" stroke-width="2"/><path d="M20 20 L10 0 L35 15 Z" fill="#f1c40f" stroke="#2c3e50" stroke-width="2"/><path d="M60 20 L70 0 L45 15 Z" fill="#f1c40f" stroke="#2c3e50" stroke-width="2"/><circle cx="30" cy="35" r="3" fill="#2c3e50"/><circle cx="50" cy="35" r="3" fill="#2c3e50"/><path d="M35 45 Q40 50 45 45" stroke="#2c3e50" stroke-width="2" fill="none"/><path d="M70 40 L85 25" stroke="#3498db" stroke-width="4"/><path d="M10 40 L-5 25" stroke="#3498db" stroke-width="4"/></g></svg>`,
@@ -511,7 +409,7 @@
             id: 'wise', name: '智慧猫', svg: SVGS.cat_wise, color: '#9b59b6',
             base: { atk: 45, mp: 20, def: 10, hp: 70, spd: 10 },
             growth: { atk: 15, mp: 10, def: 3, hp: 18, spd: 2 },
-            talent: '【奥术超载】消耗10%[猫能]增伤，1点[猫能]增加1%伤害。致死时消耗[猫能]抵挡伤害(单场限1次)。'
+            talent: '【奥术超载】消耗10%[猫能]增伤。致死时消耗[猫能]抵挡伤害(单场限1次)。'
         },
         {
             id: 'berserk', name: '狂暴猫', svg: SVGS.cat_berserk, color: '#c0392b',
@@ -529,7 +427,7 @@
             id: 'mech', name: '机械猫', svg: SVGS.cat_mech, color: '#34495e',
             base: { atk: 30, mp: 12, def: 25, hp: 120, spd: 0 },
             growth: { atk: 15, mp: 4, def: 3, hp: 20, spd: 0 },
-            talent: '【CAAATΩ火箭弹】无法普攻/享受猫速。每0.2秒消耗3%当前[猫能]造成[猫威]x0.25+剩余[猫能]x0.75伤害，可爆击。'
+            talent: '【CAAATΩ火箭弹】无法普攻/享受猫速。每0.2秒消耗2%当前[猫能]造成[猫威]x0.25+剩余[猫能]x0.75伤害，可爆击。'
         }
     ];
 
@@ -570,7 +468,7 @@
     let isFirstRogue = false;
     let isGameActive = false;
     let currentSlotId = null;
-    let lastBossType = null; 
+    let lastBossType = null;
     
     let bloodInterval = null;
     let mechInterval = null;
@@ -600,7 +498,6 @@
             localStorage.setItem('bigCatQuest_slot_0', legacySave);
         }
         checkSave();
-        
         const slider = document.getElementById('changelogBox');
         let isDown = false; let startY; let scrollTop;
         if (slider) {
@@ -863,9 +760,12 @@
             mechInterval = setInterval(() => {
                 if (!isGameActive) return;
                 if (player.hp > 0 && enemy.hp > 0) {
-                    let cost = Math.ceil(player.mp * 0.03); 
-                    if (player.mp >= cost && cost > 0) {
+                    // Ver3.06: 精确浮点扣蓝
+                    let cost = player.mp * 0.02;
+                    if (player.mp > 0) {
                         player.mp -= cost;
+                        if(player.mp < 0) player.mp = 0;
+                        
                         let dmgBase = player.atk * 0.25 + player.mp * 0.75;
                         let isCrit = Math.random() < player.critRate;
                         let finalDmg = Math.max(1, Math.floor(dmgBase * (isCrit ? player.critDmg : 1)));
@@ -875,12 +775,6 @@
                         floatText(finalDmg, document.getElementById('enemyEl'), color, '16px');
                         updateUI();
                         if (enemy.hp <= 0) checkResult();
-                    } else {
-                        // 机械猫没蓝：紧急充能
-                        let charge = Math.ceil(player.maxMp * 0.05);
-                        player.mp += charge;
-                        log(`[系统] 能源耗尽，紧急充能 ${charge} 点`, '#2980b9');
-                        updateUI();
                     }
                 }
             }, 200);
@@ -1066,7 +960,7 @@
         setTimeout(() => eEl.style.transform = 'translateX(0)', 200);
         showSlash(document.getElementById('playerEl'));
 
-        // [核心修正] 穿透机制
+        // [Ver3.06] 穿透机制调整
         let rawDmg = enemy.atk - player.def;
         let minRate = 0.1; 
         if(stageType === 'elite') minRate = 0.25;
@@ -1291,7 +1185,8 @@
         document.getElementById('attrClass').innerText = player.cls.name;
         document.getElementById('attrLvl').innerText = player.lvl;
         document.getElementById('attrHp').innerText = Math.floor(player.hp) + "/" + player.maxHp;
-        document.getElementById('attrMp').innerText = Math.floor(player.mp) + "/" + player.maxMp;
+        // 支持浮点显示
+        document.getElementById('attrMp').innerText = (Math.floor(player.mp * 10) / 10).toFixed(1) + "/" + player.maxMp;
         document.getElementById('attrAtk').innerText = player.atk;
         document.getElementById('attrDef').innerText = player.def;
         document.getElementById('attrSpd').innerText = player.spd;
@@ -1346,9 +1241,11 @@
         }
         if(player.cls.id === 'mech') {
              mechInterval = setInterval(() => {
-                let cost = Math.ceil(player.mp * 0.03);
-                if (player.mp >= cost && cost > 0) {
+                let cost = player.mp * 0.02; // 浮点扣蓝
+                if (player.mp > 0) {
                     player.mp -= cost;
+                    if(player.mp < 0) player.mp = 0;
+                    
                     let dmgBase = player.atk * 0.25 + player.mp * 0.75;
                     let isCrit = Math.random() < player.critRate;
                     let finalDmg = Math.max(1, Math.floor(dmgBase * (isCrit ? player.critDmg : 1)));
@@ -1406,6 +1303,14 @@
         document.getElementById('levelText').innerText = gameLevel;
         document.getElementById('killText').innerText = killCount;
         document.getElementById('pLvVal').innerText = player.lvl;
+        
+        // 浮点数显示优化
+        let displayMp = (Math.floor(player.mp * 10) / 10).toFixed(1);
+        if(player.cls.id === 'mech') {
+             document.getElementById('pMpVal').innerText = `MP: ${displayMp}`;
+        } else {
+             document.getElementById('pMpVal').innerText = `MP: ${Math.floor(player.mp)}`;
+        }
     }
 </script>
 </body>

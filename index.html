@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>大猫猫斗恶龙 Ver3.09</title>
+    <title>大猫猫斗恶龙 Ver3.10</title>
     <style>
         /* --- 全局样式 --- */
         body {
@@ -62,13 +62,13 @@
         .version { color: #7f8c8d; font-size: 12px; margin-bottom: 20px; flex-shrink: 0;}
         input { padding: 12px; border: 2px solid #3498db; border-radius: 8px; width: 70%; text-align: center; font-size: 16px; margin-bottom: 20px; flex-shrink: 0;}
         
-        button { padding: 12px 25px; background: #e67e22; color: white; border: none; border-radius: 20px; font-size: 18px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 0 #d35400; transition: all 0.1s; margin: 10px; flex-shrink: 0; width: 70%; }
+        button { padding: 10px 25px; background: #e67e22; color: white; border: none; border-radius: 20px; font-size: 16px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 0 #d35400; transition: all 0.1s; margin: 5px; flex-shrink: 0;}
         button:active { transform: translateY(4px); box-shadow: 0 0 0 #d35400; }
         button:disabled { background: #bdc3c7; box-shadow: none; cursor: not-allowed; transform: none; color: #fff; }
         
         .btn-blue { background: #3498db; box-shadow: 0 4px 0 #2980b9; }
         .btn-blue:active { transform: translateY(4px); box-shadow: 0 0 0 #2980b9; }
-        .btn-green { background: #2ecc71; box-shadow: 0 4px 0 #27ae60; }
+        .btn-green { background: #2ecc71; box-shadow: 0 4px 0 #27ae60; width: 80%; }
         .btn-green:active { transform: translateY(4px); box-shadow: 0 0 0 #27ae60; }
         .btn-gray { background: #95a5a6; box-shadow: 0 4px 0 #7f8c8d; font-size: 14px; padding: 8px 20px; }
         
@@ -194,7 +194,7 @@
     
     <div id="startLayer" class="layer active layer-scroll">
         <h1>大猫猫斗恶龙</h1>
-        <div class="version">Ver3.09.12122501beta</div>
+        <div class="version">Ver3.10.12122501beta</div>
         <svg width="150" height="150" viewBox="0 0 100 100">
             <circle cx="50" cy="50" r="40" fill="#f1c40f" stroke="#e67e22" stroke-width="3"/>
             <path d="M30 30 L40 10 L55 30 Z" fill="#f1c40f" stroke="#e67e22" stroke-width="2"/>
@@ -205,9 +205,9 @@
             <path d="M10 50 L90 50" stroke="#bdc3c7" stroke-width="5" opacity="0.5"/>
         </svg>
         <br>
-        <button class="btn-green" onclick="openSlotMenu('load')">读取存档</button>
-        <button class="btn-blue" onclick="openSlotMenu('new')">新游戏</button>
-        <button class="btn-gray" onclick="showLayer('changelog')">更新日志</button>
+        <button class="btn-green" onclick="openSlotMenu('load')" style="width:70%">读取存档</button>
+        <button class="btn-blue" onclick="openSlotMenu('new')" style="width:70%">新游戏</button>
+        <button class="btn-gray" onclick="showLayer('changelog')" style="width:70%">更新日志</button>
     </div>
 
     <div id="slotLayer" class="layer layer-scroll">
@@ -226,45 +226,38 @@
     <div id="changelogLayer" class="layer layer-scroll">
         <h2>更新日志</h2>
         <div class="scroll-box" id="changelogBox">
-             <div class="log-block">
-                <div class="log-ver">Ver 3.09.12122501beta</div>
-                <div class="log-date">核心Bug修复</div>
-                <ul class="log-list">
-                    <li><span class="highlight">卡死修复</span>：修复了玩家死亡后复活，导致后续战斗卡住不动的严重Bug。</li>
-                    <li><span class="highlight">逻辑重置</span>：优化了复活后的状态重置逻辑，确保战斗循环正常重启。</li>
-                </ul>
-            </div>
-             <div class="log-block">
-                <div class="log-ver">Ver 3.08</div>
+            <div class="log-block">
+                <div class="log-ver">Ver 3.10.12122501beta</div>
                 <div class="log-date">紧急修复</div>
                 <ul class="log-list">
-                    <li><span class="highlight">致命错误修复</span>：修复了界面跳转键名错误导致的游戏无法开始的Bug。</li>
+                    <li><span class="highlight">致命BUG修复</span>：修复了上一版本因UI代码拼写错误导致无法进入游戏的严重BUG。</li>
+                    <li><span class="highlight">战斗逻辑优化</span>：确保战斗结束或死亡时彻底清除后台循环，防止卡死。</li>
+                    <li><span class="highlight">机械猫修正</span>：浮点数蓝耗逻辑加固。</li>
                 </ul>
             </div>
              <div class="log-block">
-                <div class="log-ver">Ver 3.06</div>
-                <div class="log-date">核心逻辑重构</div>
+                <div class="log-ver">Ver 3.09</div>
+                <div class="log-date">战斗卡死修复</div>
                 <ul class="log-list">
-                    <li>机械猫修复：空蓝不再卡死，移除取整，改为浮点运算。</li>
-                    <li>多存档修复：修复了新游戏开始时存档槽位未被正确锁定导致无法保存的问题。</li>
-                    <li>数值增强：机械猫火箭弹系数提升 (0.25/0.75)。</li>
-                    <li>显示优化：战斗日志恢复彩色详细显示；伤害数字移至头顶正上方。</li>
+                    <li>修复玩家死亡后复活卡死的问题。</li>
+                    <li>优化后台状态重置逻辑。</li>
+                </ul>
+            </div>
+            <div class="log-block">
+                <div class="log-ver">Ver 3.06-3.08</div>
+                <div class="log-date">迭代过程</div>
+                <ul class="log-list">
+                    <li>机械猫蓝耗修复。</li>
+                    <li>多存档槽位锁定修复。</li>
+                    <li>界面跳转逻辑修复。</li>
                 </ul>
             </div>
             <div class="log-block">
                 <div class="log-ver">Ver 3.05</div>
                 <div class="log-date">邪龙降临</div>
                 <ul class="log-list">
-                    <li>新增百层BOSS【邪龙】，拥有真实伤害龙息。</li>
+                    <li>新增百层BOSS【邪龙】。</li>
                     <li>新增怪物穿透机制。</li>
-                </ul>
-            </div>
-            <div class="log-block">
-                <div class="log-ver">Ver 3.04</div>
-                <div class="log-date">版本修正</div>
-                <ul class="log-list">
-                    <li>修复版本号混乱。</li>
-                    <li>整合美术资源。</li>
                 </ul>
             </div>
             <div class="log-block">
@@ -305,7 +298,7 @@
     <div id="classLayer" class="layer layer-scroll">
         <h2 style="color:#2c3e50; font-size: 20px;">请选择你的职业</h2>
         <div class="card-container" id="classContainer"></div>
-        <button onclick="showLayer('start')" style="margin-top:20px; background:#95a5a6;">返回</button>
+        <button onclick="showLayer('name')" style="margin-top:20px; background:#95a5a6;">返回</button>
     </div>
 
     <div id="battleLayer" class="layer">
@@ -437,7 +430,7 @@
             id: 'wise', name: '智慧猫', svg: SVGS.cat_wise, color: '#9b59b6',
             base: { atk: 45, mp: 20, def: 10, hp: 70, spd: 10 },
             growth: { atk: 15, mp: 10, def: 3, hp: 18, spd: 2 },
-            talent: '【奥术超载】消耗10%[猫能]增伤。致死时消耗[猫能]抵挡伤害(单场限1次)。'
+            talent: '【奥术超载】消耗10%[猫能]增伤，1点[猫能]增加1%伤害。致死时消耗[猫能]抵挡伤害(单场限1次)。'
         },
         {
             id: 'berserk', name: '狂暴猫', svg: SVGS.cat_berserk, color: '#c0392b',
@@ -495,12 +488,12 @@
     let selectedRogueCard = null;
     let isFirstRogue = false;
     let isGameActive = false;
-    let currentSlotId = null;
+    let currentSlotId = null; 
     let lastBossType = null;
     
     let bloodInterval = null;
     let mechInterval = null;
-    let battleLoopId = null; // New global to track main loop timeout
+    let battleLoopId = null;
     
     let isTestingDamage = false;
     let testTimer = 0;
@@ -538,8 +531,11 @@
     };
 
     function showLayer(name) {
-        Object.values(layers).forEach(l => l.classList.remove('active'));
-        layers[name].classList.add('active');
+        Object.values(layers).forEach(l => {
+            if(l) l.classList.remove('active');
+        });
+        if(layers[name]) layers[name].classList.add('active');
+        else console.error("Layer not found: " + name);
     }
 
     function log(msg, color = '#333') {
@@ -617,7 +613,7 @@
                     } else {
                         if(confirm("该槽位已有存档，确定覆盖吗？")) {
                             currentSlotId = i;
-                            showLayer('nameInputLayer');
+                            showLayer('name'); 
                         }
                     }
                 };
@@ -626,12 +622,12 @@
                 el.innerHTML = '<div>+ 空槽位</div>';
                 el.onclick = () => {
                     currentSlotId = i;
-                    showLayer('nameInputLayer');
+                    showLayer('name');
                 };
             }
             container.appendChild(el);
         }
-        showLayer('slotLayer');
+        showLayer('slot');
     }
 
     function goToClassSelection() {
@@ -985,6 +981,7 @@
         battleLoopId = setTimeout(() => eEl.style.transform = 'translateX(0)', 200);
         showSlash(document.getElementById('playerEl'));
 
+        // [Ver3.06] 穿透机制调整
         let rawDmg = enemy.atk - player.def;
         let minRate = 0.1; 
         if(stageType === 'elite') minRate = 0.25;
@@ -1092,11 +1089,9 @@
 
             gameLevel++;
             
-            if (stageType === 'boss') lastBossType = 'boss';
-            else if (stageType === 'evil_dragon') lastBossType = 'evil_dragon';
-            else lastBossType = null;
-
+            // 自动保存 (除了测试模式)
             if (!isTestingDamage) saveGame();
+
             updateUI();
 
             if (stageType === 'elite' || stageType === 'boss' || stageType === 'evil_dragon') {
@@ -1139,7 +1134,6 @@
         player.hp = player.maxHp;
         player.mp = player.maxMp;
         stageCount = 0;
-        lastBossType = null;
         log("=== 时光倒流，重新开始 ===", '#3498db');
         saveGame();
         showLayer('battle');
@@ -1236,7 +1230,6 @@
         testTotalDamage = 0;
         testTimer = 10;
         
-        // 满状态开始
         player.hp = player.maxHp;
         player.mp = player.maxMp;
         
@@ -1273,18 +1266,14 @@
         }
         if(player.cls.id === 'mech') {
              mechInterval = setInterval(() => {
-                let cost = Math.floor(player.mp * 0.02);
-                if (player.mp > 0) {
+                let cost = Math.ceil(player.mp * 0.03);
+                if (player.mp >= cost && cost > 0) {
                     player.mp -= cost;
-                    if(player.mp < 0) player.mp = 0;
                     let dmgBase = player.atk * 0.25 + player.mp * 0.75;
                     let isCrit = Math.random() < player.critRate;
                     let finalDmg = Math.max(1, Math.floor(dmgBase * (isCrit ? player.critDmg : 1)));
                     testTotalDamage += finalDmg;
                     floatText(finalDmg, document.getElementById('enemyEl'), isCrit?'#e74c3c':'#fff');
-                } else {
-                     let charge = Math.max(1, Math.floor(player.maxMp * 0.05));
-                     player.mp += charge;
                 }
              }, 200);
         }

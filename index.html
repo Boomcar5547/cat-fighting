@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>大猫猫斗恶龙 Ver3.08</title>
+    <title>大猫猫斗恶龙 Ver3.09</title>
     <style>
         /* --- 全局样式 --- */
         body {
@@ -62,13 +62,13 @@
         .version { color: #7f8c8d; font-size: 12px; margin-bottom: 20px; flex-shrink: 0;}
         input { padding: 12px; border: 2px solid #3498db; border-radius: 8px; width: 70%; text-align: center; font-size: 16px; margin-bottom: 20px; flex-shrink: 0;}
         
-        button { padding: 10px 25px; background: #e67e22; color: white; border: none; border-radius: 20px; font-size: 16px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 0 #d35400; transition: all 0.1s; margin: 5px; flex-shrink: 0;}
+        button { padding: 12px 25px; background: #e67e22; color: white; border: none; border-radius: 20px; font-size: 18px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 0 #d35400; transition: all 0.1s; margin: 10px; flex-shrink: 0; width: 70%; }
         button:active { transform: translateY(4px); box-shadow: 0 0 0 #d35400; }
         button:disabled { background: #bdc3c7; box-shadow: none; cursor: not-allowed; transform: none; color: #fff; }
         
         .btn-blue { background: #3498db; box-shadow: 0 4px 0 #2980b9; }
         .btn-blue:active { transform: translateY(4px); box-shadow: 0 0 0 #2980b9; }
-        .btn-green { background: #2ecc71; box-shadow: 0 4px 0 #27ae60; width: 80%; }
+        .btn-green { background: #2ecc71; box-shadow: 0 4px 0 #27ae60; }
         .btn-green:active { transform: translateY(4px); box-shadow: 0 0 0 #27ae60; }
         .btn-gray { background: #95a5a6; box-shadow: 0 4px 0 #7f8c8d; font-size: 14px; padding: 8px 20px; }
         
@@ -126,6 +126,8 @@
         .log-list { padding-left: 20px; margin: 0; }
         .log-list li { font-size: 13px; color: #34495e; margin-bottom: 4px; line-height: 1.5; }
         .highlight { color: #c0392b; font-weight: bold; }
+        .apology { color: #c0392b; font-weight: bold; background: #fadbd8; padding: 10px; border-radius: 5px; margin-top: 5px; border: 1px solid #e6b0aa; font-size: 13px; line-height: 1.5; }
+
         .attr-row { display: flex; justify-content: space-between; border-bottom: 1px solid #eee; padding: 8px 0; font-size: 14px; color: #34495e; }
         .attr-val { color: #2980b9; font-family: monospace; font-size: 16px; }
 
@@ -163,7 +165,7 @@
         .exp-fill { height: 100%; background: linear-gradient(90deg, #f1c40f, #f39c12); width: 0%; transition: width 0.5s; }
         .exp-text { position: absolute; top: 0; left: 0; width: 100%; height: 100%; text-align: center; font-size: 10px; line-height: 15px; color: #333; font-weight: bold; }
 
-        .floating-text { position: absolute; font-weight: 900; font-size: 28px; animation: floatUp 0.8s ease-out forwards; text-shadow: 2px 2px 0 #fff; z-index: 20; white-space: nowrap; left: 50%; transform: translateX(-50%); top: -40px; pointer-events: none;}
+        .floating-text { position: absolute; font-weight: 900; font-size: 20px; animation: floatUp 0.8s ease-out forwards; text-shadow: 1px 1px 0 #fff, -1px -1px 0 #fff; z-index: 20; white-space: nowrap; left: 50%; transform: translateX(-50%); top: -40px; pointer-events: none;}
         @keyframes floatUp { 0% { top: -40px; opacity: 1; transform: translateX(-50%) scale(1); } 100% { top: -90px; opacity: 0; transform: translateX(-50%) scale(1.2); } }
 
         .slash-effect { position: absolute; width: 150px; height: 150px; background: transparent; border: 2px solid transparent; z-index: 15; left: 50%; top: 50%; transform: translate(-50%, -50%); pointer-events: none; }
@@ -192,7 +194,7 @@
     
     <div id="startLayer" class="layer active layer-scroll">
         <h1>大猫猫斗恶龙</h1>
-        <div class="version">Ver3.08.12112501beta</div>
+        <div class="version">Ver3.09.12122501beta</div>
         <svg width="150" height="150" viewBox="0 0 100 100">
             <circle cx="50" cy="50" r="40" fill="#f1c40f" stroke="#e67e22" stroke-width="3"/>
             <path d="M30 30 L40 10 L55 30 Z" fill="#f1c40f" stroke="#e67e22" stroke-width="2"/>
@@ -203,9 +205,9 @@
             <path d="M10 50 L90 50" stroke="#bdc3c7" stroke-width="5" opacity="0.5"/>
         </svg>
         <br>
-        <button class="btn-green" onclick="openSlotMenu('load')" style="width:70%">读取存档</button>
-        <button class="btn-blue" onclick="openSlotMenu('new')" style="width:70%">新游戏</button>
-        <button class="btn-gray" onclick="showLayer('changelog')" style="width:70%">更新日志</button>
+        <button class="btn-green" onclick="openSlotMenu('load')">读取存档</button>
+        <button class="btn-blue" onclick="openSlotMenu('new')">新游戏</button>
+        <button class="btn-gray" onclick="showLayer('changelog')">更新日志</button>
     </div>
 
     <div id="slotLayer" class="layer layer-scroll">
@@ -224,11 +226,19 @@
     <div id="changelogLayer" class="layer layer-scroll">
         <h2>更新日志</h2>
         <div class="scroll-box" id="changelogBox">
-            <div class="log-block">
-                <div class="log-ver">Ver 3.08.12112501beta</div>
+             <div class="log-block">
+                <div class="log-ver">Ver 3.09.12122501beta</div>
+                <div class="log-date">核心Bug修复</div>
+                <ul class="log-list">
+                    <li><span class="highlight">卡死修复</span>：修复了玩家死亡后复活，导致后续战斗卡住不动的严重Bug。</li>
+                    <li><span class="highlight">逻辑重置</span>：优化了复活后的状态重置逻辑，确保战斗循环正常重启。</li>
+                </ul>
+            </div>
+             <div class="log-block">
+                <div class="log-ver">Ver 3.08</div>
                 <div class="log-date">紧急修复</div>
                 <ul class="log-list">
-                    <li><span class="highlight">致命错误修复</span>：修复了界面跳转键名错误导致的游戏无法开始的Bug。现在[读取存档]和[新游戏]已完全恢复正常。</li>
+                    <li><span class="highlight">致命错误修复</span>：修复了界面跳转键名错误导致的游戏无法开始的Bug。</li>
                 </ul>
             </div>
              <div class="log-block">
@@ -295,7 +305,7 @@
     <div id="classLayer" class="layer layer-scroll">
         <h2 style="color:#2c3e50; font-size: 20px;">请选择你的职业</h2>
         <div class="card-container" id="classContainer"></div>
-        <button onclick="showLayer('nameInputLayer')" style="margin-top:20px; background:#95a5a6;">返回</button>
+        <button onclick="showLayer('start')" style="margin-top:20px; background:#95a5a6;">返回</button>
     </div>
 
     <div id="battleLayer" class="layer">
@@ -396,7 +406,6 @@
 </div>
 
 <script>
-    // --- 0. SVG 绘图库 (保持原样) ---
     const SVGS = {
         cat_resolute: `<svg viewBox="0 0 100 100"><g transform="translate(10,10)"><circle cx="40" cy="40" r="30" fill="#bdc3c7" stroke="#2c3e50" stroke-width="2"/><path d="M20 20 L10 0 L35 15 Z" fill="#bdc3c7" stroke="#2c3e50" stroke-width="2"/><path d="M60 20 L70 0 L45 15 Z" fill="#bdc3c7" stroke="#2c3e50" stroke-width="2"/><rect x="30" y="15" width="20" height="25" rx="5" fill="none" stroke="#2c3e50" stroke-width="2"/><line x1="40" y1="15" x2="40" y2="40" stroke="#2c3e50" stroke-width="1"/><line x1="30" y1="27" x2="50" y2="27" stroke="#2c3e50" stroke-width="1"/><path d="M65 40 L90 10" stroke="#95a5a6" stroke-width="6"/><path d="M65 40 L90 10" stroke="#2c3e50" stroke-width="2"/><line x1="60" y1="45" x2="70" y2="35" stroke="#f1c40f" stroke-width="4"/></g></svg>`,
         cat_agile: `<svg viewBox="0 0 100 100"><g transform="translate(10,10)"><circle cx="40" cy="40" r="30" fill="#f1c40f" stroke="#2c3e50" stroke-width="2"/><path d="M20 20 L10 0 L35 15 Z" fill="#f1c40f" stroke="#2c3e50" stroke-width="2"/><path d="M60 20 L70 0 L45 15 Z" fill="#f1c40f" stroke="#2c3e50" stroke-width="2"/><circle cx="30" cy="35" r="3" fill="#2c3e50"/><circle cx="50" cy="35" r="3" fill="#2c3e50"/><path d="M35 45 Q40 50 45 45" stroke="#2c3e50" stroke-width="2" fill="none"/><path d="M70 40 L85 25" stroke="#3498db" stroke-width="4"/><path d="M10 40 L-5 25" stroke="#3498db" stroke-width="4"/></g></svg>`,
@@ -428,7 +437,7 @@
             id: 'wise', name: '智慧猫', svg: SVGS.cat_wise, color: '#9b59b6',
             base: { atk: 45, mp: 20, def: 10, hp: 70, spd: 10 },
             growth: { atk: 15, mp: 10, def: 3, hp: 18, spd: 2 },
-            talent: '【奥术超载】消耗10%[猫能]增伤，1点[猫能]增加1%伤害。致死时消耗[猫能]抵挡伤害(单场限1次)。'
+            talent: '【奥术超载】消耗10%[猫能]增伤。致死时消耗[猫能]抵挡伤害(单场限1次)。'
         },
         {
             id: 'berserk', name: '狂暴猫', svg: SVGS.cat_berserk, color: '#c0392b',
@@ -487,10 +496,11 @@
     let isFirstRogue = false;
     let isGameActive = false;
     let currentSlotId = null;
-    let lastBossType = null; 
+    let lastBossType = null;
     
     let bloodInterval = null;
     let mechInterval = null;
+    let battleLoopId = null; // New global to track main loop timeout
     
     let isTestingDamage = false;
     let testTimer = 0;
@@ -510,7 +520,6 @@
     };
     const logs = document.getElementById('battleLog');
 
-    // --- 0. 初始化检测存档 ---
     window.onload = function() {
         const legacySave = localStorage.getItem('bigCatQuestSave');
         const slot0 = localStorage.getItem('bigCatQuest_slot_0');
@@ -529,11 +538,8 @@
     };
 
     function showLayer(name) {
-        Object.values(layers).forEach(l => {
-            if(l) l.classList.remove('active');
-        });
-        if(layers[name]) layers[name].classList.add('active');
-        else console.error("Layer not found: " + name);
+        Object.values(layers).forEach(l => l.classList.remove('active'));
+        layers[name].classList.add('active');
     }
 
     function log(msg, color = '#333') {
@@ -611,7 +617,7 @@
                     } else {
                         if(confirm("该槽位已有存档，确定覆盖吗？")) {
                             currentSlotId = i;
-                            showLayer('name'); // ID is nameInputLayer, defined as 'name' in layers
+                            showLayer('nameInputLayer');
                         }
                     }
                 };
@@ -620,16 +626,12 @@
                 el.innerHTML = '<div>+ 空槽位</div>';
                 el.onclick = () => {
                     currentSlotId = i;
-                    if (mode === 'load') {
-                        showLayer('name'); 
-                    } else {
-                        showLayer('name');
-                    }
+                    showLayer('nameInputLayer');
                 };
             }
             container.appendChild(el);
         }
-        showLayer('slot');
+        showLayer('slotLayer');
     }
 
     function goToClassSelection() {
@@ -702,7 +704,7 @@
         localStorage.setItem(`bigCatQuest_slot_${currentSlotId}`, JSON.stringify(saveData));
         if (manual) { alert("存档成功！"); } 
     }
-
+    
     function loadGame() {
         openSlotMenu('load');
     }
@@ -734,6 +736,7 @@
             isGameActive = false;
             if(bloodInterval) clearInterval(bloodInterval);
             if(mechInterval) clearInterval(mechInterval);
+            if(battleLoopId) clearTimeout(battleLoopId);
             showLayer('start');
         }
     }
@@ -742,6 +745,7 @@
         isGameActive = true;
         if(bloodInterval) clearInterval(bloodInterval);
         if(mechInterval) clearInterval(mechInterval);
+        if(battleLoopId) clearTimeout(battleLoopId);
 
         if (isPendingRogue) {
             isPendingRogue = false;
@@ -809,9 +813,9 @@
                 effectiveSpd = Math.floor(player.spd * (1 + boost));
             }
             isPlayerTurn = effectiveSpd >= enemy.spd;
-            setTimeout(battleLoop, 800);
+            battleLoopId = setTimeout(battleLoop, 800);
         } else {
-            setTimeout(battleLoop, 800);
+            battleLoopId = setTimeout(battleLoop, 800);
         }
     }
 
@@ -884,7 +888,7 @@
     function performPlayerAttack() {
         const pEl = document.getElementById('playerEl');
         pEl.style.transform = 'translateX(30px)';
-        setTimeout(() => pEl.style.transform = 'translateX(0)', 200);
+        battleLoopId = setTimeout(() => pEl.style.transform = 'translateX(0)', 200);
         showSlash(document.getElementById('enemyEl'));
 
         if (player.cls.id === 'wise') {
@@ -935,7 +939,7 @@
         if (player.cls.id === 'agile' && enemy.hp > 0) {
             let spdCoef = 1.0 + Math.floor(player.lvl/10)*0.2;
             let extra = Math.floor(player.spd * spdCoef);
-            setTimeout(() => {
+            battleLoopId = setTimeout(() => {
                 if(enemy.hp <= 0) return;
                 enemy.hp -= extra;
                 if(isTestingDamage) testTotalDamage += extra;
@@ -968,17 +972,17 @@
 
         if (effectiveSpd >= enemy.spd * 2 && Math.random() > 0.4) {
             if(!isTestingDamage) log(">>> [猫速]碾压！发动连击！ <<<", '#f39c12');
-            setTimeout(performPlayerAttack, 600);
+            battleLoopId = setTimeout(performPlayerAttack, 600);
         } else {
             isPlayerTurn = false;
-            setTimeout(battleLoop, 1000);
+            battleLoopId = setTimeout(battleLoop, 1000);
         }
     }
 
     function performEnemyAttack() {
         const eEl = document.getElementById('enemyEl');
         eEl.style.transform = 'translateX(-30px)';
-        setTimeout(() => eEl.style.transform = 'translateX(0)', 200);
+        battleLoopId = setTimeout(() => eEl.style.transform = 'translateX(0)', 200);
         showSlash(document.getElementById('playerEl'));
 
         let rawDmg = enemy.atk - player.def;
@@ -1011,7 +1015,7 @@
         if (stageType === 'evil_dragon' && player.hp > 0) {
             let dragonBreathDmg = Math.floor(player.maxHp * 0.07);
             if (dragonBreathDmg > 0) {
-                setTimeout(() => {
+                battleLoopId = setTimeout(() => {
                     player.hp -= dragonBreathDmg;
                     floatText(dragonBreathDmg, document.getElementById('playerEl'), '#f1c40f', '24px'); 
                     if(!isTestingDamage) log(`🔥 [龙息] 邪龙喷吐龙息，造成 ${dragonBreathDmg} 点真实伤害!`, '#c0392b');
@@ -1035,7 +1039,7 @@
                 let finalReflect = reflect * (isCrit ? player.critDmg : 1);
                 let actualDmg = Math.max(1, Math.floor(finalReflect - enemy.def));
                 
-                setTimeout(() => {
+                battleLoopId = setTimeout(() => {
                     enemy.hp -= actualDmg;
                     if(isTestingDamage) testTotalDamage += actualDmg;
                     let color = isCrit ? '#e74c3c' : '#e67e22';
@@ -1054,7 +1058,7 @@
 
         if (player.hp > 0 && enemy.hp > 0) {
             isPlayerTurn = true;
-            setTimeout(battleLoop, 800);
+            battleLoopId = setTimeout(battleLoop, 800);
         }
     }
 
@@ -1062,6 +1066,7 @@
         if(enemy.hp <= 0 && document.getElementById('eName').innerText !== "已击败") {
             if(bloodInterval) clearInterval(bloodInterval);
             if(mechInterval) clearInterval(mechInterval);
+            if(battleLoopId) clearTimeout(battleLoopId);
 
             let rawName = enemy.name;
             document.getElementById('eName').innerText = "已击败";
@@ -1102,12 +1107,14 @@
                 stageCount = 0; 
             }
 
-            setTimeout(startNextBattle, 1500);
+            battleLoopId = setTimeout(startNextBattle, 1500);
 
         } else if (player.hp <= 0) {
             if(bloodInterval) clearInterval(bloodInterval);
             if(mechInterval) clearInterval(mechInterval);
+            if(battleLoopId) clearTimeout(battleLoopId);
             player.hp = 0;
+            isGameActive = false; // Stop game loop explicitly
             updateUI();
             document.getElementById('goReason').innerText = `在第 ${gameLevel} 层被 ${enemy.name} 击败`;
             showLayer('over');
@@ -1136,6 +1143,8 @@
         log("=== 时光倒流，重新开始 ===", '#3498db');
         saveGame();
         showLayer('battle');
+        // Explicitly clear any lingering loop timeout before restarting
+        if(battleLoopId) clearTimeout(battleLoopId);
         startNextBattle();
     }
 
@@ -1205,7 +1214,7 @@
         document.getElementById('attrClass').innerText = player.cls.name;
         document.getElementById('attrLvl').innerText = player.lvl;
         document.getElementById('attrHp').innerText = Math.floor(player.hp) + "/" + player.maxHp;
-        
+        // 浮点显示
         let displayMp = (Math.floor(player.mp * 10) / 10).toFixed(1);
         if(player.cls.id !== 'mech') displayMp = Math.floor(player.mp);
 
@@ -1227,6 +1236,7 @@
         testTotalDamage = 0;
         testTimer = 10;
         
+        // 满状态开始
         player.hp = player.maxHp;
         player.mp = player.maxMp;
         
@@ -1290,6 +1300,7 @@
         clearInterval(testInterval);
         if(bloodInterval) clearInterval(bloodInterval);
         if(mechInterval) clearInterval(mechInterval);
+        if(battleLoopId) clearTimeout(battleLoopId);
         isTestingDamage = false;
         
         let dps = (testTotalDamage / 10).toFixed(1);
@@ -1304,12 +1315,13 @@
         player.mp = player.maxMp; 
         updateUI();
         
+        // Explicitly restart battle loop
         if (enemy.hp <= 0) { 
             startNextBattle(); 
         } else {
              if(player.cls.id !== 'mech') {
                 isPlayerTurn = player.spd >= enemy.spd; 
-                setTimeout(battleLoop, 1000); 
+                battleLoopId = setTimeout(battleLoop, 1000); 
             } else {
                 startNextBattle(); 
             }

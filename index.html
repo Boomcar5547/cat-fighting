@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>大猫猫斗恶龙 Ver3.15</title>
+    <title>大猫猫斗恶龙 Ver3.16</title>
     <style>
         /* --- 全局样式 --- */
         body {
@@ -228,9 +228,10 @@
         <div class="scroll-box" id="changelogBox">
             <div class="log-block">
                 <div class="log-ver">Ver 3.15.12122502beta</div>
-                <div class="log-date">紧急修复</div>
+                <div class="log-date">紧急UI修复</div>
                 <ul class="log-list">
-                    <li><span class="highlight">界面修复</span>：修正了代码层面的跳转ID错误，现在点击[新游戏]和[读取存档]能正确跳转了，彻底解决了“点击无反应”的致命问题。</li>
+                    <li><span class="highlight">界面修复</span>：修正了代码层面的跳转ID错误(nameInputLayer -> name)，现在点击[新游戏]和[读取存档]能正确跳转了，彻底解决了“点击无反应”的致命问题。</li>
+                    <li><span class="highlight">读档保护</span>：增加了读档时的空值检测，防止坏档导致卡死。</li>
                 </ul>
             </div>
             <div class="log-block">
@@ -259,12 +260,20 @@
                 </ul>
             </div>
             <div class="log-block">
-                <div class="log-ver">Ver 3.06</div>
+                <div class="log-ver">Ver 3.10</div>
+                <div class="log-date">UI紧急修复</div>
+                <ul class="log-list">
+                    <li>修复了上一版本因UI代码错误导致无法进入游戏的严重BUG。</li>
+                </ul>
+            </div>
+            <div class="log-block">
+                <div class="log-ver">Ver 3.06~3.09</div>
                 <div class="log-date">稳定性优化</div>
                 <ul class="log-list">
                     <li>机械猫修复：空蓝不再卡死，移除取整，改为浮点运算。</li>
                     <li>多存档修复：修复了新游戏开始时存档槽位未被正确锁定导致无法保存的问题。</li>
                     <li>机械猫火箭弹伤害倍率上调。</li>
+                    <li>优化后台定时器清除逻辑。</li>
                 </ul>
             </div>
             <div class="log-block">
@@ -273,6 +282,14 @@
                 <ul class="log-list">
                     <li>新增百层BOSS【邪龙】，拥有真实伤害龙息。</li>
                     <li>新增怪物穿透机制。</li>
+                </ul>
+            </div>
+            <div class="log-block">
+                <div class="log-ver">Ver 3.04</div>
+                <div class="log-date">版本修正</div>
+                <ul class="log-list">
+                    <li>修复版本号混乱。</li>
+                    <li>整合美术资源。</li>
                 </ul>
             </div>
             <div class="log-block">
@@ -313,7 +330,7 @@
     <div id="classLayer" class="layer layer-scroll">
         <h2 style="color:#2c3e50; font-size: 20px;">请选择你的职业</h2>
         <div class="card-container" id="classContainer"></div>
-        <button onclick="showLayer('nameInputLayer')" style="margin-top:20px; background:#95a5a6;">返回</button>
+        <button onclick="showLayer('name')" style="margin-top:20px; background:#95a5a6;">返回</button>
     </div>
 
     <div id="battleLayer" class="layer">
@@ -506,7 +523,7 @@
     
     let bloodInterval = null;
     let mechInterval = null;
-    let battleLoopId = null;
+    let battleLoopId = null; 
     
     let isTestingDamage = false;
     let testTimer = 0;
@@ -532,7 +549,7 @@
         if (legacySave && !slot0) {
             localStorage.setItem('bigCatQuest_slot_0', legacySave);
         }
-        
+        checkSave();
         const slider = document.getElementById('changelogBox');
         let isDown = false; let startY; let scrollTop;
         if (slider) {
@@ -547,8 +564,13 @@
         Object.values(layers).forEach(l => {
             if(l) l.classList.remove('active');
         });
-        if(layers[name]) layers[name].classList.add('active');
-        else console.error("Layer not found: " + name);
+        // 增加容错，防止 ID 写错导致崩溃
+        if(layers[name]) {
+            layers[name].classList.add('active');
+        } else {
+            console.error("Layer not found: " + name);
+            alert("界面加载错误，请刷新重试。Error: Layer " + name + " missing.");
+        }
     }
 
     function log(msg, color = '#333') {
@@ -626,7 +648,7 @@
                     } else {
                         if(confirm("该槽位已有存档，确定覆盖吗？")) {
                             currentSlotId = i;
-                            showLayer('nameInputLayer'); // 修复后的 key
+                            showLayer('name'); // 修正：ID对应 nameInputLayer, key 是 'name'
                         }
                     }
                 };
@@ -635,7 +657,7 @@
                 el.innerHTML = '<div>+ 空槽位</div>';
                 el.onclick = () => {
                     currentSlotId = i;
-                    showLayer('nameInputLayer'); // 修复后的 key
+                    showLayer('name'); // 修正
                 };
             }
             container.appendChild(el);
@@ -713,14 +735,35 @@
         localStorage.setItem(`bigCatQuest_slot_${currentSlotId}`, JSON.stringify(saveData));
         if (manual) { alert("存档成功！"); } 
     }
+
+    function checkSave() {
+        let hasSave = false;
+        for(let i=0; i<3; i++) {
+            if(localStorage.getItem(`bigCatQuest_slot_${i}`)) hasSave = true;
+        }
+        document.getElementById('continueBtn').disabled = !hasSave;
+    }
     
     function loadGame() {
         openSlotMenu('load');
     }
 
     function loadGameFromSlot(data) {
+        // 安全检测
+        if(!data || !data.player) {
+            alert("存档损坏，无法读取。");
+            return;
+        }
+
         player = data.player;
         player.cls = CLASSES.find(c => c.id === data.clsId);
+        
+        // 坏档修复（如果class数据没对上）
+        if(!player.cls) {
+            alert("职业数据丢失，存档无法使用。");
+            return;
+        }
+
         gameLevel = data.gameLevel;
         killCount = data.killCount;
         stageCount = data.stageCount;
@@ -743,6 +786,7 @@
         showLayer('battle');
         log("【系统】欢迎回来，冒险继续！", '#27ae60');
         
+        // 确保清除旧的循环，防止双重循环
         if(battleLoopId) clearTimeout(battleLoopId);
         if(bloodInterval) clearInterval(bloodInterval);
         if(mechInterval) clearInterval(mechInterval);
@@ -757,6 +801,7 @@
             if(bloodInterval) clearInterval(bloodInterval);
             if(mechInterval) clearInterval(mechInterval);
             if(battleLoopId) clearTimeout(battleLoopId);
+            checkSave(); 
             showLayer('start');
         }
     }
@@ -972,9 +1017,6 @@
         } else {
             if (selfDmg > 0) {
                 player.hp -= selfDmg;
-                // 狂暴猫扣血后立即检查
-                if(player.hp <= 0 && !isTestingDamage) { checkResult(); return; }
-
                 let drain = Math.floor(dmg * 0.1);
                 player.hp += drain;
                 if(!isTestingDamage) floatText(`+${drain}`, document.getElementById('playerEl'), '#2ecc71', '16px');
@@ -1037,12 +1079,6 @@
         
         updateUI();
 
-        // 立即检查死亡，阻断后续
-        if (player.hp <= 0 && !isTestingDamage) {
-            checkResult();
-            return; 
-        }
-
         if (stageType === 'evil_dragon' && player.hp > 0) {
             let dragonBreathDmg = Math.floor(player.maxHp * 0.07);
             if (dragonBreathDmg > 0) {
@@ -1081,10 +1117,10 @@
                     if (!isTestingDamage) checkResult();
                 }, 300);
             } else {
-                 if (!isTestingDamage) checkResult();
+                if (!isTestingDamage) checkResult();
             }
         } else {
-             if (!isTestingDamage) checkResult();
+            if (!isTestingDamage) checkResult();
         }
 
         if (player.hp > 0 && enemy.hp > 0) {
@@ -1141,7 +1177,6 @@
             battleLoopId = setTimeout(startNextBattle, 1500);
 
         } else if (player.hp <= 0) {
-            // 死亡判定：立刻停止所有循环
             if(bloodInterval) clearInterval(bloodInterval);
             if(mechInterval) clearInterval(mechInterval);
             if(battleLoopId) clearTimeout(battleLoopId);
@@ -1152,7 +1187,7 @@
             
             log(`💔 力竭倒下... 3秒后自动复活`, '#c0392b');
             
-            // 3秒后自动复活，不再需要点击
+            // 自动复活
             setTimeout(revivePlayer, 3000);
         }
     }

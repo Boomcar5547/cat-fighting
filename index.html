@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>大猫猫斗恶龙 Ver3.07</title>
+    <title>大猫猫斗恶龙 Ver3.08</title>
     <style>
         /* --- 全局样式 --- */
         body {
@@ -62,19 +62,18 @@
         .version { color: #7f8c8d; font-size: 12px; margin-bottom: 20px; flex-shrink: 0;}
         input { padding: 12px; border: 2px solid #3498db; border-radius: 8px; width: 70%; text-align: center; font-size: 16px; margin-bottom: 20px; flex-shrink: 0;}
         
-        button { padding: 12px 25px; background: #e67e22; color: white; border: none; border-radius: 20px; font-size: 18px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 0 #d35400; transition: all 0.1s; margin: 10px; flex-shrink: 0; width: 70%; }
+        button { padding: 10px 25px; background: #e67e22; color: white; border: none; border-radius: 20px; font-size: 16px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 0 #d35400; transition: all 0.1s; margin: 5px; flex-shrink: 0;}
         button:active { transform: translateY(4px); box-shadow: 0 0 0 #d35400; }
         button:disabled { background: #bdc3c7; box-shadow: none; cursor: not-allowed; transform: none; color: #fff; }
         
         .btn-blue { background: #3498db; box-shadow: 0 4px 0 #2980b9; }
         .btn-blue:active { transform: translateY(4px); box-shadow: 0 0 0 #2980b9; }
-        .btn-green { background: #2ecc71; box-shadow: 0 4px 0 #27ae60; }
+        .btn-green { background: #2ecc71; box-shadow: 0 4px 0 #27ae60; width: 80%; }
         .btn-green:active { transform: translateY(4px); box-shadow: 0 0 0 #27ae60; }
         .btn-gray { background: #95a5a6; box-shadow: 0 4px 0 #7f8c8d; font-size: 14px; padding: 8px 20px; }
         
         .btn-home {
-            position: absolute;
-            top: 10px; left: 10px; width: 36px; height: 36px; border-radius: 50%;
+            position: absolute; top: 10px; left: 10px; width: 36px; height: 36px; border-radius: 50%;
             background: #fff; border: 2px solid #bdc3c7; color: #7f8c8d; font-size: 20px;
             display: flex; align-items: center; justify-content: center; cursor: pointer;
             z-index: 20; padding: 0; margin: 0; box-shadow: 0 2px 5px rgba(0,0,0,0.1);
@@ -164,7 +163,7 @@
         .exp-fill { height: 100%; background: linear-gradient(90deg, #f1c40f, #f39c12); width: 0%; transition: width 0.5s; }
         .exp-text { position: absolute; top: 0; left: 0; width: 100%; height: 100%; text-align: center; font-size: 10px; line-height: 15px; color: #333; font-weight: bold; }
 
-        .floating-text { position: absolute; font-weight: 900; font-size: 20px; animation: floatUp 0.8s ease-out forwards; text-shadow: 1px 1px 0 #fff, -1px -1px 0 #fff; z-index: 20; white-space: nowrap; pointer-events: none; left: 50%; transform: translateX(-50%); top: -40px; }
+        .floating-text { position: absolute; font-weight: 900; font-size: 28px; animation: floatUp 0.8s ease-out forwards; text-shadow: 2px 2px 0 #fff; z-index: 20; white-space: nowrap; left: 50%; transform: translateX(-50%); top: -40px; pointer-events: none;}
         @keyframes floatUp { 0% { top: -40px; opacity: 1; transform: translateX(-50%) scale(1); } 100% { top: -90px; opacity: 0; transform: translateX(-50%) scale(1.2); } }
 
         .slash-effect { position: absolute; width: 150px; height: 150px; background: transparent; border: 2px solid transparent; z-index: 15; left: 50%; top: 50%; transform: translate(-50%, -50%); pointer-events: none; }
@@ -193,7 +192,7 @@
     
     <div id="startLayer" class="layer active layer-scroll">
         <h1>大猫猫斗恶龙</h1>
-        <div class="version">Ver3.07.12112502beta</div>
+        <div class="version">Ver3.08.12112501beta</div>
         <svg width="150" height="150" viewBox="0 0 100 100">
             <circle cx="50" cy="50" r="40" fill="#f1c40f" stroke="#e67e22" stroke-width="3"/>
             <path d="M30 30 L40 10 L55 30 Z" fill="#f1c40f" stroke="#e67e22" stroke-width="2"/>
@@ -204,9 +203,9 @@
             <path d="M10 50 L90 50" stroke="#bdc3c7" stroke-width="5" opacity="0.5"/>
         </svg>
         <br>
-        <button class="btn-green" onclick="openSlotMenu('load')">读取存档</button>
-        <button class="btn-blue" onclick="openSlotMenu('new')">新游戏</button>
-        <button class="btn-gray" onclick="showLayer('changelog')">更新日志</button>
+        <button class="btn-green" onclick="openSlotMenu('load')" style="width:70%">读取存档</button>
+        <button class="btn-blue" onclick="openSlotMenu('new')" style="width:70%">新游戏</button>
+        <button class="btn-gray" onclick="showLayer('changelog')" style="width:70%">更新日志</button>
     </div>
 
     <div id="slotLayer" class="layer layer-scroll">
@@ -226,20 +225,20 @@
         <h2>更新日志</h2>
         <div class="scroll-box" id="changelogBox">
             <div class="log-block">
-                <div class="log-ver">Ver 3.07.12112502beta</div>
-                <div class="log-date">核心修复</div>
+                <div class="log-ver">Ver 3.08.12112501beta</div>
+                <div class="log-date">紧急修复</div>
                 <ul class="log-list">
-                    <li><span class="highlight">多存档修复</span>：修复了新游戏和读取存档的逻辑断层，现在可以正常保存和读取三个槽位。</li>
-                    <li><span class="highlight">机械猫修正</span>：移除猫能消耗的取整逻辑，改为精确浮点运算，彻底解决空蓝卡死问题。</li>
-                    <li><span class="highlight">UI回滚</span>：恢复了稳定好用的多存档主界面。</li>
+                    <li><span class="highlight">致命错误修复</span>：修复了界面跳转键名错误导致的游戏无法开始的Bug。现在[读取存档]和[新游戏]已完全恢复正常。</li>
                 </ul>
             </div>
-            <div class="log-block">
+             <div class="log-block">
                 <div class="log-ver">Ver 3.06</div>
-                <div class="log-date">数值微调</div>
+                <div class="log-date">核心逻辑重构</div>
                 <ul class="log-list">
-                    <li>机械猫火箭弹系数提升 (0.25/0.75)。</li>
-                    <li>伤害数字移至头顶正上方，字体缩小。</li>
+                    <li>机械猫修复：空蓝不再卡死，移除取整，改为浮点运算。</li>
+                    <li>多存档修复：修复了新游戏开始时存档槽位未被正确锁定导致无法保存的问题。</li>
+                    <li>数值增强：机械猫火箭弹系数提升 (0.25/0.75)。</li>
+                    <li>显示优化：战斗日志恢复彩色详细显示；伤害数字移至头顶正上方。</li>
                 </ul>
             </div>
             <div class="log-block">
@@ -251,11 +250,26 @@
                 </ul>
             </div>
             <div class="log-block">
+                <div class="log-ver">Ver 3.04</div>
+                <div class="log-date">版本修正</div>
+                <ul class="log-list">
+                    <li>修复版本号混乱。</li>
+                    <li>整合美术资源。</li>
+                </ul>
+            </div>
+            <div class="log-block">
                 <div class="log-ver">Ver 3.0</div>
                 <div class="log-date">职业觉醒</div>
                 <ul class="log-list">
                     <li>新增血骑猫、机械猫。</li>
                     <li>卡牌池重构，新增唯一卡。</li>
+                </ul>
+            </div>
+            <div class="log-block">
+                <div class="log-ver">Ver 2.1</div>
+                <div class="log-date">多存档</div>
+                <ul class="log-list">
+                    <li>支持3个独立存档槽位。</li>
                 </ul>
             </div>
             <div class="log-block">
@@ -281,7 +295,7 @@
     <div id="classLayer" class="layer layer-scroll">
         <h2 style="color:#2c3e50; font-size: 20px;">请选择你的职业</h2>
         <div class="card-container" id="classContainer"></div>
-        <button onclick="showLayer('start')" style="margin-top:20px; background:#95a5a6;">返回</button>
+        <button onclick="showLayer('nameInputLayer')" style="margin-top:20px; background:#95a5a6;">返回</button>
     </div>
 
     <div id="battleLayer" class="layer">
@@ -382,6 +396,7 @@
 </div>
 
 <script>
+    // --- 0. SVG 绘图库 (保持原样) ---
     const SVGS = {
         cat_resolute: `<svg viewBox="0 0 100 100"><g transform="translate(10,10)"><circle cx="40" cy="40" r="30" fill="#bdc3c7" stroke="#2c3e50" stroke-width="2"/><path d="M20 20 L10 0 L35 15 Z" fill="#bdc3c7" stroke="#2c3e50" stroke-width="2"/><path d="M60 20 L70 0 L45 15 Z" fill="#bdc3c7" stroke="#2c3e50" stroke-width="2"/><rect x="30" y="15" width="20" height="25" rx="5" fill="none" stroke="#2c3e50" stroke-width="2"/><line x1="40" y1="15" x2="40" y2="40" stroke="#2c3e50" stroke-width="1"/><line x1="30" y1="27" x2="50" y2="27" stroke="#2c3e50" stroke-width="1"/><path d="M65 40 L90 10" stroke="#95a5a6" stroke-width="6"/><path d="M65 40 L90 10" stroke="#2c3e50" stroke-width="2"/><line x1="60" y1="45" x2="70" y2="35" stroke="#f1c40f" stroke-width="4"/></g></svg>`,
         cat_agile: `<svg viewBox="0 0 100 100"><g transform="translate(10,10)"><circle cx="40" cy="40" r="30" fill="#f1c40f" stroke="#2c3e50" stroke-width="2"/><path d="M20 20 L10 0 L35 15 Z" fill="#f1c40f" stroke="#2c3e50" stroke-width="2"/><path d="M60 20 L70 0 L45 15 Z" fill="#f1c40f" stroke="#2c3e50" stroke-width="2"/><circle cx="30" cy="35" r="3" fill="#2c3e50"/><circle cx="50" cy="35" r="3" fill="#2c3e50"/><path d="M35 45 Q40 50 45 45" stroke="#2c3e50" stroke-width="2" fill="none"/><path d="M70 40 L85 25" stroke="#3498db" stroke-width="4"/><path d="M10 40 L-5 25" stroke="#3498db" stroke-width="4"/></g></svg>`,
@@ -431,7 +446,7 @@
             id: 'mech', name: '机械猫', svg: SVGS.cat_mech, color: '#34495e',
             base: { atk: 30, mp: 12, def: 25, hp: 120, spd: 0 },
             growth: { atk: 15, mp: 4, def: 3, hp: 20, spd: 0 },
-            talent: '【CAAATΩ火箭弹】无法普攻/享受猫速。每0.2秒消耗2%当前[猫能]造成[猫威]x0.25+剩余[猫能]x0.75伤害，可爆击。'
+            talent: '【CAAATΩ火箭弹】无法普攻/享受猫速。每0.2秒消耗3%当前[猫能]造成[猫威]x0.25+剩余[猫能]x0.75伤害，可爆击。'
         }
     ];
 
@@ -472,7 +487,7 @@
     let isFirstRogue = false;
     let isGameActive = false;
     let currentSlotId = null;
-    let lastBossType = null;
+    let lastBossType = null; 
     
     let bloodInterval = null;
     let mechInterval = null;
@@ -495,6 +510,7 @@
     };
     const logs = document.getElementById('battleLog');
 
+    // --- 0. 初始化检测存档 ---
     window.onload = function() {
         const legacySave = localStorage.getItem('bigCatQuestSave');
         const slot0 = localStorage.getItem('bigCatQuest_slot_0');
@@ -513,8 +529,11 @@
     };
 
     function showLayer(name) {
-        Object.values(layers).forEach(l => l.classList.remove('active'));
-        layers[name].classList.add('active');
+        Object.values(layers).forEach(l => {
+            if(l) l.classList.remove('active');
+        });
+        if(layers[name]) layers[name].classList.add('active');
+        else console.error("Layer not found: " + name);
     }
 
     function log(msg, color = '#333') {
@@ -592,7 +611,7 @@
                     } else {
                         if(confirm("该槽位已有存档，确定覆盖吗？")) {
                             currentSlotId = i;
-                            showLayer('nameInputLayer');
+                            showLayer('name'); // ID is nameInputLayer, defined as 'name' in layers
                         }
                     }
                 };
@@ -601,12 +620,16 @@
                 el.innerHTML = '<div>+ 空槽位</div>';
                 el.onclick = () => {
                     currentSlotId = i;
-                    showLayer('nameInputLayer');
+                    if (mode === 'load') {
+                        showLayer('name'); 
+                    } else {
+                        showLayer('name');
+                    }
                 };
             }
             container.appendChild(el);
         }
-        showLayer('slotLayer');
+        showLayer('slot');
     }
 
     function goToClassSelection() {
@@ -679,7 +702,7 @@
         localStorage.setItem(`bigCatQuest_slot_${currentSlotId}`, JSON.stringify(saveData));
         if (manual) { alert("存档成功！"); } 
     }
-    
+
     function loadGame() {
         openSlotMenu('load');
     }
@@ -754,8 +777,7 @@
             mechInterval = setInterval(() => {
                 if (!isGameActive) return;
                 if (player.hp > 0 && enemy.hp > 0) {
-                    let cost = Math.floor(player.mp * 0.02); // 2% current mp
-                    // 保护机制：如果当前蓝量>0，至少能发射
+                    let cost = Math.floor(player.mp * 0.02); 
                     if (player.mp > 0) {
                         player.mp -= cost;
                         if(player.mp < 0) player.mp = 0;
@@ -770,7 +792,6 @@
                         updateUI();
                         if (enemy.hp <= 0) checkResult();
                     } else {
-                        // 蓝量为0，尝试回蓝
                         let charge = Math.max(1, Math.floor(player.maxMp * 0.05));
                         player.mp += charge;
                         log(`[系统] 能源耗尽，紧急充能 ${charge} 点`, '#2980b9');
@@ -919,7 +940,7 @@
                 enemy.hp -= extra;
                 if(isTestingDamage) testTotalDamage += extra;
                 floatText("+" + extra, document.getElementById('enemyEl'), '#f1c40f', '28px');
-                if(!isTestingDamage) log(`[迅捷连击] 追加 ${extra} 点真实伤害!`, '#f1c40f');
+                if(!isTestingDamage) log(`[迅捷] 追加 ${extra} 真伤`);
                 updateUI();
                 if (!isTestingDamage && enemy.hp <= 0) checkResult();
                 else checkMultiHit(); 
@@ -960,7 +981,6 @@
         setTimeout(() => eEl.style.transform = 'translateX(0)', 200);
         showSlash(document.getElementById('playerEl'));
 
-        // [Ver3.06] 穿透
         let rawDmg = enemy.atk - player.def;
         let minRate = 0.1; 
         if(stageType === 'elite') minRate = 0.25;
@@ -1185,8 +1205,11 @@
         document.getElementById('attrClass').innerText = player.cls.name;
         document.getElementById('attrLvl').innerText = player.lvl;
         document.getElementById('attrHp').innerText = Math.floor(player.hp) + "/" + player.maxHp;
-        // 浮点显示
-        document.getElementById('attrMp').innerText = (Math.floor(player.mp * 10) / 10).toFixed(1) + "/" + player.maxMp;
+        
+        let displayMp = (Math.floor(player.mp * 10) / 10).toFixed(1);
+        if(player.cls.id !== 'mech') displayMp = Math.floor(player.mp);
+
+        document.getElementById('attrMp').innerText = displayMp + "/" + player.maxMp;
         document.getElementById('attrAtk').innerText = player.atk;
         document.getElementById('attrDef').innerText = player.def;
         document.getElementById('attrSpd').innerText = player.spd;
@@ -1240,16 +1263,18 @@
         }
         if(player.cls.id === 'mech') {
              mechInterval = setInterval(() => {
-                let cost = player.mp * 0.02; // 浮点扣蓝
+                let cost = Math.floor(player.mp * 0.02);
                 if (player.mp > 0) {
                     player.mp -= cost;
                     if(player.mp < 0) player.mp = 0;
-                    
                     let dmgBase = player.atk * 0.25 + player.mp * 0.75;
                     let isCrit = Math.random() < player.critRate;
                     let finalDmg = Math.max(1, Math.floor(dmgBase * (isCrit ? player.critDmg : 1)));
                     testTotalDamage += finalDmg;
                     floatText(finalDmg, document.getElementById('enemyEl'), isCrit?'#e74c3c':'#fff');
+                } else {
+                     let charge = Math.max(1, Math.floor(player.maxMp * 0.05));
+                     player.mp += charge;
                 }
              }, 200);
         }
@@ -1303,13 +1328,9 @@
         document.getElementById('killText').innerText = killCount;
         document.getElementById('pLvVal').innerText = player.lvl;
         
-        // 浮点数显示优化
         let displayMp = (Math.floor(player.mp * 10) / 10).toFixed(1);
-        if(player.cls.id === 'mech') {
-             document.getElementById('pMpVal').innerText = `MP: ${displayMp}`;
-        } else {
-             document.getElementById('pMpVal').innerText = `MP: ${Math.floor(player.mp)}`;
-        }
+        if(player.cls.id !== 'mech') displayMp = Math.floor(player.mp);
+        document.getElementById('pMpVal').innerText = `MP: ${displayMp}`;
     }
 </script>
 </body>

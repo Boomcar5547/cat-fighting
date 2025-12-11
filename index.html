@@ -58,6 +58,7 @@
 
         /* --- 基础组件 --- */
         h1 { color: #e67e22; text-shadow: 2px 2px #f1c40f; margin-bottom: 5px; text-align: center; flex-shrink: 0;}
+        h2 { color: #2c3e50; margin-bottom: 20px; text-align: center; }
         .version { color: #7f8c8d; font-size: 12px; margin-bottom: 20px; flex-shrink: 0;}
         input { padding: 12px; border: 2px solid #3498db; border-radius: 8px; width: 70%; text-align: center; font-size: 16px; margin-bottom: 20px; flex-shrink: 0;}
         
@@ -71,8 +72,7 @@
         .btn-green:active { transform: translateY(4px); box-shadow: 0 0 0 #27ae60; }
         
         .btn-home {
-            position: absolute;
-            top: 10px; left: 10px; width: 36px; height: 36px; border-radius: 50%;
+            position: absolute; top: 10px; left: 10px; width: 36px; height: 36px; border-radius: 50%;
             background: #fff; border: 2px solid #bdc3c7; color: #7f8c8d; font-size: 20px;
             display: flex; align-items: center; justify-content: center; cursor: pointer;
             z-index: 20; padding: 0; margin: 0; box-shadow: 0 2px 5px rgba(0,0,0,0.1);
@@ -101,7 +101,10 @@
         .log-list { padding-left: 20px; margin: 0; }
         .log-list li { font-size: 13px; color: #34495e; margin-bottom: 6px; line-height: 1.5; }
         .highlight { color: #c0392b; font-weight: bold; }
-        .apology { color: #c0392b; font-weight: bold; background: #fadbd8; padding: 10px; border-radius: 5px; margin-top: 5px; border: 1px solid #e6b0aa; }
+        
+        /* 致歉与警告样式 */
+        .apology { color: #c0392b; font-weight: bold; background: #fadbd8; padding: 10px; border-radius: 5px; margin-top: 5px; border: 1px solid #e6b0aa; font-size: 13px; line-height: 1.5; }
+        .refactor-warning { color: #d35400; font-weight: bold; background: #fdebd0; padding: 10px; border-radius: 5px; margin-bottom: 10px; border: 1px solid #edbb99; font-size: 13px; }
         
         .attr-row { display: flex; justify-content: space-between; border-bottom: 1px solid #eee; padding: 8px 0; font-size: 14px; color: #34495e; }
         .attr-val { color: #2980b9; font-family: monospace; font-size: 16px; }
@@ -140,7 +143,7 @@
         .exp-fill { height: 100%; background: linear-gradient(90deg, #f1c40f, #f39c12); width: 0%; transition: width 0.5s; }
         .exp-text { position: absolute; top: 0; left: 0; width: 100%; height: 100%; text-align: center; font-size: 10px; line-height: 15px; color: #333; font-weight: bold; }
 
-        .floating-text { position: absolute; font-weight: 900; font-size: 22px; animation: floatUp 0.8s ease-out forwards; text-shadow: 1px 1px 0 #fff, -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff; z-index: 20; white-space: nowrap; pointer-events: none; left: 50%; transform: translateX(-50%); }
+        .floating-text { position: absolute; font-weight: 900; font-size: 28px; animation: floatUp 0.8s ease-out forwards; text-shadow: 2px 2px 0 #fff; z-index: 20; white-space: nowrap; left: 50%; transform: translateX(-50%); pointer-events: none;}
         @keyframes floatUp { 0% { top: 0; opacity: 1; transform: translateX(-50%) scale(1); } 50% { top: -30px; opacity: 1; transform: translateX(-50%) scale(1.2); } 100% { top: -60px; opacity: 0; transform: translateX(-50%) scale(1); } }
 
         .slash-effect { position: absolute; width: 150px; height: 150px; background: transparent; border: 2px solid transparent; z-index: 15; left: 50%; top: 50%; transform: translate(-50%, -50%); pointer-events: none; }
@@ -212,15 +215,18 @@
     </div>
 
     <div id="changelogLayer" class="layer layer-scroll">
-        <h2>编年史 (更新日志)</h2>
+        <h2>更新日志</h2>
         <div class="scroll-box" id="changelogBox">
             <div class="log-block">
                 <div class="log-ver">Ver 3.05.12112501beta</div>
-                <div class="log-date">当前版本 - 邪龙降临</div>
+                <div class="log-date">稳定版发布</div>
+                <div class="refactor-warning">
+                    ⚠️ 由于此版本为基于旧版本的代码重构，有可能导致此前出现过的bug复现，大猫猫将在后续版本中陆续修复。
+                </div>
                 <ul class="log-list">
                     <li><span class="highlight">百层BOSS - 邪龙</span>：每100层遭遇远古邪龙，拥有7%真实伤害龙息，击败必掉蓝卡。</li>
-                    <li><span class="highlight">穿透机制</span>：怪物获得保底穿透(小怪10%/精英25%/BOSS 40%)，优化坚毅猫后期体验。</li>
-                    <li><span class="highlight">机械猫加强</span>：火箭弹系数提升至 0.25/0.75。</li>
+                    <li><span class="highlight">穿透机制</span>：怪物获得保底穿透(小怪10%/精英25%/BOSS 40%)。</li>
+                    <li><span class="highlight">机械猫加强</span>：火箭弹伤害系数提升至 0.25/0.75。</li>
                     <li><span class="highlight">掉落优化</span>：BOSS战后不再掉落白卡。</li>
                     <li><span class="highlight">版本修正</span>：彻底梳理了混乱的版本号，恢复正统 3.0x 序列。</li>
                 </ul>
@@ -231,7 +237,7 @@
                 <div class="log-date">重大事故与致歉</div>
                 <div class="apology">
                     致各位勇者：<br>
-                    在 Ver3.04 的更新中，由于开发组的疏忽，导致了 UI 逻辑冲突，使得新老玩家均无法开始游戏或读取存档。<br>
+                    在 Ver3.04 的更新中，由于大猫猫的疏忽，导致了 UI 逻辑冲突，使得新老玩家均无法开始游戏或读取存档。<br>
                     我们已紧急回滚并修复了此问题。对于给大家带来的糟糕体验，我们致以最诚挚的歉意！<br>
                     承诺：未来我们会更加严谨地测试每一行代码。
                 </div>
@@ -288,7 +294,8 @@
                 <div class="log-ver">Ver 2.0</div>
                 <div class="log-date">存档系统</div>
                 <ul class="log-list">
-                    <li>实装自动存档与手动存档功能。</li>
+                    <li>新增自动/手动存档功能。</li>
+                    <li>主界面新增继续游戏按钮，显示进度。</li>
                 </ul>
             </div>
 
@@ -296,9 +303,9 @@
                 <div class="log-ver">Ver 1.8</div>
                 <div class="log-date">系统扩充</div>
                 <ul class="log-list">
-                    <li>坚毅猫反伤阈值降低(2倍/5倍)。</li>
+                    <li>坚毅猫加强：反伤阈值降低(2倍/5倍)。</li>
                     <li>新增伤害测试(打桩)功能。</li>
-                    <li>魔王形象重绘。</li>
+                    <li>魔王形象重绘，更具压迫感。</li>
                 </ul>
             </div>
 
@@ -316,7 +323,7 @@
                 <div class="log-ver">Ver 1.6</div>
                 <div class="log-date">战斗修正</div>
                 <ul class="log-list">
-                    <li>修复灵活猫追加伤害丢失。</li>
+                    <li>修复灵活猫追加伤害丢失的问题。</li>
                     <li>修复智慧猫增伤公式无效。</li>
                 </ul>
             </div>
@@ -325,7 +332,7 @@
                 <div class="log-ver">Ver 1.5</div>
                 <div class="log-date">流程优化</div>
                 <ul class="log-list">
-                    <li>抽卡增加确认按钮，防止误触。</li>
+                    <li>抽卡界面增加确认按钮，防止误触。</li>
                     <li>怪物属性改为基于层数独立成长。</li>
                 </ul>
             </div>
@@ -472,6 +479,7 @@
 </div>
 
 <script>
+    // --- 0. SVG 绘图库 ---
     const SVGS = {
         cat_resolute: `<svg viewBox="0 0 100 100"><g transform="translate(10,10)"><circle cx="40" cy="40" r="30" fill="#bdc3c7" stroke="#2c3e50" stroke-width="2"/><path d="M20 20 L10 0 L35 15 Z" fill="#bdc3c7" stroke="#2c3e50" stroke-width="2"/><path d="M60 20 L70 0 L45 15 Z" fill="#bdc3c7" stroke="#2c3e50" stroke-width="2"/><rect x="30" y="15" width="20" height="25" rx="5" fill="none" stroke="#2c3e50" stroke-width="2"/><line x1="40" y1="15" x2="40" y2="40" stroke="#2c3e50" stroke-width="1"/><line x1="30" y1="27" x2="50" y2="27" stroke="#2c3e50" stroke-width="1"/><path d="M65 40 L90 10" stroke="#95a5a6" stroke-width="6"/><path d="M65 40 L90 10" stroke="#2c3e50" stroke-width="2"/><line x1="60" y1="45" x2="70" y2="35" stroke="#f1c40f" stroke-width="4"/></g></svg>`,
         cat_agile: `<svg viewBox="0 0 100 100"><g transform="translate(10,10)"><circle cx="40" cy="40" r="30" fill="#f1c40f" stroke="#2c3e50" stroke-width="2"/><path d="M20 20 L10 0 L35 15 Z" fill="#f1c40f" stroke="#2c3e50" stroke-width="2"/><path d="M60 20 L70 0 L45 15 Z" fill="#f1c40f" stroke="#2c3e50" stroke-width="2"/><circle cx="30" cy="35" r="3" fill="#2c3e50"/><circle cx="50" cy="35" r="3" fill="#2c3e50"/><path d="M35 45 Q40 50 45 45" stroke="#2c3e50" stroke-width="2" fill="none"/><path d="M70 40 L85 25" stroke="#3498db" stroke-width="4"/><path d="M10 40 L-5 25" stroke="#3498db" stroke-width="4"/></g></svg>`,
@@ -503,7 +511,7 @@
             id: 'wise', name: '智慧猫', svg: SVGS.cat_wise, color: '#9b59b6',
             base: { atk: 45, mp: 20, def: 10, hp: 70, spd: 10 },
             growth: { atk: 15, mp: 10, def: 3, hp: 18, spd: 2 },
-            talent: '【奥术超载】消耗10%[猫能]增伤。致死时消耗[猫能]抵挡伤害(单场限1次)。'
+            talent: '【奥术超载】消耗10%[猫能]增伤，1点[猫能]增加1%伤害。致死时消耗[猫能]抵挡伤害(单场限1次)。'
         },
         {
             id: 'berserk', name: '狂暴猫', svg: SVGS.cat_berserk, color: '#c0392b',
@@ -1002,10 +1010,7 @@
         let floatMsg = isCrit ? `暴击! ${dmg}` : dmg;
         floatText(floatMsg, document.getElementById('enemyEl'), floatColor, floatSize);
         
-        if(!isTestingDamage) {
-            if(isCrit) log(`⚡【暴击】造成了 ${dmg} 点巨额伤害!`, '#c0392b');
-            else log(`你对 ${enemy.name} 造成 ${dmg} 点伤害。`);
-        }
+        if(!isTestingDamage) log(isCrit ? `⚡【暴击】造成了 ${dmg} 点巨额伤害!` : `你对 ${enemy.name} 造成 ${dmg} 点伤害。`);
 
         if (enemy.hp <= 0 && !isTestingDamage) {
             checkResult();
@@ -1020,7 +1025,7 @@
                 enemy.hp -= extra;
                 if(isTestingDamage) testTotalDamage += extra;
                 floatText("+" + extra, document.getElementById('enemyEl'), '#f1c40f', '28px');
-                if(!isTestingDamage) log(`[迅捷] 追加 ${extra} 真伤`);
+                if(!isTestingDamage) log(`[迅捷连击] 追加 ${extra} 点真实伤害!`, '#f1c40f');
                 updateUI();
                 if (!isTestingDamage && enemy.hp <= 0) checkResult();
                 else checkMultiHit(); 

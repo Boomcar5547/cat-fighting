@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>大猫猫斗恶龙 Ver3.16</title>
+    <title>大猫猫斗恶龙 Ver3.17</title>
     <style>
         /* --- 全局样式 --- */
         body {
@@ -53,7 +53,7 @@
         .layer-scroll {
             justify-content: flex-start;
             padding-top: 40px;
-            padding-bottom: 60px;
+            padding-bottom: 80px; /* 底部留空给固定按钮 */
         }
 
         /* --- 基础组件 --- */
@@ -80,7 +80,7 @@
         }
 
         /* --- 存档槽位样式 --- */
-        .slot-container { width: 100%; display: flex; flex-direction: column; gap: 15px; }
+        .slot-container { width: 100%; display: flex; flex-direction: column; gap: 15px; margin-bottom: 20px;}
         .save-slot {
             background: #fff;
             border: 2px solid #bdc3c7;
@@ -94,7 +94,10 @@
             transition: all 0.2s;
             position: relative;
         }
-        .save-slot:hover { border-color: #3498db; transform: scale(1.01); }
+        .save-slot:hover { border-color: #3498db; }
+        /* 选中状态 */
+        .save-slot.selected { border: 3px solid #f1c40f; background: #fcf8e3; transform: scale(1.02); box-shadow: 0 0 10px rgba(241, 196, 15, 0.5); }
+        
         .save-slot.empty { border-style: dashed; background: #f9f9f9; color: #95a5a6; justify-content: center; }
         .slot-info { display: flex; flex-direction: column; align-items: flex-start; }
         .slot-title { font-weight: bold; color: #2c3e50; font-size: 16px; display: flex; align-items: center; gap: 5px; }
@@ -135,6 +138,7 @@
         .card-container { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; width: 100%; padding-bottom: 20px; }
         .class-card { background: white; border: 2px solid #bdc3c7; border-radius: 10px; padding: 8px; text-align: center; cursor: pointer; transition: transform 0.2s; box-shadow: 0 2px 5px rgba(0,0,0,0.1); display: flex; flex-direction: column; align-items: center; }
         .class-card:hover { border-color: #3498db; transform: scale(1.02); }
+        .class-card.selected { border: 3px solid #f1c40f; background: #fcf8e3; transform: scale(1.05); box-shadow: 0 0 15px rgba(241, 196, 15, 0.5); }
         .class-card h3 { margin: 5px 0; color: #2c3e50; font-size: 15px; }
         .svg-icon { width: 60px; height: 60px; margin: 5px auto; }
         .stats-text { font-size: 9px; color: #7f8c8d; text-align: left; line-height: 1.3; width: 100%; }
@@ -185,6 +189,14 @@
         .card-blue { border-top: 5px solid #3498db; }
         .card-purple { border-top: 5px solid #9b59b6; }
         .card-orange { border-top: 5px solid #e67e22; }
+        
+        /* 固定底部按钮容器 */
+        .fixed-bottom {
+            position: absolute; bottom: 0; left: 0; width: 100%;
+            background: rgba(255,255,255,0.95); border-top: 1px solid #ccc;
+            padding: 10px; display: flex; justify-content: center; gap: 10px;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.1); z-index: 20;
+        }
 
     </style>
 </head>
@@ -194,7 +206,7 @@
     
     <div id="startLayer" class="layer active layer-scroll">
         <h1>大猫猫斗恶龙</h1>
-        <div class="version">Ver3.15.12122502beta</div>
+        <div class="version">Ver3.17.12122501beta</div>
         <svg width="150" height="150" viewBox="0 0 100 100">
             <circle cx="50" cy="50" r="40" fill="#f1c40f" stroke="#e67e22" stroke-width="3"/>
             <path d="M30 30 L40 10 L55 30 Z" fill="#f1c40f" stroke="#e67e22" stroke-width="2"/>
@@ -213,7 +225,10 @@
     <div id="slotLayer" class="layer layer-scroll">
         <h2 id="slotTitle">选择存档</h2>
         <div id="slotList" class="slot-container"></div>
-        <button onclick="showLayer('start')" style="margin-top:20px; background:#95a5a6;">返回</button>
+        <div class="fixed-bottom">
+            <button class="btn-green" onclick="handleSlotConfirm()" style="flex:1; margin:0">确定</button>
+            <button onclick="showLayer('start')" style="background:#95a5a6; width:auto; margin:0; padding:12px 20px;">返回</button>
+        </div>
     </div>
     
     <div id="nameInputLayer" class="layer">
@@ -227,21 +242,20 @@
         <h2>更新日志</h2>
         <div class="scroll-box" id="changelogBox">
             <div class="log-block">
-                <div class="log-ver">Ver 3.15.12122502beta</div>
-                <div class="log-date">紧急UI修复</div>
+                <div class="log-ver">Ver 3.17.12122501beta</div>
+                <div class="log-date">交互重构</div>
                 <ul class="log-list">
-                    <li><span class="highlight">界面修复</span>：修正了代码层面的跳转ID错误(nameInputLayer -> name)，现在点击[新游戏]和[读取存档]能正确跳转了，彻底解决了“点击无反应”的致命问题。</li>
-                    <li><span class="highlight">读档保护</span>：增加了读档时的空值检测，防止坏档导致卡死。</li>
+                    <li><span class="highlight">稳定交互</span>：重构了存档和职业选择逻辑，采用[选中]->[确定]的两步操作模式，彻底解决了点击无效的问题。</li>
+                    <li><span class="highlight">视觉反馈</span>：选中存档槽位和职业卡片时会有明显的高亮效果。</li>
                 </ul>
             </div>
             <div class="log-block">
-                <div class="log-ver">Ver 3.14 (撤回)</div>
-                <div class="log-date">重大事故与致歉</div>
-                <div class="apology">
-                    致各位勇者：<br>
-                    在 Ver3.14 的更新中，由于大猫猫的疏忽，导致了界面跳转逻辑与后台ID不匹配，使得游戏完全无法进行。<br>
-                    我们已紧急修复了此问题。对于给大家带来的糟糕体验，我们致以最诚挚的歉意！<br>
-                </div>
+                <div class="log-ver">Ver 3.15~3.16</div>
+                <div class="log-date">紧急修复</div>
+                <ul class="log-list">
+                    <li>修复UI跳转ID错误导致的游戏无法开始。</li>
+                    <li>修复读档时因空值导致的卡死。</li>
+                </ul>
             </div>
             <div class="log-block">
                 <div class="log-ver">Ver 3.12</div>
@@ -260,20 +274,12 @@
                 </ul>
             </div>
             <div class="log-block">
-                <div class="log-ver">Ver 3.10</div>
-                <div class="log-date">UI紧急修复</div>
-                <ul class="log-list">
-                    <li>修复了上一版本因UI代码错误导致无法进入游戏的严重BUG。</li>
-                </ul>
-            </div>
-            <div class="log-block">
-                <div class="log-ver">Ver 3.06~3.09</div>
+                <div class="log-ver">Ver 3.06~3.10</div>
                 <div class="log-date">稳定性优化</div>
                 <ul class="log-list">
                     <li>机械猫修复：空蓝不再卡死，移除取整，改为浮点运算。</li>
                     <li>多存档修复：修复了新游戏开始时存档槽位未被正确锁定导致无法保存的问题。</li>
                     <li>机械猫火箭弹伤害倍率上调。</li>
-                    <li>优化后台定时器清除逻辑。</li>
                 </ul>
             </div>
             <div class="log-block">
@@ -330,7 +336,10 @@
     <div id="classLayer" class="layer layer-scroll">
         <h2 style="color:#2c3e50; font-size: 20px;">请选择你的职业</h2>
         <div class="card-container" id="classContainer"></div>
-        <button onclick="showLayer('name')" style="margin-top:20px; background:#95a5a6;">返回</button>
+        <div class="fixed-bottom">
+            <button class="btn-blue" onclick="handleClassConfirm()" style="flex:1; margin:0">开始冒险</button>
+            <button onclick="showLayer('name')" style="background:#95a5a6; width:auto; margin:0; padding:12px 20px;">返回</button>
+        </div>
     </div>
 
     <div id="battleLayer" class="layer">
@@ -429,6 +438,7 @@
 </div>
 
 <script>
+    // --- 0. SVG 绘图库 ---
     const SVGS = {
         cat_resolute: `<svg viewBox="0 0 100 100"><g transform="translate(10,10)"><circle cx="40" cy="40" r="30" fill="#bdc3c7" stroke="#2c3e50" stroke-width="2"/><path d="M20 20 L10 0 L35 15 Z" fill="#bdc3c7" stroke="#2c3e50" stroke-width="2"/><path d="M60 20 L70 0 L45 15 Z" fill="#bdc3c7" stroke="#2c3e50" stroke-width="2"/><rect x="30" y="15" width="20" height="25" rx="5" fill="none" stroke="#2c3e50" stroke-width="2"/><line x1="40" y1="15" x2="40" y2="40" stroke="#2c3e50" stroke-width="1"/><line x1="30" y1="27" x2="50" y2="27" stroke="#2c3e50" stroke-width="1"/><path d="M65 40 L90 10" stroke="#95a5a6" stroke-width="6"/><path d="M65 40 L90 10" stroke="#2c3e50" stroke-width="2"/><line x1="60" y1="45" x2="70" y2="35" stroke="#f1c40f" stroke-width="4"/></g></svg>`,
         cat_agile: `<svg viewBox="0 0 100 100"><g transform="translate(10,10)"><circle cx="40" cy="40" r="30" fill="#f1c40f" stroke="#2c3e50" stroke-width="2"/><path d="M20 20 L10 0 L35 15 Z" fill="#f1c40f" stroke="#2c3e50" stroke-width="2"/><path d="M60 20 L70 0 L45 15 Z" fill="#f1c40f" stroke="#2c3e50" stroke-width="2"/><circle cx="30" cy="35" r="3" fill="#2c3e50"/><circle cx="50" cy="35" r="3" fill="#2c3e50"/><path d="M35 45 Q40 50 45 45" stroke="#2c3e50" stroke-width="2" fill="none"/><path d="M70 40 L85 25" stroke="#3498db" stroke-width="4"/><path d="M10 40 L-5 25" stroke="#3498db" stroke-width="4"/></g></svg>`,
@@ -518,7 +528,7 @@
     let selectedRogueCard = null;
     let isFirstRogue = false;
     let isGameActive = false;
-    let currentSlotId = null;
+    let currentSlotId = null; 
     let lastBossType = null;
     
     let bloodInterval = null;
@@ -549,7 +559,7 @@
         if (legacySave && !slot0) {
             localStorage.setItem('bigCatQuest_slot_0', legacySave);
         }
-        checkSave();
+        
         const slider = document.getElementById('changelogBox');
         let isDown = false; let startY; let scrollTop;
         if (slider) {
@@ -564,13 +574,8 @@
         Object.values(layers).forEach(l => {
             if(l) l.classList.remove('active');
         });
-        // 增加容错，防止 ID 写错导致崩溃
-        if(layers[name]) {
-            layers[name].classList.add('active');
-        } else {
-            console.error("Layer not found: " + name);
-            alert("界面加载错误，请刷新重试。Error: Layer " + name + " missing.");
-        }
+        if(layers[name]) layers[name].classList.add('active');
+        else console.error("Layer not found: " + name);
     }
 
     function log(msg, color = '#333') {
@@ -608,6 +613,7 @@
         const title = document.getElementById('slotTitle');
         title.innerText = mode === 'load' ? "读取存档" : "选择存档槽位";
         container.innerHTML = '';
+        currentSlotId = null; // 重置
 
         for(let i=0; i<3; i++) {
             const saveStr = localStorage.getItem(`bigCatQuest_slot_${i}`);
@@ -642,27 +648,48 @@
                 el.appendChild(delBtn);
 
                 el.onclick = () => {
-                    if (mode === 'load') {
-                        currentSlotId = i;
-                        loadGameFromSlot(data);
-                    } else {
-                        if(confirm("该槽位已有存档，确定覆盖吗？")) {
-                            currentSlotId = i;
-                            showLayer('name'); // 修正：ID对应 nameInputLayer, key 是 'name'
-                        }
-                    }
+                    // 选中状态切换
+                    Array.from(container.children).forEach(c => c.classList.remove('selected'));
+                    el.classList.add('selected');
+                    currentSlotId = i;
                 };
             } else {
                 el.className += ' empty';
                 el.innerHTML = '<div>+ 空槽位</div>';
                 el.onclick = () => {
+                    Array.from(container.children).forEach(c => c.classList.remove('selected'));
+                    el.classList.add('selected');
                     currentSlotId = i;
-                    showLayer('name'); // 修正
                 };
             }
             container.appendChild(el);
         }
         showLayer('slot');
+    }
+
+    // 存档槽位确定按钮
+    function handleSlotConfirm() {
+        if (currentSlotId === null) {
+            alert("请先选择一个存档槽位！");
+            return;
+        }
+
+        const saveStr = localStorage.getItem(`bigCatQuest_slot_${currentSlotId}`);
+
+        if (slotMode === 'load') {
+            if (!saveStr) {
+                alert("该槽位为空，无法读取！");
+                return;
+            }
+            const data = JSON.parse(saveStr);
+            loadGameFromSlot(data);
+        } else {
+            // New Game
+            if (saveStr) {
+                if(!confirm("该槽位已有存档，确定覆盖吗？")) return;
+            }
+            showLayer('name'); // 跳转去起名
+        }
     }
 
     function goToClassSelection() {
@@ -671,6 +698,8 @@
         
         const container = document.getElementById('classContainer');
         container.innerHTML = '';
+        selectedClassId = null; // 重置
+
         CLASSES.forEach(cls => {
             const card = document.createElement('div');
             card.className = 'class-card';
@@ -684,10 +713,24 @@
                 </div>
                 <div class="talent-text">${cls.talent}</div>
             `;
-            card.onclick = () => initGame(name, cls);
+            card.onclick = () => {
+                Array.from(container.children).forEach(c => c.classList.remove('selected'));
+                card.classList.add('selected');
+                selectedClassId = cls;
+            };
             container.appendChild(card);
         });
         showLayer('select');
+    }
+
+    let selectedClassId = null;
+    function handleClassConfirm() {
+        if(!selectedClassId) {
+            alert("请选择一个职业！");
+            return;
+        }
+        const name = document.getElementById('playerNameInput').value.trim();
+        initGame(name, selectedClassId);
     }
 
     function initGame(name, cls) {
@@ -749,18 +792,17 @@
     }
 
     function loadGameFromSlot(data) {
-        // 安全检测
-        if(!data || !data.player) {
-            alert("存档损坏，无法读取。");
+        // 读档保护
+        if (!data || !data.player) {
+            alert("存档数据损坏，无法读取！");
             return;
         }
-
+        
         player = data.player;
         player.cls = CLASSES.find(c => c.id === data.clsId);
         
-        // 坏档修复（如果class数据没对上）
-        if(!player.cls) {
-            alert("职业数据丢失，存档无法使用。");
+        if (!player.cls) {
+            alert("职业数据丢失，存档不可用！");
             return;
         }
 
@@ -774,7 +816,6 @@
         if(player.critDmg === undefined) player.critDmg = 1.5;
         if(player.uniqueCards === undefined) player.uniqueCards = [];
         
-        // 关键修复：读档时如果血量<=0，视为坏档，自动复活
         if (player.hp <= 0) {
             player.hp = player.maxHp;
             log("⚠️ 检测到异常死亡存档，已自动复活。", "#e74c3c");
@@ -786,7 +827,6 @@
         showLayer('battle');
         log("【系统】欢迎回来，冒险继续！", '#27ae60');
         
-        // 确保清除旧的循环，防止双重循环
         if(battleLoopId) clearTimeout(battleLoopId);
         if(bloodInterval) clearInterval(bloodInterval);
         if(mechInterval) clearInterval(mechInterval);
@@ -1029,8 +1069,6 @@
     }
     
     function checkMultiHit() {
-        if(!isGameActive) return;
-
         let effectiveSpd = player.spd;
         if (player.hasLowHpSpd) {
              let missingPct = (player.maxHp - player.hp) / player.maxHp;
@@ -1120,7 +1158,7 @@
                 if (!isTestingDamage) checkResult();
             }
         } else {
-            if (!isTestingDamage) checkResult();
+            if (!isTestingDamage && player.hp > 0) checkResult();
         }
 
         if (player.hp > 0 && enemy.hp > 0) {
@@ -1187,7 +1225,6 @@
             
             log(`💔 力竭倒下... 3秒后自动复活`, '#c0392b');
             
-            // 自动复活
             setTimeout(revivePlayer, 3000);
         }
     }

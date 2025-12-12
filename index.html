@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>大猫猫斗恶龙 Ver3.22.12122501beta</title>
+    <title>大猫猫斗恶龙 Ver3.10</title>
     <style>
         /* --- 全局样式 --- */
         body {
@@ -62,13 +62,13 @@
         .version { color: #7f8c8d; font-size: 12px; margin-bottom: 20px; flex-shrink: 0;}
         input { padding: 12px; border: 2px solid #3498db; border-radius: 8px; width: 70%; text-align: center; font-size: 16px; margin-bottom: 20px; flex-shrink: 0;}
         
-        button { padding: 10px 25px; background: #e67e22; color: white; border: none; border-radius: 20px; font-size: 16px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 0 #d35400; transition: all 0.1s; margin: 5px; flex-shrink: 0;}
+        button { padding: 12px 25px; background: #e67e22; color: white; border: none; border-radius: 20px; font-size: 18px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 0 #d35400; transition: all 0.1s; margin: 10px; flex-shrink: 0; width: 70%; }
         button:active { transform: translateY(4px); box-shadow: 0 0 0 #d35400; }
         button:disabled { background: #bdc3c7; box-shadow: none; cursor: not-allowed; transform: none; color: #fff; }
         
         .btn-blue { background: #3498db; box-shadow: 0 4px 0 #2980b9; }
         .btn-blue:active { transform: translateY(4px); box-shadow: 0 0 0 #2980b9; }
-        .btn-green { background: #2ecc71; box-shadow: 0 4px 0 #27ae60; width: 80%; }
+        .btn-green { background: #2ecc71; box-shadow: 0 4px 0 #27ae60; }
         .btn-green:active { transform: translateY(4px); box-shadow: 0 0 0 #27ae60; }
         .btn-gray { background: #95a5a6; box-shadow: 0 4px 0 #7f8c8d; font-size: 14px; padding: 8px 20px; }
         
@@ -120,13 +120,14 @@
             min-height: 200px;
         }
         .scroll-box:active { cursor: grabbing; }
-        .log-block { margin-bottom: 25px; border-bottom: 1px dashed #bbb; padding-bottom: 15px; }
+        .log-block { margin-bottom: 20px; border-bottom: 1px dashed #eee; padding-bottom: 15px; }
         .log-ver { color: #e67e22; font-weight: 900; font-size: 16px; margin-bottom: 5px; }
-        .log-date { color: #95a5a6; font-size: 12px; margin-bottom: 8px; font-style: italic; }
+        .log-date { color: #95a5a6; font-size: 12px; margin-bottom: 8px; }
         .log-list { padding-left: 20px; margin: 0; }
-        .log-list li { font-size: 13px; color: #34495e; margin-bottom: 6px; line-height: 1.5; }
+        .log-list li { font-size: 13px; color: #34495e; margin-bottom: 4px; line-height: 1.5; }
         .highlight { color: #c0392b; font-weight: bold; }
-        
+        .apology { color: #c0392b; font-weight: bold; background: #fadbd8; padding: 10px; border-radius: 5px; margin-top: 5px; border: 1px solid #e6b0aa; font-size: 13px; line-height: 1.5; }
+
         .attr-row { display: flex; justify-content: space-between; border-bottom: 1px solid #eee; padding: 8px 0; font-size: 14px; color: #34495e; }
         .attr-val { color: #2980b9; font-family: monospace; font-size: 16px; }
 
@@ -193,7 +194,7 @@
     
     <div id="startLayer" class="layer active layer-scroll">
         <h1>大猫猫斗恶龙</h1>
-        <div class="version">Ver3.22.12122501beta</div>
+        <div class="version">Ver3.10.12122501beta</div>
         <svg width="150" height="150" viewBox="0 0 100 100">
             <circle cx="50" cy="50" r="40" fill="#f1c40f" stroke="#e67e22" stroke-width="3"/>
             <path d="M30 30 L40 10 L55 30 Z" fill="#f1c40f" stroke="#e67e22" stroke-width="2"/>
@@ -225,31 +226,48 @@
     </div>
 
     <div id="changelogLayer" class="layer layer-scroll">
-        <h2>编年史 (更新日志)</h2>
+        <h2>更新日志</h2>
         <div class="scroll-box" id="changelogBox">
             <div class="log-block">
-                <div class="log-ver">Ver 3.22.12122501beta</div>
-                <div class="log-date">稳定重构版</div>
+                <div class="log-ver">Ver 3.10.12122501beta</div>
+                <div class="log-date">致命修复</div>
                 <ul class="log-list">
-                    <li><span class="highlight">稳定回归</span>：UI与交互逻辑已完全回滚至3.08稳定版本（双按钮+直接点击槽位）。</li>
-                    <li><span class="highlight">卡死修复</span>：修复了死亡后游戏卡死的BUG。现在死亡3秒后自动回退层数并复活，解放双手。</li>
-                    <li><span class="highlight">机械猫加强</span>：浮点数扣蓝逻辑，系数提升至0.25/0.75，永不卡死。</li>
-                    <li><span class="highlight">邪龙BOSS</span>：每100层出现，必掉蓝卡。</li>
+                    <li><span class="highlight">交互修复</span>：修复了点击[读取存档]/[新游戏]无反应的Bug（由于内部ID引用错误导致）。</li>
+                    <li><span class="highlight">逻辑回归</span>：存档选择界面恢复为“点击即生效”的稳定逻辑。</li>
+                </ul>
+            </div>
+             <div class="log-block">
+                <div class="log-ver">Ver 3.09</div>
+                <div class="log-date">解放双手</div>
+                <ul class="log-list">
+                    <li>全自动复活机制：玩家死亡后3秒自动回退5层并开始战斗。</li>
+                    <li>日志重构：补全所有历史更新详情。</li>
                 </ul>
             </div>
             <div class="log-block">
-                <div class="log-ver">Ver 3.09~3.21</div>
-                <div class="log-date">修复历程</div>
+                <div class="log-ver">Ver 3.06~3.08</div>
+                <div class="log-date">稳定性优化</div>
                 <ul class="log-list">
-                    <li>经历了UI逻辑的反复调试，最终决定回滚至最稳定的交互逻辑。</li>
-                    <li>彻底重构了死亡判定循环。</li>
+                    <li>机械猫修复：浮点数扣蓝，永不卡死。</li>
+                    <li>多存档修复：槽位锁定逻辑修正。</li>
+                    <li>机械猫火箭弹伤害倍率上调 (0.25/0.75)。</li>
                 </ul>
             </div>
             <div class="log-block">
-                <div class="log-ver">Ver 3.08</div>
-                <div class="log-date">稳定基准</div>
+                <div class="log-ver">Ver 3.05</div>
+                <div class="log-date">邪龙降临</div>
                 <ul class="log-list">
-                    <li>确立了最稳定的存取档交互逻辑。</li>
+                    <li>新增百层BOSS【邪龙】，拥有真实伤害龙息。</li>
+                    <li>新增怪物穿透机制。</li>
+                    <li>掉落优化：BOSS战后不再掉落白卡。</li>
+                </ul>
+            </div>
+            <div class="log-block">
+                <div class="log-ver">Ver 3.04</div>
+                <div class="log-date">版本修正</div>
+                <ul class="log-list">
+                    <li>修复版本号混乱。</li>
+                    <li>整合美术资源。</li>
                 </ul>
             </div>
             <div class="log-block">
@@ -257,14 +275,21 @@
                 <div class="log-date">职业觉醒</div>
                 <ul class="log-list">
                     <li>新增血骑猫、机械猫。</li>
-                    <li>卡牌池重构。</li>
+                    <li>卡牌池重构，新增唯一卡。</li>
                 </ul>
             </div>
             <div class="log-block">
-                <div class="log-ver">Ver 2.0~2.1</div>
+                <div class="log-ver">Ver 2.1</div>
+                <div class="log-date">多存档</div>
+                <ul class="log-list">
+                    <li>支持3个独立存档槽位。</li>
+                </ul>
+            </div>
+            <div class="log-block">
+                <div class="log-ver">Ver 2.0</div>
                 <div class="log-date">存档系统</div>
                 <ul class="log-list">
-                    <li>多存档槽位实装。</li>
+                    <li>新增自动/手动存档功能。</li>
                 </ul>
             </div>
              <div class="log-block">
@@ -272,6 +297,8 @@
                 <div class="log-date">早期版本</div>
                 <ul class="log-list">
                     <li>基础玩法与职业构建。</li>
+                    <li>卡牌肉鸽系统。</li>
+                    <li>SVG美术升级。</li>
                 </ul>
             </div>
         </div>
@@ -380,11 +407,7 @@
 </div>
 
 <script>
-    // [SVG & CLASSES & CARDS 保持 Ver3.08 不变]
-    // 篇幅原因省略 SVG/CLASSES/CARDS 定义，请确保复制时包含它们
-    // 此处仅展示修复后的关键逻辑函数
-    
-    // --- 0. SVG 绘图库 (继承Ver3.08) ---
+    // --- 0. SVG 绘图库 (LOCKED) ---
     const SVGS = {
         cat_resolute: `<svg viewBox="0 0 100 100"><g transform="translate(10,10)"><circle cx="40" cy="40" r="30" fill="#bdc3c7" stroke="#2c3e50" stroke-width="2"/><path d="M20 20 L10 0 L35 15 Z" fill="#bdc3c7" stroke="#2c3e50" stroke-width="2"/><path d="M60 20 L70 0 L45 15 Z" fill="#bdc3c7" stroke="#2c3e50" stroke-width="2"/><rect x="30" y="15" width="20" height="25" rx="5" fill="none" stroke="#2c3e50" stroke-width="2"/><line x1="40" y1="15" x2="40" y2="40" stroke="#2c3e50" stroke-width="1"/><line x1="30" y1="27" x2="50" y2="27" stroke="#2c3e50" stroke-width="1"/><path d="M65 40 L90 10" stroke="#95a5a6" stroke-width="6"/><path d="M65 40 L90 10" stroke="#2c3e50" stroke-width="2"/><line x1="60" y1="45" x2="70" y2="35" stroke="#f1c40f" stroke-width="4"/></g></svg>`,
         cat_agile: `<svg viewBox="0 0 100 100"><g transform="translate(10,10)"><circle cx="40" cy="40" r="30" fill="#f1c40f" stroke="#2c3e50" stroke-width="2"/><path d="M20 20 L10 0 L35 15 Z" fill="#f1c40f" stroke="#2c3e50" stroke-width="2"/><path d="M60 20 L70 0 L45 15 Z" fill="#f1c40f" stroke="#2c3e50" stroke-width="2"/><circle cx="30" cy="35" r="3" fill="#2c3e50"/><circle cx="50" cy="35" r="3" fill="#2c3e50"/><path d="M35 45 Q40 50 45 45" stroke="#2c3e50" stroke-width="2" fill="none"/><path d="M70 40 L85 25" stroke="#3498db" stroke-width="4"/><path d="M10 40 L-5 25" stroke="#3498db" stroke-width="4"/></g></svg>`,
@@ -434,7 +457,7 @@
             id: 'mech', name: '机械猫', svg: SVGS.cat_mech, color: '#34495e',
             base: { atk: 30, mp: 12, def: 25, hp: 120, spd: 0 },
             growth: { atk: 15, mp: 4, def: 3, hp: 20, spd: 0 },
-            talent: '【CAAATΩ火箭弹】无法普攻/享受猫速。每0.2秒消耗2%当前[猫能]造成[猫威]x0.25+剩余[猫能]x0.75伤害，可爆击。'
+            talent: '【CAAATΩ火箭弹】无法普攻/享受猫速。每0.2秒消耗3%当前[猫能]造成[猫威]x0.25+剩余[猫能]x0.75伤害，可爆击。'
         }
     ];
 
@@ -506,6 +529,7 @@
             localStorage.setItem('bigCatQuest_slot_0', legacySave);
         }
         checkSave();
+        
         const slider = document.getElementById('changelogBox');
         let isDown = false; let startY; let scrollTop;
         if (slider) {
@@ -559,6 +583,7 @@
         const title = document.getElementById('slotTitle');
         title.innerText = mode === 'load' ? "读取存档" : "选择存档槽位";
         container.innerHTML = '';
+        currentSlotId = null;
 
         for(let i=0; i<3; i++) {
             const saveStr = localStorage.getItem(`bigCatQuest_slot_${i}`);
@@ -593,13 +618,13 @@
                 el.appendChild(delBtn);
 
                 el.onclick = () => {
+                    // [修复] 点击即触发
+                    currentSlotId = i;
                     if (mode === 'load') {
-                        currentSlotId = i;
                         loadGameFromSlot(data);
                     } else {
                         if(confirm("该槽位已有存档，确定覆盖吗？")) {
-                            currentSlotId = i;
-                            showLayer('name'); // nameInputLayer defined as 'name'
+                            showLayer('name'); 
                         }
                     }
                 };
@@ -607,6 +632,7 @@
                 el.className += ' empty';
                 el.innerHTML = '<div>+ 空槽位</div>';
                 el.onclick = () => {
+                    // [修复] 点击即触发
                     currentSlotId = i;
                     showLayer('name'); 
                 };
@@ -635,6 +661,7 @@
                 </div>
                 <div class="talent-text">${cls.talent}</div>
             `;
+            // [修复] 点击即触发
             card.onclick = () => initGame(name, cls);
             container.appendChild(card);
         });
@@ -724,7 +751,7 @@
         if(player.critDmg === undefined) player.critDmg = 1.5;
         if(player.uniqueCards === undefined) player.uniqueCards = [];
         
-        // 关键修复：读档时如果血量<=0，视为坏档，自动复活
+        // [Ver3.10] 坏档自动修复
         if (player.hp <= 0) {
             player.hp = player.maxHp;
             log("⚠️ 检测到异常死亡存档，已自动复活。", "#e74c3c");
@@ -736,7 +763,6 @@
         showLayer('battle');
         log("【系统】欢迎回来，冒险继续！", '#27ae60');
         
-        // 确保清除旧的循环，防止双重循环
         if(battleLoopId) clearTimeout(battleLoopId);
         if(bloodInterval) clearInterval(bloodInterval);
         if(mechInterval) clearInterval(mechInterval);
@@ -979,6 +1005,8 @@
     }
     
     function checkMultiHit() {
+        if(!isGameActive) return;
+
         let effectiveSpd = player.spd;
         if (player.hasLowHpSpd) {
              let missingPct = (player.maxHp - player.hp) / player.maxHp;
@@ -1075,7 +1103,7 @@
                 if (!isTestingDamage) checkResult();
             }
         } else {
-            if (!isTestingDamage) checkResult();
+            if (!isTestingDamage && player.hp > 0) checkResult();
         }
 
         if (player.hp > 0 && enemy.hp > 0) {

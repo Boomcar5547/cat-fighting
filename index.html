@@ -1,1163 +1,1337 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>大猫猫斗恶龙 Ver3.08</title>
-    <style>
-        /* --- 全局样式 --- */
-        body {
-            margin: 0;
-            padding: 0;
-            background-color: #2c3e50;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            font-family: "Microsoft YaHei", sans-serif;
-            overflow: hidden;
-            touch-action: none;
-            user-select: none;
-        }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>大猫猫斗恶龙 Ver3.08</title>
+    <style>
+        /* --- 全局样式 --- */
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #2c3e50;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            font-family: "Microsoft YaHei", sans-serif;
+            overflow: hidden;
+            touch-action: none;
+            user-select: none;
+        }
 
-        #gameContainer {
-            position: relative;
-            width: 100%;
-            height: 100%;
-            max-width: 480px;
-            max-height: 900px;
-            background: #fff;
-            box-shadow: 0 0 30px rgba(0,0,0,0.5);
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-        }
+        #gameContainer {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            max-width: 480px;
+            max-height: 900px;
+            background: #fff;
+            box-shadow: 0 0 30px rgba(0,0,0,0.5);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
 
-        /* --- 界面层级 --- */
-        .layer {
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            display: none;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            background: rgba(255,255,255,0.98);
-            z-index: 10;
-            padding: 20px;
-            box-sizing: border-box;
-            overflow-y: auto;
-            -webkit-overflow-scrolling: touch;
-        }
-        .active { display: flex; }
-        
-        .layer-scroll {
-            justify-content: flex-start;
-            padding-top: 40px;
-            padding-bottom: 60px;
-        }
+        /* --- 界面层级 --- */
+        .layer {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255,255,255,0.98);
+            z-index: 10;
+            padding: 20px;
+            box-sizing: border-box;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+        .active { display: flex; }
+        
+        .layer-scroll {
+            justify-content: flex-start;
+            padding-top: 40px;
+            padding-bottom: 60px;
+        }
 
-        /* --- 基础组件 --- */
-        h1 { color: #e67e22; text-shadow: 2px 2px #f1c40f; margin-bottom: 5px; text-align: center; flex-shrink: 0;}
-        h2 { color: #2c3e50; margin-bottom: 20px; text-align: center; }
-        .version { color: #7f8c8d; font-size: 12px; margin-bottom: 20px; flex-shrink: 0;}
-        input { padding: 12px; border: 2px solid #3498db; border-radius: 8px; width: 70%; text-align: center; font-size: 16px; margin-bottom: 20px; flex-shrink: 0;}
-        
-        button { padding: 10px 25px; background: #e67e22; color: white; border: none; border-radius: 20px; font-size: 16px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 0 #d35400; transition: all 0.1s; margin: 5px; flex-shrink: 0;}
-        button:active { transform: translateY(4px); box-shadow: 0 0 0 #d35400; }
-        button:disabled { background: #bdc3c7; box-shadow: none; cursor: not-allowed; transform: none; color: #fff; }
-        
-        .btn-blue { background: #3498db; box-shadow: 0 4px 0 #2980b9; }
-        .btn-blue:active { transform: translateY(4px); box-shadow: 0 0 0 #2980b9; }
-        .btn-green { background: #2ecc71; box-shadow: 0 4px 0 #27ae60; width: 70%; }
-        .btn-green:active { transform: translateY(4px); box-shadow: 0 0 0 #27ae60; }
-        .btn-gray { background: #95a5a6; box-shadow: 0 4px 0 #7f8c8d; font-size: 14px; padding: 8px 20px; width: 70%; }
-        
-        .btn-home {
-            position: absolute; top: 10px; left: 10px; width: 36px; height: 36px; border-radius: 50%;
-            background: #fff; border: 2px solid #bdc3c7; color: #7f8c8d; font-size: 20px;
-            display: flex; align-items: center; justify-content: center; cursor: pointer;
-            z-index: 20; padding: 0; margin: 0; box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        }
+        /* --- 基础组件 --- */
+        h1 { color: #e67e22; text-shadow: 2px 2px #f1c40f; margin-bottom: 5px; text-align: center; flex-shrink: 0;}
+        h2 { color: #2c3e50; margin-bottom: 20px; text-align: center; }
+        .version { color: #7f8c8d; font-size: 12px; margin-bottom: 20px; flex-shrink: 0;}
+        input { padding: 12px; border: 2px solid #3498db; border-radius: 8px; width: 70%; text-align: center; font-size: 16px; margin-bottom: 20px; flex-shrink: 0;}
+        
+        button { padding: 10px 25px; background: #e67e22; color: white; border: none; border-radius: 20px; font-size: 16px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 0 #d35400; transition: all 0.1s; margin: 5px; flex-shrink: 0;}
+        button:active { transform: translateY(4px); box-shadow: 0 0 0 #d35400; }
+        button:disabled { background: #bdc3c7; box-shadow: none; cursor: not-allowed; transform: none; color: #fff; }
+        
+        .btn-blue { background: #3498db; box-shadow: 0 4px 0 #2980b9; }
+        .btn-blue:active { transform: translateY(4px); box-shadow: 0 0 0 #2980b9; }
+        .btn-green { background: #2ecc71; box-shadow: 0 4px 0 #27ae60; width: 80%; }
+        .btn-green:active { transform: translateY(4px); box-shadow: 0 0 0 #27ae60; }
+        .btn-gray { background: #95a5a6; box-shadow: 0 4px 0 #7f8c8d; font-size: 14px; padding: 8px 20px; }
+        
+        .btn-home {
+            position: absolute; top: 10px; left: 10px; width: 36px; height: 36px; border-radius: 50%;
+            background: #fff; border: 2px solid #bdc3c7; color: #7f8c8d; font-size: 20px;
+            display: flex; align-items: center; justify-content: center; cursor: pointer;
+            z-index: 20; padding: 0; margin: 0; box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
 
-        /* --- 存档槽位样式 --- */
-        .slot-container { width: 100%; display: flex; flex-direction: column; gap: 15px; }
-        .save-slot {
-            background: #fff;
-            border: 2px solid #bdc3c7;
-            border-radius: 10px;
-            padding: 15px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            cursor: pointer;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-            transition: all 0.2s;
-            position: relative;
-        }
-        .save-slot:hover { border-color: #3498db; transform: scale(1.01); }
-        .save-slot.empty { border-style: dashed; background: #f9f9f9; color: #95a5a6; justify-content: center; }
-        .slot-info { display: flex; flex-direction: column; align-items: flex-start; }
-        .slot-title { font-weight: bold; color: #2c3e50; font-size: 16px; display: flex; align-items: center; gap: 5px; }
-        .slot-detail { font-size: 12px; color: #7f8c8d; margin-top: 5px; }
-        .slot-icon { width: 30px; height: 30px; }
-        .delete-btn {
-            padding: 5px 10px; font-size: 12px; background: #e74c3c; border-radius: 5px; margin-left: 10px; z-index: 5; color: white; width: auto; box-shadow: none; margin: 5px;
-        }
+        /* --- 存档槽位样式 --- */
+        .slot-container { width: 100%; display: flex; flex-direction: column; gap: 15px; }
+        .save-slot {
+            background: #fff;
+            border: 2px solid #bdc3c7;
+            border-radius: 10px;
+            padding: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            transition: all 0.2s;
+            position: relative;
+        }
+        .save-slot:hover { border-color: #3498db; transform: scale(1.01); }
+        .save-slot.empty { border-style: dashed; background: #f9f9f9; color: #95a5a6; justify-content: center; }
+        .slot-info { display: flex; flex-direction: column; align-items: flex-start; }
+        .slot-title { font-weight: bold; color: #2c3e50; font-size: 16px; display: flex; align-items: center; gap: 5px; }
+        .slot-detail { font-size: 12px; color: #7f8c8d; margin-top: 5px; }
+        .slot-icon { width: 30px; height: 30px; }
+        .delete-btn {
+            padding: 5px 10px; font-size: 12px; background: #e74c3c; border-radius: 5px; margin-left: 10px; z-index: 5; color: white; width: auto; box-shadow: none;
+        }
 
-        /* --- 日志 & 属性 --- */
-        .scroll-box {
-            width: 100%;
-            flex-grow: 1;
-            background: #f9f9f9;
-            border: 2px solid #bdc3c7;
-            border-radius: 10px;
-            padding: 15px;
-            box-sizing: border-box;
-            overflow-y: auto;
-            margin-bottom: 20px;
-            text-align: left;
-            cursor: grab;
-            min-height: 200px;
-        }
-        .scroll-box:active { cursor: grabbing; }
-        .log-block { margin-bottom: 20px; border-bottom: 1px dashed #eee; padding-bottom: 15px; }
-        .log-ver { color: #e67e22; font-weight: 900; font-size: 16px; margin-bottom: 5px; }
-        .log-date { color: #95a5a6; font-size: 12px; margin-bottom: 8px; }
-        .log-list { padding-left: 20px; margin: 0; }
-        .log-list li { font-size: 13px; color: #34495e; margin-bottom: 4px; line-height: 1.5; }
-        .highlight { color: #c0392b; font-weight: bold; }
-        .attr-row { display: flex; justify-content: space-between; border-bottom: 1px solid #eee; padding: 8px 0; font-size: 14px; color: #34495e; }
-        .attr-val { color: #2980b9; font-family: monospace; font-size: 16px; }
+        /* --- 日志 & 属性 --- */
+        .scroll-box {
+            width: 100%;
+            flex-grow: 1;
+            background: #f9f9f9;
+            border: 2px solid #bdc3c7;
+            border-radius: 10px;
+            padding: 15px;
+            box-sizing: border-box;
+            overflow-y: auto;
+            margin-bottom: 20px;
+            text-align: left;
+            cursor: grab;
+            min-height: 200px;
+        }
+        .scroll-box:active { cursor: grabbing; }
+        .log-block { margin-bottom: 20px; border-bottom: 1px dashed #eee; padding-bottom: 15px; }
+        .log-ver { color: #e67e22; font-weight: 900; font-size: 16px; margin-bottom: 5px; }
+        .log-date { color: #95a5a6; font-size: 12px; margin-bottom: 8px; }
+        .log-list { padding-left: 20px; margin: 0; }
+        .log-list li { font-size: 13px; color: #34495e; margin-bottom: 4px; line-height: 1.5; }
+        .highlight { color: #c0392b; font-weight: bold; }
+        .attr-row { display: flex; justify-content: space-between; border-bottom: 1px solid #eee; padding: 8px 0; font-size: 14px; color: #34495e; }
+        .attr-val { color: #2980b9; font-family: monospace; font-size: 16px; }
 
-        /* --- 职业选择 --- */
-        .card-container { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; width: 100%; padding-bottom: 20px; }
-        .class-card { background: white; border: 2px solid #bdc3c7; border-radius: 10px; padding: 8px; text-align: center; cursor: pointer; transition: transform 0.2s; box-shadow: 0 2px 5px rgba(0,0,0,0.1); display: flex; flex-direction: column; align-items: center; }
-        .class-card:hover { border-color: #3498db; transform: scale(1.02); }
-        .class-card h3 { margin: 5px 0; color: #2c3e50; font-size: 15px; }
-        .svg-icon { width: 60px; height: 60px; margin: 5px auto; }
-        .stats-text { font-size: 9px; color: #7f8c8d; text-align: left; line-height: 1.3; width: 100%; }
-        .talent-text { font-size: 9px; color: #c0392b; margin-top: 5px; font-weight: bold; text-align: left; border-top: 1px dashed #eee; padding-top:5px; width: 100%; }
+        /* --- 职业选择 --- */
+        .card-container { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; width: 100%; padding-bottom: 20px; }
+        .class-card { background: white; border: 2px solid #bdc3c7; border-radius: 10px; padding: 8px; text-align: center; cursor: pointer; transition: transform 0.2s; box-shadow: 0 2px 5px rgba(0,0,0,0.1); display: flex; flex-direction: column; align-items: center; }
+        .class-card:hover { border-color: #3498db; transform: scale(1.02); }
+        .class-card h3 { margin: 5px 0; color: #2c3e50; font-size: 15px; }
+        .svg-icon { width: 60px; height: 60px; margin: 5px auto; }
+        .stats-text { font-size: 9px; color: #7f8c8d; text-align: left; line-height: 1.3; width: 100%; }
+        .talent-text { font-size: 9px; color: #c0392b; margin-top: 5px; font-weight: bold; text-align: left; border-top: 1px dashed #eee; padding-top:5px; width: 100%; }
 
-        /* --- 战斗界面 --- */
-        #battleLayer { background: linear-gradient(to bottom, #87CEEB 0%, #87CEEB 70%, #90EE90 70%, #90EE90 100%); justify-content: space-between; padding: 0; overflow: hidden;}
-        .cloud { position: absolute; background: white; border-radius: 50px; opacity: 0.8; animation: floatCloud 20s linear infinite; }
-        @keyframes floatCloud { from { left: -100px; } to { left: 100%; } }
-        .battle-hud { width: 100%; background: rgba(0,0,0,0.6); color: white; padding: 8px 15px; padding-left: 50px; box-sizing: border-box; display: flex; justify-content: space-between; font-size: 14px; z-index: 5; box-shadow: 0 2px 5px rgba(0,0,0,0.3); }
-        
-        .battle-scene { flex-grow: 1; width: 100%; position: relative; display: flex; justify-content: space-around; align-items: flex-end; padding-bottom: 25%; z-index: 2; }
-        .fighter { width: 120px; height: 120px; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; position: relative; transition: transform 0.2s; }
-        .fighter-svg { width: 100%; height: 100%; filter: drop-shadow(0 5px 2px rgba(0,0,0,0.2)); }
-        .status-box { position: absolute; top: -40px; width: 100%; text-align: center; }
-        .fighter-name { background: rgba(0,0,0,0.5); color: #fff; padding: 2px 8px; border-radius: 10px; font-size: 12px; display: inline-block; margin-bottom: 2px; }
-        .bar-bg { width: 80px; height: 8px; background: #333; border-radius: 4px; margin: 1px auto; overflow: hidden; border:1px solid #fff;}
-        .hp-fill { height: 100%; background: #e74c3c; width: 100%; transition: width 0.3s; }
-        .mp-fill { height: 100%; background: #3498db; width: 100%; transition: width 0.3s; }
+        /* --- 战斗界面 --- */
+        #battleLayer { background: linear-gradient(to bottom, #87CEEB 0%, #87CEEB 70%, #90EE90 70%, #90EE90 100%); justify-content: space-between; padding: 0; overflow: hidden;}
+        .cloud { position: absolute; background: white; border-radius: 50px; opacity: 0.8; animation: floatCloud 20s linear infinite; }
+        @keyframes floatCloud { from { left: -100px; } to { left: 100%; } }
+        .battle-hud { width: 100%; background: rgba(0,0,0,0.6); color: white; padding: 8px 15px; padding-left: 50px; box-sizing: border-box; display: flex; justify-content: space-between; font-size: 14px; z-index: 5; box-shadow: 0 2px 5px rgba(0,0,0,0.3); }
+        
+        .battle-scene { flex-grow: 1; width: 100%; position: relative; display: flex; justify-content: space-around; align-items: flex-end; padding-bottom: 25%; z-index: 2; }
+        .fighter { width: 120px; height: 120px; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; position: relative; transition: transform 0.2s; }
+        .fighter-svg { width: 100%; height: 100%; filter: drop-shadow(0 5px 2px rgba(0,0,0,0.2)); }
+        .status-box { position: absolute; top: -40px; width: 100%; text-align: center; }
+        .fighter-name { background: rgba(0,0,0,0.5); color: #fff; padding: 2px 8px; border-radius: 10px; font-size: 12px; display: inline-block; margin-bottom: 2px; }
+        .bar-bg { width: 80px; height: 8px; background: #333; border-radius: 4px; margin: 1px auto; overflow: hidden; border:1px solid #fff;}
+        .hp-fill { height: 100%; background: #e74c3c; width: 100%; transition: width 0.3s; }
+        .mp-fill { height: 100%; background: #3498db; width: 100%; transition: width 0.3s; }
 
-        .toolbar { position: absolute; bottom: 140px; width: 100%; display: flex; justify-content: center; gap: 10px; z-index: 6; padding: 0 5px; }
-        .tool-btn { width: 40px; height: 40px; background: #fff; border: 2px solid #bdc3c7; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 5px rgba(0,0,0,0.2); cursor: pointer; transition: transform 0.1s; }
-        .tool-btn:active { transform: scale(0.9); }
-        .tool-btn svg { width: 22px; height: 22px; }
+        .toolbar { position: absolute; bottom: 140px; width: 100%; display: flex; justify-content: center; gap: 10px; z-index: 6; padding: 0 5px; }
+        .tool-btn { width: 40px; height: 40px; background: #fff; border: 2px solid #bdc3c7; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 5px rgba(0,0,0,0.2); cursor: pointer; transition: transform 0.1s; }
+        .tool-btn:active { transform: scale(0.9); }
+        .tool-btn svg { width: 22px; height: 22px; }
 
-        .bottom-panel { width: 100%; background: #fff; padding: 10px; box-sizing: border-box; border-top: 4px solid #f1c40f; z-index: 5; }
-        .exp-container { width: 100%; height: 15px; background: #bdc3c7; border-radius: 8px; overflow: hidden; position: relative; box-shadow: inset 0 2px 5px rgba(0,0,0,0.2); }
-        .exp-fill { height: 100%; background: linear-gradient(90deg, #f1c40f, #f39c12); width: 0%; transition: width 0.5s; }
-        .exp-text { position: absolute; top: 0; left: 0; width: 100%; height: 100%; text-align: center; font-size: 10px; line-height: 15px; color: #333; font-weight: bold; }
+        .bottom-panel { width: 100%; background: #fff; padding: 10px; box-sizing: border-box; border-top: 4px solid #f1c40f; z-index: 5; }
+        .exp-container { width: 100%; height: 15px; background: #bdc3c7; border-radius: 8px; overflow: hidden; position: relative; box-shadow: inset 0 2px 5px rgba(0,0,0,0.2); }
+        .exp-fill { height: 100%; background: linear-gradient(90deg, #f1c40f, #f39c12); width: 0%; transition: width 0.5s; }
+        .exp-text { position: absolute; top: 0; left: 0; width: 100%; height: 100%; text-align: center; font-size: 10px; line-height: 15px; color: #333; font-weight: bold; }
 
-        .floating-text { position: absolute; font-weight: 900; font-size: 20px; animation: floatUp 0.8s ease-out forwards; text-shadow: 1px 1px 0 #fff, -1px -1px 0 #fff; z-index: 20; white-space: nowrap; left: 50%; transform: translateX(-50%); top: -40px; pointer-events: none;}
-        @keyframes floatUp { 0% { top: -40px; opacity: 1; transform: translateX(-50%) scale(1); } 100% { top: -90px; opacity: 0; transform: translateX(-50%) scale(1.2); } }
+        .floating-text { position: absolute; font-weight: 900; font-size: 28px; animation: floatUp 0.8s ease-out forwards; text-shadow: 2px 2px 0 #fff; z-index: 20; white-space: nowrap; left: 50%; transform: translateX(-50%); top: -40px; pointer-events: none;}
+        @keyframes floatUp { 0% { top: -40px; opacity: 1; transform: translateX(-50%) scale(1); } 100% { top: -90px; opacity: 0; transform: translateX(-50%) scale(1.2); } }
 
-        .slash-effect { position: absolute; width: 150px; height: 150px; background: transparent; border: 2px solid transparent; z-index: 15; left: 50%; top: 50%; transform: translate(-50%, -50%); pointer-events: none; }
-        .slash-effect::before { content: ''; position: absolute; left: 0; top: 50%; width: 100%; height: 4px; background: #e74c3c; transform: rotate(-45deg); box-shadow: 0 0 10px #c0392b; animation: slashAnim 0.3s forwards; }
-        @keyframes slashAnim { 0% { width: 0; opacity: 0; } 50% { width: 100%; opacity: 1; } 100% { width: 100%; opacity: 0; } }
+        .slash-effect { position: absolute; width: 150px; height: 150px; background: transparent; border: 2px solid transparent; z-index: 15; left: 50%; top: 50%; transform: translate(-50%, -50%); pointer-events: none; }
+        .slash-effect::before { content: ''; position: absolute; left: 0; top: 50%; width: 100%; height: 4px; background: #e74c3c; transform: rotate(-45deg); box-shadow: 0 0 10px #c0392b; animation: slashAnim 0.3s forwards; }
+        @keyframes slashAnim { 0% { width: 0; opacity: 0; } 50% { width: 100%; opacity: 1; } 100% { width: 100%; opacity: 0; } }
 
-        .log-box { width: 100%; height: 120px; background: #f8f9fa; overflow-y: auto; padding: 10px; box-sizing: border-box; font-size: 12px; border-top: 1px solid #ccc; }
-        .log-entry { margin-bottom: 3px; border-bottom: 1px dashed #eee; padding-bottom: 2px; line-height: 1.4;}
-        
-        #rogueContainer { display: flex; flex-direction: row; justify-content: space-between; align-items: stretch; width: 100%; gap: 10px; margin-bottom: 20px;}
-        .rogue-card { flex: 1; border: 2px solid #ccc; border-radius: 8px; padding: 10px 5px; background: #fff; cursor: pointer; box-shadow: 0 4px 8px rgba(0,0,0,0.1); position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: all 0.2s; }
-        .rogue-card:hover { transform: translateY(-5px); box-shadow: 0 8px 16px rgba(0,0,0,0.2); }
-        .rogue-card.selected { border: 3px solid #f1c40f; background: #fcf8e3; transform: scale(1.05); box-shadow: 0 0 15px rgba(241, 196, 15, 0.6); }
-        .card-icon { font-size: 32px; margin-bottom: 5px; }
-        .card-white { border-top: 5px solid #bdc3c7; }
-        .card-green { border-top: 5px solid #2ecc71; }
-        .card-blue { border-top: 5px solid #3498db; }
-        .card-purple { border-top: 5px solid #9b59b6; }
-        .card-orange { border-top: 5px solid #e67e22; }
+        .log-box { width: 100%; height: 120px; background: #f8f9fa; overflow-y: auto; padding: 10px; box-sizing: border-box; font-size: 12px; border-top: 1px solid #ccc; }
+        .log-entry { margin-bottom: 3px; border-bottom: 1px dashed #eee; padding-bottom: 2px; line-height: 1.4;}
+        
+        #rogueContainer { display: flex; flex-direction: row; justify-content: space-between; align-items: stretch; width: 100%; gap: 10px; margin-bottom: 20px;}
+        .rogue-card { flex: 1; border: 2px solid #ccc; border-radius: 8px; padding: 10px 5px; background: #fff; cursor: pointer; box-shadow: 0 4px 8px rgba(0,0,0,0.1); position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: all 0.2s; }
+        .rogue-card:hover { transform: translateY(-5px); box-shadow: 0 8px 16px rgba(0,0,0,0.2); }
+        .rogue-card.selected { border: 3px solid #f1c40f; background: #fcf8e3; transform: scale(1.05); box-shadow: 0 0 15px rgba(241, 196, 15, 0.6); }
+        .card-icon { font-size: 32px; margin-bottom: 5px; }
+        .card-white { border-top: 5px solid #bdc3c7; }
+        .card-green { border-top: 5px solid #2ecc71; }
+        .card-blue { border-top: 5px solid #3498db; }
+        .card-purple { border-top: 5px solid #9b59b6; }
+        .card-orange { border-top: 5px solid #e67e22; }
 
-    </style>
+    </style>
 </head>
 <body>
 
 <div id="gameContainer">
-    
-    <div id="startLayer" class="layer active layer-scroll">
-        <h1>大猫猫斗恶龙</h1>
-        <div class="version">Ver3.08.12122501beta (回滚版)</div>
-        <svg width="150" height="150" viewBox="0 0 100 100">
-            <circle cx="50" cy="50" r="40" fill="#f1c40f" stroke="#e67e22" stroke-width="3"/>
-            <path d="M30 30 L40 10 L55 30 Z" fill="#f1c40f" stroke="#e67e22" stroke-width="2"/>
-            <path d="M70 30 L60 10 L45 30 Z" fill="#f1c40f" stroke="#e67e22" stroke-width="2"/>
-            <circle cx="35" cy="45" r="5" fill="#2c3e50"/>
-            <circle cx="65" cy="45" r="5" fill="#2c3e50"/>
-            <path d="M45 60 Q50 70 55 60" stroke="#c0392b" stroke-width="3" fill="none"/>
-            <path d="M10 50 L90 50" stroke="#bdc3c7" stroke-width="5" opacity="0.5"/>
-        </svg>
-        <br>
-        <button class="btn-green" onclick="openSlotMenu('load')" style="width:70%">读取存档</button>
-        <button class="btn-blue" onclick="openSlotMenu('new')" style="width:70%">新游戏</button>
-        <button class="btn-gray" onclick="showLayer('changelog')" style="width:70%">更新日志</button>
-    </div>
+    
+    <div id="startLayer" class="layer active layer-scroll">
+        <h1>大猫猫斗恶龙</h1>
+        <div class="version">Ver3.08.12112501beta</div>
+        <svg width="150" height="150" viewBox="0 0 100 100">
+            <circle cx="50" cy="50" r="40" fill="#f1c40f" stroke="#e67e22" stroke-width="3"/>
+            <path d="M30 30 L40 10 L55 30 Z" fill="#f1c40f" stroke="#e67e22" stroke-width="2"/>
+            <path d="M70 30 L60 10 L45 30 Z" fill="#f1c40f" stroke="#e67e22" stroke-width="2"/>
+            <circle cx="35" cy="45" r="5" fill="#2c3e50"/>
+            <circle cx="65" cy="45" r="5" fill="#2c3e50"/>
+            <path d="M45 60 Q50 70 55 60" stroke="#c0392b" stroke-width="3" fill="none"/>
+            <path d="M10 50 L90 50" stroke="#bdc3c7" stroke-width="5" opacity="0.5"/>
+        </svg>
+        <br>
+        <button class="btn-green" onclick="openSlotMenu('load')" style="width:70%">读取存档</button>
+        <button class="btn-blue" onclick="openSlotMenu('new')" style="width:70%">新游戏</button>
+        <button class="btn-gray" onclick="showLayer('changelog')" style="width:70%">更新日志</button>
+    </div>
 
-    <div id="slotLayer" class="layer layer-scroll">
-        <h2 id="slotTitle">选择存档</h2>
-        <div id="slotList" class="slot-container"></div>
-        <button onclick="showLayer('start')" style="margin-top:20px; background:#95a5a6;">返回</button>
-    </div>
-    
-    <div id="nameInputLayer" class="layer">
-        <h2>创建角色</h2>
-        <input type="text" id="playerNameInput" placeholder="请输入你的勇者名" maxlength="8">
-        <button onclick="goToClassSelection()">下一步</button>
-        <button onclick="showLayer('slot')" style="background:#95a5a6;">取消</button>
-    </div>
+    <div id="slotLayer" class="layer layer-scroll">
+        <h2 id="slotTitle">选择存档</h2>
+        <div id="slotList" class="slot-container"></div>
+        <button onclick="showLayer('start')" style="margin-top:20px; background:#95a5a6;">返回</button>
+    </div>
+    
+    <div id="nameInputLayer" class="layer">
+        <h2>创建角色</h2>
+        <input type="text" id="playerNameInput" placeholder="请输入你的勇者名" maxlength="8">
+        <button onclick="goToClassSelection()">下一步</button>
+        <button onclick="showLayer('start')" style="background:#95a5a6;">取消</button>
+    </div>
 
-    <div id="changelogLayer" class="layer layer-scroll">
-        <h2>更新日志</h2>
-        <div class="scroll-box" id="changelogBox">
-            <div class="log-block">
-                <div class="log-ver">Ver 3.08.12122501beta</div>
-                <div class="log-date">回滚与稳定</div>
-                <ul class="log-list">
-                    <li><span class="highlight">稳定锚点</span>：完全回滚至UI和存档逻辑最稳定的3.08版本。</li>
-                    <li><span class="highlight">版本说明</span>：保留了 Ver3.0 的所有游戏内容（邪龙、穿透、新职业），但移除了不稳定的交互更新。</li>
-                </ul>
-            </div>
-            <div class="log-block">
-                <div class="log-ver">Ver 3.06</div>
-                <div class="log-date">逻辑优化</div>
-                <ul class="log-list">
-                    <li>机械猫修复：浮点数扣蓝，永不卡死。</li>
-                    <li>多存档修复：槽位锁定逻辑修正。</li>
-                    <li>机械猫火箭弹伤害倍率上调 (0.25/0.75)。</li>
-                    <li>显示优化：战斗日志恢复彩色详细显示；伤害数字移至头顶正上方。</li>
-                </ul>
-            </div>
-            <div class="log-block">
-                <div class="log-ver">Ver 3.05</div>
-                <div class="log-date">邪龙降临</div>
-                <ul class="log-list">
-                    <li>新增百层BOSS【邪龙】，拥有真实伤害龙息。</li>
-                    <li>新增怪物穿透机制。</li>
-                    <li>掉落优化：BOSS战后不再掉落白卡。</li>
-                </ul>
-            </div>
-            <div class="log-block">
-                <div class="log-ver">Ver 3.04</div>
-                <div class="log-date">版本修正</div>
-                <ul class="log-list">
-                    <li>修复版本号混乱。</li>
-                    <li>整合美术资源。</li>
-                </ul>
-            </div>
-            <div class="log-block">
-                <div class="log-ver">Ver 3.0</div>
-                <div class="log-date">职业觉醒</div>
-                <ul class="log-list">
-                    <li>新增血骑猫、机械猫。</li>
-                    <li>卡牌池重构，新增唯一卡。</li>
-                </ul>
-            </div>
-            <div class="log-block">
-                <div class="log-ver">Ver 2.1</div>
-                <div class="log-date">多存档</div>
-                <ul class="log-list">
-                    <li>支持3个独立存档槽位。</li>
-                </ul>
-            </div>
-            <div class="log-block">
-                <div class="log-ver">Ver 2.0</div>
-                <div class="log-date">存档系统</div>
-                <ul class="log-list">
-                    <li>新增自动/手动存档功能。</li>
-                </ul>
-            </div>
-             <div class="log-block">
-                <div class="log-ver">Ver 1.0~1.9</div>
-                <div class="log-date">早期版本</div>
-                <ul class="log-list">
-                    <li>基础玩法与职业构建。</li>
-                    <li>卡牌肉鸽系统。</li>
-                    <li>SVG美术升级。</li>
-                </ul>
-            </div>
-        </div>
-        <button onclick="showLayer('start')">返回主界面</button>
-    </div>
+    <div id="changelogLayer" class="layer layer-scroll">
+        <h2>更新日志</h2>
+        <div class="scroll-box" id="changelogBox">
+            <div class="log-block">
+                <div class="log-ver">Ver 3.08.12112501beta</div>
+                <div class="log-date">紧急修复</div>
+                <ul class="log-list">
+                    <li><span class="highlight">致命错误修复</span>：修复了界面跳转键名错误导致的游戏无法开始的Bug。现在[读取存档]和[新游戏]已完全恢复正常。</li>
+                </ul>
+            </div>
+             <div class="log-block">
+                <div class="log-ver">Ver 3.06</div>
+                <div class="log-date">核心逻辑重构</div>
+                <ul class="log-list">
+                    <li>机械猫修复：空蓝不再卡死，移除取整，改为浮点运算。</li>
+                    <li>多存档修复：修复了新游戏开始时存档槽位未被正确锁定导致无法保存的问题。</li>
+                    <li>数值增强：机械猫火箭弹系数提升 (0.25/0.75)。</li>
+                    <li>显示优化：战斗日志恢复彩色详细显示；伤害数字移至头顶正上方。</li>
+                </ul>
+            </div>
+            <div class="log-block">
+                <div class="log-ver">Ver 3.05</div>
+                <div class="log-date">邪龙降临</div>
+                <ul class="log-list">
+                    <li>新增百层BOSS【邪龙】，拥有真实伤害龙息。</li>
+                    <li>新增怪物穿透机制。</li>
+                </ul>
+            </div>
+            <div class="log-block">
+                <div class="log-ver">Ver 3.04</div>
+                <div class="log-date">版本修正</div>
+                <ul class="log-list">
+                    <li>修复版本号混乱。</li>
+                    <li>整合美术资源。</li>
+                </ul>
+            </div>
+            <div class="log-block">
+                <div class="log-ver">Ver 3.0</div>
+                <div class="log-date">职业觉醒</div>
+                <ul class="log-list">
+                    <li>新增血骑猫、机械猫。</li>
+                    <li>卡牌池重构，新增唯一卡。</li>
+                </ul>
+            </div>
+            <div class="log-block">
+                <div class="log-ver">Ver 2.1</div>
+                <div class="log-date">多存档</div>
+                <ul class="log-list">
+                    <li>支持3个独立存档槽位。</li>
+                </ul>
+            </div>
+            <div class="log-block">
+                <div class="log-ver">Ver 2.0</div>
+                <div class="log-date">存档系统</div>
+                <ul class="log-list">
+                    <li>新增自动/手动存档功能。</li>
+                </ul>
+            </div>
+             <div class="log-block">
+                <div class="log-ver">Ver 1.0~1.9</div>
+                <div class="log-date">早期版本</div>
+                <ul class="log-list">
+                    <li>基础玩法与职业构建。</li>
+                    <li>卡牌肉鸽系统。</li>
+                    <li>SVG美术升级。</li>
+                </ul>
+            </div>
+        </div>
+        <button onclick="showLayer('start')">返回主界面</button>
+    </div>
 
-    <div id="classLayer" class="layer layer-scroll">
-        <h2 style="color:#2c3e50; font-size: 20px;">请选择你的职业</h2>
-        <div class="card-container" id="classContainer"></div>
-        <button onclick="showLayer('name')" style="margin-top:20px; background:#95a5a6;">返回</button>
-    </div>
+    <div id="classLayer" class="layer layer-scroll">
+        <h2 style="color:#2c3e50; font-size: 20px;">请选择你的职业</h2>
+        <div class="card-container" id="classContainer"></div>
+        <button onclick="showLayer('nameInputLayer')" style="margin-top:20px; background:#95a5a6;">返回</button>
+    </div>
 
-    <div id="battleLayer" class="layer">
-        <div class="cloud" style="top:20px; width:80px; height:30px; animation-duration:25s;"></div>
-        <div class="cloud" style="top:60px; width:120px; height:40px; animation-duration:35s; animation-delay:-10s"></div>
+    <div id="battleLayer" class="layer">
+        <div class="cloud" style="top:20px; width:80px; height:30px; animation-duration:25s;"></div>
+        <div class="cloud" style="top:60px; width:120px; height:40px; animation-duration:35s; animation-delay:-10s"></div>
 
-        <button class="btn-home" onclick="goToMainMenu()" title="返回主菜单">🏠</button>
+        <button class="btn-home" onclick="goToMainMenu()" title="返回主菜单">🏠</button>
 
-        <div class="battle-hud">
-            <div>📍 第 <span id="levelText" style="color:#f1c40f; font-weight:bold">1</span> 层</div>
-            <div>💀 击杀: <span id="killText">0</span></div>
-        </div>
+        <div class="battle-hud">
+            <div>📍 第 <span id="levelText" style="color:#f1c40f; font-weight:bold">1</span> 层</div>
+            <div>💀 击杀: <span id="killText">0</span></div>
+        </div>
 
-        <div class="battle-scene">
-            <div id="playerEl" class="fighter">
-                <div class="status-box">
-                    <div class="fighter-name" id="pName">勇者</div>
-                    <div class="bar-bg"><div class="hp-fill" id="pHpBar"></div></div>
-                    <div class="bar-bg" style="margin-top:1px; height:4px; border:none;"><div class="mp-fill" id="pMpBar"></div></div>
-                    <div style="font-size:10px; color:#fff; text-shadow:1px 1px 0 #000;" id="pMpVal"></div>
-                </div>
-                <div id="pVisual" class="fighter-svg"></div>
-            </div>
-            <div id="enemyEl" class="fighter">
-                <div class="status-box">
-                    <div class="fighter-name" id="eName">怪物</div>
-                    <div class="bar-bg"><div class="hp-fill" id="eHpBar"></div></div>
-                </div>
-                <div id="eVisual" class="fighter-svg"></div>
-            </div>
-        </div>
+        <div class="battle-scene">
+            <div id="playerEl" class="fighter">
+                <div class="status-box">
+                    <div class="fighter-name" id="pName">勇者</div>
+                    <div class="bar-bg"><div class="hp-fill" id="pHpBar"></div></div>
+                    <div class="bar-bg" style="margin-top:1px; height:4px; border:none;"><div class="mp-fill" id="pMpBar"></div></div>
+                    <div style="font-size:10px; color:#fff; text-shadow:1px 1px 0 #000;" id="pMpVal"></div>
+                </div>
+                <div id="pVisual" class="fighter-svg"></div>
+            </div>
+            <div id="enemyEl" class="fighter">
+                <div class="status-box">
+                    <div class="fighter-name" id="eName">怪物</div>
+                    <div class="bar-bg"><div class="hp-fill" id="eHpBar"></div></div>
+                </div>
+                <div id="eVisual" class="fighter-svg"></div>
+            </div>
+        </div>
 
-        <div class="toolbar">
-            <div class="tool-btn" onclick="showAttrPanel()" title="角色属性">
-                <svg viewBox="0 0 24 24" fill="#34495e"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>
-            </div>
-            <div class="tool-btn" onclick="alert('背包系统暂未实装，敬请期待！')" title="背包">
-                <svg viewBox="0 0 24 24" fill="#e67e22"><path d="M12 2l-5.5 9h11z"/><path d="M10 12h4v4h-4z"/><path d="M4 14v8h16v-8l-2-3H6z"/></svg>
-            </div>
-            <div class="tool-btn" onclick="alert('装备系统暂未实装，敬请期待！')" title="装备">
-                <svg viewBox="0 0 24 24" fill="#95a5a6"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/></svg>
-            </div>
-            <div class="tool-btn" onclick="startDamageTest()" title="伤害测试">
-                <svg viewBox="0 0 24 24" fill="#c0392b"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 14h-2v-4h2v4zm2-6H8V9h6v2z"/></svg>
-            </div>
-            <div class="tool-btn" onclick="saveGame(true)" title="保存进度">
-                <svg viewBox="0 0 24 24" fill="#2980b9"><path d="M17 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14c1.1 0 2-.9 2-2V7l-4-4zm-5 16c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3zm3-10H5V5h10v4z"/></svg>
-            </div>
-        </div>
+        <div class="toolbar">
+            <div class="tool-btn" onclick="showAttrPanel()" title="角色属性">
+                <svg viewBox="0 0 24 24" fill="#34495e"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>
+            </div>
+            <div class="tool-btn" onclick="alert('背包系统暂未实装，敬请期待！')" title="背包">
+                <svg viewBox="0 0 24 24" fill="#e67e22"><path d="M12 2l-5.5 9h11z"/><path d="M10 12h4v4h-4z"/><path d="M4 14v8h16v-8l-2-3H6z"/></svg>
+            </div>
+            <div class="tool-btn" onclick="alert('装备系统暂未实装，敬请期待！')" title="装备">
+                <svg viewBox="0 0 24 24" fill="#95a5a6"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/></svg>
+            </div>
+            <div class="tool-btn" onclick="startDamageTest()" title="伤害测试">
+                <svg viewBox="0 0 24 24" fill="#c0392b"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 14h-2v-4h2v4zm2-6H8V9h6v2z"/></svg>
+            </div>
+            <div class="tool-btn" onclick="saveGame(true)" title="保存进度">
+                <svg viewBox="0 0 24 24" fill="#2980b9"><path d="M17 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14c1.1 0 2-.9 2-2V7l-4-4zm-5 16c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3zm3-10H5V5h10v4z"/></svg>
+            </div>
+        </div>
 
-        <div class="bottom-panel">
-            <div style="display:flex; justify-content:space-between; font-size:12px; margin-bottom:2px;">
-                <span>EXP</span>
-                <span>LV.<span id="pLvVal">1</span></span>
-            </div>
-            <div class="exp-container">
-                <div class="exp-fill" id="expFill"></div>
-                <div class="exp-text" id="expText">0/2</div>
-            </div>
-        </div>
-        <div class="log-box" id="battleLog">
-            <div class="log-entry">欢迎来到大猫猫的世界...</div>
-        </div>
-    </div>
+        <div class="bottom-panel">
+            <div style="display:flex; justify-content:space-between; font-size:12px; margin-bottom:2px;">
+                <span>EXP</span>
+                <span>LV.<span id="pLvVal">1</span></span>
+            </div>
+            <div class="exp-container">
+                <div class="exp-fill" id="expFill"></div>
+                <div class="exp-text" id="expText">0/2</div>
+            </div>
+        </div>
+        <div class="log-box" id="battleLog">
+            <div class="log-entry">欢迎来到大猫猫的世界...</div>
+        </div>
+    </div>
 
-    <div id="cardLayer" class="layer layer-scroll">
-        <h2 style="color:#8e44ad; font-size:22px;">🎁 命运的馈赠</h2>
-        <p style="color:#7f8c8d; font-size:12px; margin-bottom:15px;">请点击卡牌选中，然后确认</p>
-        <div id="rogueContainer"></div>
-        <button id="confirmCardBtn" onclick="confirmRogueSelection()" disabled style="width:80%; margin-top:20px;">确认选择</button>
-    </div>
+    <div id="cardLayer" class="layer layer-scroll">
+        <h2 style="color:#8e44ad; font-size:22px;">🎁 命运的馈赠</h2>
+        <p style="color:#7f8c8d; font-size:12px; margin-bottom:15px;">请点击卡牌选中，然后确认</p>
+        <div id="rogueContainer"></div>
+        <button id="confirmCardBtn" onclick="confirmRogueSelection()" disabled style="width:80%; margin-top:20px;">确认选择</button>
+    </div>
 
-    <div id="gameOverLayer" class="layer">
-        <h1 style="color: #c0392b;">💔 胜败乃兵家常事</h1>
-        <p id="goReason" style="font-size:18px; color:#34495e;">...</p>
-        <button onclick="revivePlayer()">复活再战</button>
-    </div>
+    <div id="gameOverLayer" class="layer">
+        <h1 style="color: #c0392b;">💔 胜败乃兵家常事</h1>
+        <p id="goReason" style="font-size:18px; color:#34495e;">在第 X 层力竭倒下...</p>
+        <div style="font-size: 60px; margin: 30px;">🚑</div>
+        <p style="color:#7f8c8d; font-size:14px;">大猫猫施展了时间回溯魔法！<br>层数回退5层，状态回满。</p>
+        <button onclick="revivePlayer()" style="background:#2ecc71; box-shadow:0 4px 0 #27ae60">复活再战</button>
+    </div>
 
-    <div id="attrLayer" class="layer layer-scroll">
-        <h2>角色属性</h2>
-        <div class="scroll-box" style="margin-bottom:20px;">
-            <div class="attr-row"><span class="attr-label">名称</span><span class="attr-val" id="attrName">---</span></div>
-            <div class="attr-row"><span class="attr-label">职业</span><span class="attr-val" id="attrClass">---</span></div>
-            <div class="attr-row"><span class="attr-label">等级</span><span class="attr-val" id="attrLvl">1</span></div>
-            <div class="attr-row"><span class="attr-label">猫血 (HP)</span><span class="attr-val" id="attrHp">---</span></div>
-            <div class="attr-row"><span class="attr-label">猫能 (MP)</span><span class="attr-val" id="attrMp">---</span></div>
-            <div class="attr-row"><span class="attr-label">猫威 (Atk)</span><span class="attr-val" id="attrAtk">0</span></div>
-            <div class="attr-row"><span class="attr-label">猫御 (Def)</span><span class="attr-val" id="attrDef">0</span></div>
-            <div class="attr-row"><span class="attr-label">猫速 (Spd)</span><span class="attr-val" id="attrSpd">0</span></div>
-            <div class="attr-row"><span class="attr-label">暴击率</span><span class="attr-val" id="attrCrit">0%</span></div>
-            <div class="attr-row"><span class="attr-label">暴击伤害</span><span class="attr-val" id="attrCritDmg">150%</span></div>
-        </div>
-        <button onclick="closeAttrPanel()">返回战斗</button>
-    </div>
+    <div id="attrLayer" class="layer layer-scroll">
+        <h2>角色属性</h2>
+        <div class="scroll-box" style="margin-bottom:20px;">
+            <div class="attr-row"><span class="attr-label">名称</span><span class="attr-val" id="attrName">---</span></div>
+            <div class="attr-row"><span class="attr-label">职业</span><span class="attr-val" id="attrClass">---</span></div>
+            <div class="attr-row"><span class="attr-label">等级</span><span class="attr-val" id="attrLvl">1</span></div>
+            <div class="attr-row"><span class="attr-label">猫血 (HP)</span><span class="attr-val" id="attrHp">---</span></div>
+            <div class="attr-row"><span class="attr-label">猫能 (MP)</span><span class="attr-val" id="attrMp">---</span></div>
+            <div class="attr-row"><span class="attr-label">猫威 (Atk)</span><span class="attr-val" id="attrAtk">0</span></div>
+            <div class="attr-row"><span class="attr-label">猫御 (Def)</span><span class="attr-val" id="attrDef">0</span></div>
+            <div class="attr-row"><span class="attr-label">猫速 (Spd)</span><span class="attr-val" id="attrSpd">0</span></div>
+            <div class="attr-row"><span class="attr-label">暴击率</span><span class="attr-val" id="attrCrit">0%</span></div>
+            <div class="attr-row"><span class="attr-label">暴击伤害</span><span class="attr-val" id="attrCritDmg">150%</span></div>
+        </div>
+        <button onclick="closeAttrPanel()">返回战斗</button>
+    </div>
 
 </div>
 
 <script>
-    // --- 0. SVG 绘图库 (继承Ver3.04/3.08) ---
-    const SVGS = {
-        cat_resolute: `<svg viewBox="0 0 100 100"><g transform="translate(10,10)"><circle cx="40" cy="40" r="30" fill="#bdc3c7" stroke="#2c3e50" stroke-width="2"/><path d="M20 20 L10 0 L35 15 Z" fill="#bdc3c7" stroke="#2c3e50" stroke-width="2"/><path d="M60 20 L70 0 L45 15 Z" fill="#bdc3c7" stroke="#2c3e50" stroke-width="2"/><rect x="30" y="15" width="20" height="25" rx="5" fill="none" stroke="#2c3e50" stroke-width="2"/><line x1="40" y1="15" x2="40" y2="40" stroke="#2c3e50" stroke-width="1"/><line x1="30" y1="27" x2="50" y2="27" stroke="#2c3e50" stroke-width="1"/><path d="M65 40 L90 10" stroke="#95a5a6" stroke-width="6"/><path d="M65 40 L90 10" stroke="#2c3e50" stroke-width="2"/><line x1="60" y1="45" x2="70" y2="35" stroke="#f1c40f" stroke-width="4"/></g></svg>`,
-        cat_agile: `<svg viewBox="0 0 100 100"><g transform="translate(10,10)"><circle cx="40" cy="40" r="30" fill="#f1c40f" stroke="#2c3e50" stroke-width="2"/><path d="M20 20 L10 0 L35 15 Z" fill="#f1c40f" stroke="#2c3e50" stroke-width="2"/><path d="M60 20 L70 0 L45 15 Z" fill="#f1c40f" stroke="#2c3e50" stroke-width="2"/><circle cx="30" cy="35" r="3" fill="#2c3e50"/><circle cx="50" cy="35" r="3" fill="#2c3e50"/><path d="M35 45 Q40 50 45 45" stroke="#2c3e50" stroke-width="2" fill="none"/><path d="M70 40 L85 25" stroke="#3498db" stroke-width="4"/><path d="M10 40 L-5 25" stroke="#3498db" stroke-width="4"/></g></svg>`,
-        cat_wise: `<svg viewBox="0 0 100 100"><g transform="translate(10,10)"><circle cx="40" cy="40" r="30" fill="#9b59b6" stroke="#2c3e50" stroke-width="2"/><path d="M20 20 L10 0 L35 15 Z" fill="#9b59b6" stroke="#2c3e50" stroke-width="2"/><path d="M60 20 L70 0 L45 15 Z" fill="#9b59b6" stroke="#2c3e50" stroke-width="2"/><circle cx="30" cy="35" r="3" fill="#2c3e50"/><circle cx="50" cy="35" r="3" fill="#2c3e50"/><path d="M35 45 Q40 50 45 45" stroke="#2c3e50" stroke-width="2" fill="none"/><line x1="75" y1="20" x2="75" y2="80" stroke="#8e44ad" stroke-width="4"/><circle cx="75" cy="20" r="8" fill="#e74c3c"/></g></svg>`,
-        cat_berserk: `<svg viewBox="0 0 100 100"><g transform="translate(10,10)"><circle cx="40" cy="40" r="30" fill="#c0392b" stroke="#2c3e50" stroke-width="2"/><path d="M20 20 L10 0 L35 15 Z" fill="#c0392b" stroke="#2c3e50" stroke-width="2"/><path d="M60 20 L70 0 L45 15 Z" fill="#c0392b" stroke="#2c3e50" stroke-width="2"/><line x1="25" y1="30" x2="35" y2="38" stroke="#000" stroke-width="2"/><line x1="55" y1="30" x2="45" y2="38" stroke="#000" stroke-width="2"/><path d="M35 50 Q40 45 45 50" stroke="#2c3e50" stroke-width="2" fill="none"/><path d="M80 40 L80 70 M70 40 L90 40 L80 50 Z" fill="#7f8c8d" stroke="#000" stroke-width="1"/><path d="M0 40 L0 70 M-10 40 L10 40 L0 50 Z" fill="#7f8c8d" stroke="#000" stroke-width="1"/></g></svg>`,
-        cat_blood: `<svg viewBox="0 0 100 100"><g transform="translate(10,10)"><circle cx="40" cy="40" r="30" fill="#2c3e50" stroke="#c0392b" stroke-width="2"/><path d="M20 20 L10 0 L35 15 Z" fill="#2c3e50" stroke="#c0392b" stroke-width="2"/><path d="M60 20 L70 0 L45 15 Z" fill="#2c3e50" stroke="#c0392b" stroke-width="2"/><path d="M25 35 Q30 25 35 35" stroke="#e74c3c" stroke-width="3" fill="none"/><path d="M45 35 Q50 25 55 35" stroke="#e74c3c" stroke-width="3" fill="none"/><circle cx="30" cy="38" r="2" fill="#e74c3c"/><circle cx="50" cy="38" r="2" fill="#e74c3c"/><path d="M70 50 Q80 20 50 10" stroke="#c0392b" stroke-width="4" fill="none"/><line x1="70" y1="50" x2="80" y2="80" stroke="#95a5a6" stroke-width="3"/></g></svg>`,
-        cat_mech: `<svg viewBox="0 0 100 100"><g transform="translate(10,10)"><path d="M15 20 L65 20 L75 35 L75 70 L50 80 L25 70 L5 70 L5 35 Z" fill="#7f8c8d" stroke="#34495e" stroke-width="2"/><rect x="15" y="35" width="50" height="10" fill="#3498db"/><line x1="10" y1="20" x2="5" y2="0" stroke="#34495e" stroke-width="3"/><line x1="70" y1="20" x2="75" y2="0" stroke="#34495e" stroke-width="3"/><rect x="75" y="50" width="20" height="10" fill="#2c3e50"/><circle cx="95" cy="55" r="3" fill="#e74c3c"/></g></svg>`,
-        monster_slime: `<svg viewBox="0 0 100 100"><path d="M20 80 Q20 20 50 20 Q80 20 80 80 Z" fill="#2ecc71" stroke="#27ae60" stroke-width="2"/><circle cx="40" cy="50" r="5" fill="#000"/><circle cx="60" cy="50" r="5" fill="#000"/></svg>`,
-        monster_bat: `<svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="15" fill="#34495e"/><path d="M35 50 Q10 20 10 50 Q20 70 35 55" fill="#34495e"/><path d="M65 50 Q90 20 90 50 Q80 70 65 55" fill="#34495e"/><circle cx="45" cy="50" r="2" fill="#e74c3c"/><circle cx="55" cy="50" r="2" fill="#e74c3c"/></svg>`,
-        monster_dragon: `<svg viewBox="0 0 100 100"><path d="M30 60 Q30 30 50 20 Q70 30 70 60" fill="#e74c3c" stroke="#c0392b" stroke-width="2"/><path d="M50 20 L50 5" stroke="#e74c3c" stroke-width="4"/><circle cx="40" cy="45" r="4" fill="#f1c40f"/><circle cx="60" cy="45" r="4" fill="#f1c40f"/><path d="M40 70 Q50 80 60 70" stroke="#000" stroke-width="2" fill="none"/></svg>`,
-        monster_evil_dragon: `<svg viewBox="0 0 100 100"><path d="M20 70 Q40 20 80 30 Q90 50 70 80 Q50 90 20 70 Z" fill="#2c3e50" stroke="#000" stroke-width="2"/><path d="M80 30 Q95 10 90 5 Q70 15 60 35" fill="#c0392b"/><path d="M30 40 Q40 50 30 60" stroke="#c0392b" stroke-width="3" fill="none"/><circle cx="65" cy="45" r="3" fill="#e74c3c"/><circle cx="75" cy="55" r="3" fill="#e74c3c"/><path d="M10 60 Q20 40 10 20" stroke="#2c3e50" stroke-width="4" fill="none"/></svg>`,
-        stake: `<svg viewBox="0 0 100 100"><rect x="35" y="20" width="30" height="70" fill="#d35400" stroke="#5d4037" stroke-width="2"/><circle cx="50" cy="40" r="8" fill="#fff" opacity="0.8"/><circle cx="50" cy="40" r="3" fill="#000"/><path d="M35 20 L50 5 L65 20 Z" fill="#d35400" stroke="#5d4037" stroke-width="2"/></svg>`
-    };
+    // --- 0. SVG 绘图库 (保持原样) ---
+    const SVGS = {
+        cat_resolute: `<svg viewBox="0 0 100 100"><g transform="translate(10,10)"><circle cx="40" cy="40" r="30" fill="#bdc3c7" stroke="#2c3e50" stroke-width="2"/><path d="M20 20 L10 0 L35 15 Z" fill="#bdc3c7" stroke="#2c3e50" stroke-width="2"/><path d="M60 20 L70 0 L45 15 Z" fill="#bdc3c7" stroke="#2c3e50" stroke-width="2"/><rect x="30" y="15" width="20" height="25" rx="5" fill="none" stroke="#2c3e50" stroke-width="2"/><line x1="40" y1="15" x2="40" y2="40" stroke="#2c3e50" stroke-width="1"/><line x1="30" y1="27" x2="50" y2="27" stroke="#2c3e50" stroke-width="1"/><path d="M65 40 L90 10" stroke="#95a5a6" stroke-width="6"/><path d="M65 40 L90 10" stroke="#2c3e50" stroke-width="2"/><line x1="60" y1="45" x2="70" y2="35" stroke="#f1c40f" stroke-width="4"/></g></svg>`,
+        cat_agile: `<svg viewBox="0 0 100 100"><g transform="translate(10,10)"><circle cx="40" cy="40" r="30" fill="#f1c40f" stroke="#2c3e50" stroke-width="2"/><path d="M20 20 L10 0 L35 15 Z" fill="#f1c40f" stroke="#2c3e50" stroke-width="2"/><path d="M60 20 L70 0 L45 15 Z" fill="#f1c40f" stroke="#2c3e50" stroke-width="2"/><circle cx="30" cy="35" r="3" fill="#2c3e50"/><circle cx="50" cy="35" r="3" fill="#2c3e50"/><path d="M35 45 Q40 50 45 45" stroke="#2c3e50" stroke-width="2" fill="none"/><path d="M70 40 L85 25" stroke="#3498db" stroke-width="4"/><path d="M10 40 L-5 25" stroke="#3498db" stroke-width="4"/></g></svg>`,
+        cat_wise: `<svg viewBox="0 0 100 100"><g transform="translate(10,10)"><circle cx="40" cy="40" r="30" fill="#9b59b6" stroke="#2c3e50" stroke-width="2"/><path d="M20 20 L10 0 L35 15 Z" fill="#9b59b6" stroke="#2c3e50" stroke-width="2"/><path d="M60 20 L70 0 L45 15 Z" fill="#9b59b6" stroke="#2c3e50" stroke-width="2"/><circle cx="30" cy="35" r="3" fill="#2c3e50"/><circle cx="50" cy="35" r="3" fill="#2c3e50"/><path d="M35 45 Q40 50 45 45" stroke="#2c3e50" stroke-width="2" fill="none"/><line x1="75" y1="20" x2="75" y2="80" stroke="#8e44ad" stroke-width="4"/><circle cx="75" cy="20" r="8" fill="#e74c3c"/></g></svg>`,
+        cat_berserk: `<svg viewBox="0 0 100 100"><g transform="translate(10,10)"><circle cx="40" cy="40" r="30" fill="#c0392b" stroke="#2c3e50" stroke-width="2"/><path d="M20 20 L10 0 L35 15 Z" fill="#c0392b" stroke="#2c3e50" stroke-width="2"/><path d="M60 20 L70 0 L45 15 Z" fill="#c0392b" stroke="#2c3e50" stroke-width="2"/><line x1="25" y1="30" x2="35" y2="38" stroke="#000" stroke-width="2"/><line x1="55" y1="30" x2="45" y2="38" stroke="#000" stroke-width="2"/><path d="M35 50 Q40 45 45 50" stroke="#2c3e50" stroke-width="2" fill="none"/><path d="M80 40 L80 70 M70 40 L90 40 L80 50 Z" fill="#7f8c8d" stroke="#000" stroke-width="1"/><path d="M0 40 L0 70 M-10 40 L10 40 L0 50 Z" fill="#7f8c8d" stroke="#000" stroke-width="1"/></g></svg>`,
+        cat_blood: `<svg viewBox="0 0 100 100"><g transform="translate(10,10)"><circle cx="40" cy="40" r="30" fill="#2c3e50" stroke="#c0392b" stroke-width="2"/><path d="M20 20 L10 0 L35 15 Z" fill="#2c3e50" stroke="#c0392b" stroke-width="2"/><path d="M60 20 L70 0 L45 15 Z" fill="#2c3e50" stroke="#c0392b" stroke-width="2"/><path d="M25 35 Q30 25 35 35" stroke="#e74c3c" stroke-width="3" fill="none"/><path d="M45 35 Q50 25 55 35" stroke="#e74c3c" stroke-width="3" fill="none"/><circle cx="30" cy="38" r="2" fill="#e74c3c"/><circle cx="50" cy="38" r="2" fill="#e74c3c"/><path d="M70 50 Q80 20 50 10" stroke="#c0392b" stroke-width="4" fill="none"/><line x1="70" y1="50" x2="80" y2="80" stroke="#95a5a6" stroke-width="3"/></g></svg>`,
+        cat_mech: `<svg viewBox="0 0 100 100"><g transform="translate(10,10)"><path d="M15 20 L65 20 L75 35 L75 70 L50 80 L25 70 L5 70 L5 35 Z" fill="#7f8c8d" stroke="#34495e" stroke-width="2"/><rect x="15" y="35" width="50" height="10" fill="#3498db"/><line x1="10" y1="20" x2="5" y2="0" stroke="#34495e" stroke-width="3"/><line x1="70" y1="20" x2="75" y2="0" stroke="#34495e" stroke-width="3"/><rect x="75" y="50" width="20" height="10" fill="#2c3e50"/><circle cx="95" cy="55" r="3" fill="#e74c3c"/></g></svg>`,
+        monster_slime: `<svg viewBox="0 0 100 100"><path d="M20 80 Q20 20 50 20 Q80 20 80 80 Z" fill="#2ecc71" stroke="#27ae60" stroke-width="2"/><circle cx="40" cy="50" r="5" fill="#000"/><circle cx="60" cy="50" r="5" fill="#000"/></svg>`,
+        monster_bat: `<svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="15" fill="#34495e"/><path d="M35 50 Q10 20 10 50 Q20 70 35 55" fill="#34495e"/><path d="M65 50 Q90 20 90 50 Q80 70 65 55" fill="#34495e"/><circle cx="45" cy="50" r="2" fill="#e74c3c"/><circle cx="55" cy="50" r="2" fill="#e74c3c"/></svg>`,
+        monster_dragon: `<svg viewBox="0 0 100 100"><path d="M30 60 Q30 30 50 20 Q70 30 70 60" fill="#e74c3c" stroke="#c0392b" stroke-width="2"/><path d="M50 20 L50 5" stroke="#e74c3c" stroke-width="4"/><circle cx="40" cy="45" r="4" fill="#f1c40f"/><circle cx="60" cy="45" r="4" fill="#f1c40f"/><path d="M40 70 Q50 80 60 70" stroke="#000" stroke-width="2" fill="none"/></svg>`,
+        monster_evil_dragon: `<svg viewBox="0 0 100 100"><path d="M20 70 Q40 20 80 30 Q90 50 70 80 Q50 90 20 70 Z" fill="#2c3e50" stroke="#000" stroke-width="2"/><path d="M80 30 Q95 10 90 5 Q70 15 60 35" fill="#c0392b"/><path d="M30 40 Q40 50 30 60" stroke="#c0392b" stroke-width="3" fill="none"/><circle cx="65" cy="45" r="3" fill="#e74c3c"/><circle cx="75" cy="55" r="3" fill="#e74c3c"/><path d="M10 60 Q20 40 10 20" stroke="#2c3e50" stroke-width="4" fill="none"/></svg>`,
+        stake: `<svg viewBox="0 0 100 100"><rect x="35" y="20" width="30" height="70" fill="#d35400" stroke="#5d4037" stroke-width="2"/><circle cx="50" cy="40" r="8" fill="#fff" opacity="0.8"/><circle cx="50" cy="40" r="3" fill="#000"/><path d="M35 20 L50 5 L65 20 Z" fill="#d35400" stroke="#5d4037" stroke-width="2"/></svg>`
+    };
 
-    const CLASSES = [
-        {
-            id: 'resolute', name: '坚毅猫', svg: SVGS.cat_resolute, color: '#95a5a6',
-            base: { atk: 32, mp: 5, def: 25, hp: 200, spd: 10 },
-            growth: { atk: 3, mp: 1, def: 15, hp: 50, spd: 1 },
-            talent: '【荆棘甲壳】若[猫御]≥[猫威]x2反弹[猫御]x1伤害；若≥x5，反弹[猫御]x2+[猫血]x0.2伤害。反伤可触发暴击。'
-        },
-        {
-            id: 'agile', name: '灵活猫', svg: SVGS.cat_agile, color: '#f1c40f',
-            base: { atk: 40, mp: 8, def: 10, hp: 80, spd: 20 },
-            growth: { atk: 10, mp: 2, def: 3, hp: 20, spd: 4 },
-            talent: '【迅捷连击】攻击后追加一段[猫速]x1的真实伤害(不爆击)。每升10级系数+0.2。'
-        },
-        {
-            id: 'wise', name: '智慧猫', svg: SVGS.cat_wise, color: '#9b59b6',
-            base: { atk: 45, mp: 20, def: 10, hp: 70, spd: 10 },
-            growth: { atk: 15, mp: 10, def: 3, hp: 18, spd: 2 },
-            talent: '【奥术超载】消耗10%[猫能]增伤，1点[猫能]增加1%伤害。致死时消耗[猫能]抵挡伤害(单场限1次)。'
-        },
-        {
-            id: 'berserk', name: '狂暴猫', svg: SVGS.cat_berserk, color: '#c0392b',
-            base: { atk: 50, mp: 6, def: 8, hp: 100, spd: 15 },
-            growth: { atk: 20, mp: 1, def: 3, hp: 25, spd: 2 },
-            talent: '【鲜血渴望】消耗20%[猫血]攻击，血越少伤越高，带10%吸血。'
-        },
-        {
-            id: 'blood', name: '血骑猫', svg: SVGS.cat_blood, color: '#8e44ad',
-            base: { atk: 25, mp: 6, def: 12, hp: 200, spd: 10 },
-            growth: { atk: 12, mp: 1, def: 3, hp: 50, spd: 1 },
-            talent: '【魔血奔涌】每秒灼烧敌方([猫威]x0.8+[猫血]x0.2)点真实伤害，该伤害不可爆击。'
-        },
-        {
-            id: 'mech', name: '机械猫', svg: SVGS.cat_mech, color: '#34495e',
-            base: { atk: 30, mp: 12, def: 25, hp: 120, spd: 0 },
-            growth: { atk: 15, mp: 4, def: 3, hp: 20, spd: 0 },
-            talent: '【CAAATΩ火箭弹】无法普攻/享受猫速。每0.2秒消耗2%当前[猫能]造成[猫威]x0.25+剩余[猫能]x0.75伤害，可爆击。'
-        }
-    ];
+    const CLASSES = [
+        {
+            id: 'resolute', name: '坚毅猫', svg: SVGS.cat_resolute, color: '#95a5a6',
+            base: { atk: 32, mp: 5, def: 25, hp: 200, spd: 10 },
+            growth: { atk: 3, mp: 1, def: 15, hp: 50, spd: 1 },
+            talent: '【荆棘甲壳】若[猫御]≥[猫威]x2反弹[猫御]x1伤害；若≥x5，反弹[猫御]x2+[猫血]x0.2伤害。反伤可触发暴击。'
+        },
+        {
+            id: 'agile', name: '灵活猫', svg: SVGS.cat_agile, color: '#f1c40f',
+            base: { atk: 40, mp: 8, def: 10, hp: 80, spd: 20 },
+            growth: { atk: 10, mp: 2, def: 3, hp: 20, spd: 4 },
+            talent: '【迅捷连击】攻击后追加一段[猫速]x1的真实伤害(不爆击)。每升10级系数+0.2。'
+        },
+        {
+            id: 'wise', name: '智慧猫', svg: SVGS.cat_wise, color: '#9b59b6',
+            base: { atk: 45, mp: 20, def: 10, hp: 70, spd: 10 },
+            growth: { atk: 15, mp: 10, def: 3, hp: 18, spd: 2 },
+            talent: '【奥术超载】消耗10%[猫能]增伤，1点[猫能]增加1%伤害。致死时消耗[猫能]抵挡伤害(单场限1次)。'
+        },
+        {
+            id: 'berserk', name: '狂暴猫', svg: SVGS.cat_berserk, color: '#c0392b',
+            base: { atk: 50, mp: 6, def: 8, hp: 100, spd: 15 },
+            growth: { atk: 20, mp: 1, def: 3, hp: 25, spd: 2 },
+            talent: '【鲜血渴望】消耗20%[猫血]攻击，血越少伤越高，带10%吸血。'
+        },
+        {
+            id: 'blood', name: '血骑猫', svg: SVGS.cat_blood, color: '#8e44ad',
+            base: { atk: 25, mp: 6, def: 12, hp: 200, spd: 10 },
+            growth: { atk: 12, mp: 1, def: 3, hp: 50, spd: 1 },
+            talent: '【魔血奔涌】每秒灼烧敌方([猫威]x0.8+[猫血]x0.2)点真实伤害，该伤害不可爆击。'
+        },
+        {
+            id: 'mech', name: '机械猫', svg: SVGS.cat_mech, color: '#34495e',
+            base: { atk: 30, mp: 12, def: 25, hp: 120, spd: 0 },
+            growth: { atk: 15, mp: 4, def: 3, hp: 20, spd: 0 },
+            talent: '【CAAATΩ火箭弹】无法普攻/享受猫速。每0.2秒消耗3%当前[猫能]造成[猫威]x0.25+剩余[猫能]x0.75伤害，可爆击。'
+        }
+    ];
 
-    const CARDS = [
-        { type: 'white', icon: '⚔️', title: '力量训练', desc: '猫威 +10', effect: (p) => { p.atk += 10; } },
-        { type: 'white', icon: '❤️', title: '体能强化', desc: '猫血 +60', effect: (p) => { p.maxHp += 60; p.hp += 60; } },
-        { type: 'white', icon: '🛡️', title: '硬化皮毛', desc: '猫御 +10', effect: (p) => { p.def += 10; } },
-        { type: 'white', icon: '⚡', title: '敏捷步伐', desc: '猫速 +5', effect: (p) => { p.spd += 5; } },
-        { type: 'white', icon: '💧', title: '冥想', desc: '猫能 +5', effect: (p) => { p.mp += 5; p.maxMp += 5; } },
-        
-        { type: 'green', icon: '🎯', title: '弱点看破', desc: '暴击率 +5%', effect: (p) => { p.critRate += 0.05; } },
-        { type: 'green', icon: '💥', title: '致命一击', desc: '爆伤 +10%', effect: (p) => { p.critDmg += 0.1; } },
-        { type: 'green', icon: '💚', title: '生命源泉', desc: '猫血 +200', effect: (p) => { p.maxHp += 200; p.hp += 200; } },
-        { type: 'green', icon: '🔰', title: '钢铁意志', desc: '猫御 +40', effect: (p) => { p.def += 40; } },
-        { type: 'green', icon: '👟', title: '极速', desc: '猫速 +12', effect: (p) => { p.spd += 12; } },
-        { type: 'green', icon: '🧪', title: '魔力扩容', desc: '猫能 +15', effect: (p) => { p.mp += 15; p.maxMp += 15; } },
-        
-        { type: 'blue', minLvl: 100, icon: '👁️', title: '鹰眼', desc: '暴击 +8%', effect: (p) => { p.critRate += 0.08; } },
-        { type: 'blue', minLvl: 100, icon: '💣', title: '毁灭打击', desc: '爆伤 +20%', effect: (p) => { p.critDmg += 0.2; } },
-        { type: 'blue', minLvl: 100, icon: '💗', title: '泰坦之心', desc: '猫血 +500', effect: (p) => { p.maxHp += 500; p.hp += 500; } },
-        { type: 'blue', minLvl: 100, icon: '🏰', title: '不动如山', desc: '猫御 +80', effect: (p) => { p.def += 80; } },
-        { type: 'blue', minLvl: 100, icon: '🚀', title: '光速', desc: '猫速 +20', effect: (p) => { p.spd += 20; } },
-        { type: 'blue', minLvl: 100, icon: '🌌', title: '虚空魔能', desc: '猫能 +30', effect: (p) => { p.mp += 30; p.maxMp += 30; } },
-        
-        { type: 'blue', minLvl: 100, unique: true, id: 'heal_kill', icon: '🧛', title: '以战养战', desc: '胜利回复60%损耗', effect: (p) => { p.hasHealKill = true; } },
-        { type: 'blue', minLvl: 100, unique: true, id: 'low_hp_spd', icon: '🔥', title: '背水一战', desc: '低血量加猫速', effect: (p) => { p.hasLowHpSpd = true; } },
-    ];
+    const CARDS = [
+        { type: 'white', icon: '⚔️', title: '力量训练', desc: '猫威 +10', effect: (p) => { p.atk += 10; } },
+        { type: 'white', icon: '❤️', title: '体能强化', desc: '猫血 +60', effect: (p) => { p.maxHp += 60; p.hp += 60; } },
+        { type: 'white', icon: '🛡️', title: '硬化皮毛', desc: '猫御 +10', effect: (p) => { p.def += 10; } },
+        { type: 'white', icon: '⚡', title: '敏捷步伐', desc: '猫速 +5', effect: (p) => { p.spd += 5; } },
+        { type: 'white', icon: '💧', title: '冥想', desc: '猫能 +5', effect: (p) => { p.mp += 5; p.maxMp += 5; } },
+        
+        { type: 'green', icon: '🎯', title: '弱点看破', desc: '暴击率 +5%', effect: (p) => { p.critRate += 0.05; } },
+        { type: 'green', icon: '💥', title: '致命一击', desc: '爆伤 +10%', effect: (p) => { p.critDmg += 0.1; } },
+        { type: 'green', icon: '💚', title: '生命源泉', desc: '猫血 +200', effect: (p) => { p.maxHp += 200; p.hp += 200; } },
+        { type: 'green', icon: '🔰', title: '钢铁意志', desc: '猫御 +40', effect: (p) => { p.def += 40; } },
+        { type: 'green', icon: '👟', title: '极速', desc: '猫速 +12', effect: (p) => { p.spd += 12; } },
+        { type: 'green', icon: '🧪', title: '魔力扩容', desc: '猫能 +15', effect: (p) => { p.mp += 15; p.maxMp += 15; } },
+        
+        { type: 'blue', minLvl: 100, icon: '👁️', title: '鹰眼', desc: '暴击 +8%', effect: (p) => { p.critRate += 0.08; } },
+        { type: 'blue', minLvl: 100, icon: '💣', title: '毁灭打击', desc: '爆伤 +20%', effect: (p) => { p.critDmg += 0.2; } },
+        { type: 'blue', minLvl: 100, icon: '💗', title: '泰坦之心', desc: '猫血 +500', effect: (p) => { p.maxHp += 500; p.hp += 500; } },
+        { type: 'blue', minLvl: 100, icon: '🏰', title: '不动如山', desc: '猫御 +80', effect: (p) => { p.def += 80; } },
+        { type: 'blue', minLvl: 100, icon: '🚀', title: '光速', desc: '猫速 +20', effect: (p) => { p.spd += 20; } },
+        { type: 'blue', minLvl: 100, icon: '🌌', title: '虚空魔能', desc: '猫能 +30', effect: (p) => { p.mp += 30; p.maxMp += 30; } },
+        
+        { type: 'blue', minLvl: 100, unique: true, id: 'heal_kill', icon: '🧛', title: '以战养战', desc: '胜利回复60%损耗', effect: (p) => { p.hasHealKill = true; } },
+        { type: 'blue', minLvl: 100, unique: true, id: 'low_hp_spd', icon: '🔥', title: '背水一战', desc: '低血量加猫速', effect: (p) => { p.hasLowHpSpd = true; } },
+    ];
 
-    let player = null;
-    let enemy = null;
-    let gameLevel = 1;
-    let killCount = 0;
-    let stageCount = 0; 
-    let stageType = 'minion'; 
-    let isPlayerTurn = true;
-    let isPendingRogue = false;
-    let selectedRogueCard = null;
-    let isFirstRogue = false;
-    let isGameActive = false;
-    let currentSlotId = null; 
-    let lastBossType = null;
-    
-    let bloodInterval = null;
-    let mechInterval = null;
-    let battleLoopId = null; 
-    
-    let isTestingDamage = false;
-    let testTimer = 0;
-    let testTotalDamage = 0;
-    let testInterval = null;
+    let player = null;
+    let enemy = null;
+    let gameLevel = 1;
+    let killCount = 0;
+    let stageCount = 0; 
+    let stageType = 'minion'; 
+    let isPlayerTurn = true;
+    let isPendingRogue = false;
+    let selectedRogueCard = null;
+    let isFirstRogue = false;
+    let isGameActive = false;
+    let currentSlotId = null;
+    let lastBossType = null; 
+    
+    let bloodInterval = null;
+    let mechInterval = null;
+    
+    let isTestingDamage = false;
+    let testTimer = 0;
+    let testTotalDamage = 0;
+    let testInterval = null;
 
-    const layers = {
-        start: document.getElementById('startLayer'),
-        slot: document.getElementById('slotLayer'),
-        name: document.getElementById('nameInputLayer'),
-        select: document.getElementById('classLayer'),
-        battle: document.getElementById('battleLayer'),
-        card: document.getElementById('cardLayer'),
-        over: document.getElementById('gameOverLayer'),
-        changelog: document.getElementById('changelogLayer'),
-        attr: document.getElementById('attrLayer')
-    };
-    const logs = document.getElementById('battleLog');
+    const layers = {
+        start: document.getElementById('startLayer'),
+        slot: document.getElementById('slotLayer'),
+        name: document.getElementById('nameInputLayer'),
+        select: document.getElementById('classLayer'),
+        battle: document.getElementById('battleLayer'),
+        card: document.getElementById('cardLayer'),
+        over: document.getElementById('gameOverLayer'),
+        changelog: document.getElementById('changelogLayer'),
+        attr: document.getElementById('attrLayer')
+    };
+    const logs = document.getElementById('battleLog');
 
-    window.onload = function() {
-        const legacySave = localStorage.getItem('bigCatQuestSave');
-        const slot0 = localStorage.getItem('bigCatQuest_slot_0');
-        if (legacySave && !slot0) {
-            localStorage.setItem('bigCatQuest_slot_0', legacySave);
-        }
-        checkSave();
-        
-        const slider = document.getElementById('changelogBox');
-        let isDown = false; let startY; let scrollTop;
-        if (slider) {
-            slider.addEventListener('mousedown', (e) => { isDown = true; startY = e.pageY - slider.offsetTop; scrollTop = slider.scrollTop; });
-            slider.addEventListener('mouseleave', () => { isDown = false; });
-            slider.addEventListener('mouseup', () => { isDown = false; });
-            slider.addEventListener('mousemove', (e) => { if (!isDown) return; e.preventDefault(); const y = e.pageY - slider.offsetTop; const walk = (y - startY) * 2; slider.scrollTop = scrollTop - walk; });
-        }
-    };
+    // --- 0. 初始化检测存档 ---
+    window.onload = function() {
+        const legacySave = localStorage.getItem('bigCatQuestSave');
+        const slot0 = localStorage.getItem('bigCatQuest_slot_0');
+        if (legacySave && !slot0) {
+            localStorage.setItem('bigCatQuest_slot_0', legacySave);
+        }
+        
+        const slider = document.getElementById('changelogBox');
+        let isDown = false; let startY; let scrollTop;
+        if (slider) {
+            slider.addEventListener('mousedown', (e) => { isDown = true; startY = e.pageY - slider.offsetTop; scrollTop = slider.scrollTop; });
+            slider.addEventListener('mouseleave', () => { isDown = false; });
+            slider.addEventListener('mouseup', () => { isDown = false; });
+            slider.addEventListener('mousemove', (e) => { if (!isDown) return; e.preventDefault(); const y = e.pageY - slider.offsetTop; const walk = (y - startY) * 2; slider.scrollTop = scrollTop - walk; });
+        }
+    };
 
-    function showLayer(name) {
-        Object.values(layers).forEach(l => {
-            if(l) l.classList.remove('active');
-        });
-        if(layers[name]) layers[name].classList.add('active');
-        else console.error("Layer not found: " + name);
-    }
+    function showLayer(name) {
+        Object.values(layers).forEach(l => {
+            if(l) l.classList.remove('active');
+        });
+        if(layers[name]) layers[name].classList.add('active');
+        else console.error("Layer not found: " + name);
+    }
 
-    function log(msg, color = '#333') {
-        const div = document.createElement('div');
-        div.className = 'log-entry';
-        div.innerHTML = msg;
-        div.style.color = color;
-        logs.appendChild(div);
-        logs.scrollTop = logs.scrollHeight;
-    }
+    function log(msg, color = '#333') {
+        const div = document.createElement('div');
+        div.className = 'log-entry';
+        div.innerHTML = msg;
+        div.style.color = color;
+        logs.appendChild(div);
+        logs.scrollTop = logs.scrollHeight;
+    }
 
-    function floatText(text, targetEl, color='red', fontSize='22px') {
-        const el = document.createElement('div');
-        el.className = 'floating-text';
-        el.innerText = text;
-        el.style.color = color;
-        el.style.fontSize = fontSize;
-        el.style.marginLeft = '0px'; 
-        targetEl.appendChild(el);
-        setTimeout(() => el.remove(), 800);
-    }
+    function floatText(text, targetEl, color='red', fontSize='22px') {
+        const el = document.createElement('div');
+        el.className = 'floating-text';
+        el.innerText = text;
+        el.style.color = color;
+        el.style.fontSize = fontSize;
+        el.style.marginLeft = '0px'; 
+        targetEl.appendChild(el);
+        setTimeout(() => el.remove(), 800);
+    }
 
-    function showSlash(targetEl) {
-        const el = document.createElement('div');
-        el.className = 'slash-effect';
-        targetEl.appendChild(el);
-        setTimeout(() => el.remove(), 300);
-    }
+    function showSlash(targetEl) {
+        const el = document.createElement('div');
+        el.className = 'slash-effect';
+        targetEl.appendChild(el);
+        setTimeout(() => el.remove(), 300);
+    }
 
-    let slotMode = 'load';
+    let slotMode = 'load';
 
-    function openSlotMenu(mode) {
-        slotMode = mode;
-        const container = document.getElementById('slotList');
-        const title = document.getElementById('slotTitle');
-        title.innerText = mode === 'load' ? "读取存档" : "选择存档槽位";
-        container.innerHTML = '';
+    function openSlotMenu(mode) {
+        slotMode = mode;
+        const container = document.getElementById('slotList');
+        const title = document.getElementById('slotTitle');
+        title.innerText = mode === 'load' ? "读取存档" : "选择存档槽位";
+        container.innerHTML = '';
 
-        for(let i=0; i<3; i++) {
-            const saveStr = localStorage.getItem(`bigCatQuest_slot_${i}`);
-            const el = document.createElement('div');
-            el.className = 'save-slot';
-            
-            if (saveStr) {
-                const data = JSON.parse(saveStr);
-                const cls = CLASSES.find(c => c.id === data.clsId);
-                const clsIcon = cls ? cls.svg : '❓';
-                const clsName = cls ? cls.name : '未知';
-                
-                el.innerHTML = `
-                    <div style="display:flex; align-items:center; gap:10px;">
-                        <div class="slot-icon">${clsIcon}</div>
-                        <div class="slot-info">
-                            <div class="slot-title">${clsName} <span style="font-size:12px; color:#27ae60">Lv.${data.player.lvl}</span></div>
-                            <div class="slot-detail">第 ${data.gameLevel} 层 | ${data.timestamp.split(' ')[0]}</div>
-                        </div>
-                    </div>
-                `;
-                const delBtn = document.createElement('div');
-                delBtn.innerHTML = '🗑️';
-                delBtn.className = 'delete-btn';
-                delBtn.onclick = (e) => {
-                    e.stopPropagation();
-                    if(confirm("确定要删除这个存档吗？")) {
-                        localStorage.removeItem(`bigCatQuest_slot_${i}`);
-                        openSlotMenu(mode); 
-                    }
-                };
-                el.appendChild(delBtn);
+        for(let i=0; i<3; i++) {
+            const saveStr = localStorage.getItem(`bigCatQuest_slot_${i}`);
+            const el = document.createElement('div');
+            el.className = 'save-slot';
+            
+            if (saveStr) {
+                const data = JSON.parse(saveStr);
+                const cls = CLASSES.find(c => c.id === data.clsId);
+                const clsIcon = cls ? cls.svg : '❓';
+                const clsName = cls ? cls.name : '未知';
+                
+                el.innerHTML = `
+                    <div style="display:flex; align-items:center; gap:10px;">
+                        <div class="slot-icon">${clsIcon}</div>
+                        <div class="slot-info">
+                            <div class="slot-title">${clsName} <span style="font-size:12px; color:#27ae60">Lv.${data.player.lvl}</span></div>
+                            <div class="slot-detail">第 ${data.gameLevel} 层 | ${data.timestamp.split(' ')[0]}</div>
+                        </div>
+                    </div>
+                `;
+                const delBtn = document.createElement('div');
+                delBtn.innerHTML = '🗑️';
+                delBtn.className = 'delete-btn';
+                delBtn.onclick = (e) => {
+                    e.stopPropagation();
+                    if(confirm("确定要删除这个存档吗？")) {
+                        localStorage.removeItem(`bigCatQuest_slot_${i}`);
+                        openSlotMenu(mode); 
+                    }
+                };
+                el.appendChild(delBtn);
 
-                el.onclick = () => {
-                    if (mode === 'load') {
-                        currentSlotId = i;
-                        loadGameFromSlot(data);
-                    } else {
-                        if(confirm("该槽位已有存档，确定覆盖吗？")) {
-                            currentSlotId = i;
-                            showLayer('name'); 
-                        }
-                    }
-                };
-            } else {
-                el.className += ' empty';
-                el.innerHTML = '<div>+ 空槽位</div>';
-                el.onclick = () => {
-                    currentSlotId = i;
-                    showLayer('name'); 
-                };
-            }
-            container.appendChild(el);
-        }
-        showLayer('slot'); 
-    }
+                el.onclick = () => {
+                    if (mode === 'load') {
+                        currentSlotId = i;
+                        loadGameFromSlot(data);
+                    } else {
+                        if(confirm("该槽位已有存档，确定覆盖吗？")) {
+                            currentSlotId = i;
+                            showLayer('name'); // ID is nameInputLayer, defined as 'name' in layers
+                        }
+                    }
+                };
+            } else {
+                el.className += ' empty';
+                el.innerHTML = '<div>+ 空槽位</div>';
+                el.onclick = () => {
+                    currentSlotId = i;
+                    if (mode === 'load') {
+                        showLayer('name'); 
+                    } else {
+                        showLayer('name');
+                    }
+                };
+            }
+            container.appendChild(el);
+        }
+        showLayer('slot');
+    }
 
-    function goToClassSelection() {
-        const name = document.getElementById('playerNameInput').value.trim();
-        if (!name) { alert("大侠请留名！"); return; }
-        
-        const container = document.getElementById('classContainer');
-        container.innerHTML = '';
-        CLASSES.forEach(cls => {
-            const card = document.createElement('div');
-            card.className = 'class-card';
-            card.innerHTML = `
-                <div class="svg-icon">${cls.svg}</div>
-                <h3 style="color:${cls.color}">${cls.name}</h3>
-                <div class="stats-text">
-                    威: ${cls.base.atk} <span style="color:#27ae60">(+${cls.growth.atk})</span> 能: ${cls.base.mp} <span style="color:#27ae60">(+${cls.growth.mp})</span><br>
-                    御: ${cls.base.def} <span style="color:#27ae60">(+${cls.growth.def})</span> 血: ${cls.base.hp} <span style="color:#27ae60">(+${cls.growth.hp})</span><br>
-                    速: ${cls.base.spd} <span style="color:#27ae60">(+${cls.growth.spd})</span>
-                </div>
-                <div class="talent-text">${cls.talent}</div>
-            `;
-            card.onclick = () => initGame(name, cls);
-            container.appendChild(card);
-        });
-        showLayer('select');
-    }
+    function goToClassSelection() {
+        const name = document.getElementById('playerNameInput').value.trim();
+        if (!name) { alert("大侠请留名！"); return; }
+        
+        const container = document.getElementById('classContainer');
+        container.innerHTML = '';
+        CLASSES.forEach(cls => {
+            const card = document.createElement('div');
+            card.className = 'class-card';
+            card.innerHTML = `
+                <div class="svg-icon">${cls.svg}</div>
+                <h3 style="color:${cls.color}">${cls.name}</h3>
+                <div class="stats-text">
+                    威: ${cls.base.atk} <span style="color:#27ae60">(+${cls.growth.atk})</span> 能: ${cls.base.mp} <span style="color:#27ae60">(+${cls.growth.mp})</span><br>
+                    御: ${cls.base.def} <span style="color:#27ae60">(+${cls.growth.def})</span> 血: ${cls.base.hp} <span style="color:#27ae60">(+${cls.growth.hp})</span><br>
+                    速: ${cls.base.spd} <span style="color:#27ae60">(+${cls.growth.spd})</span>
+                </div>
+                <div class="talent-text">${cls.talent}</div>
+            `;
+            card.onclick = () => initGame(name, cls);
+            container.appendChild(card);
+        });
+        showLayer('select');
+    }
 
-    function initGame(name, cls) {
-        player = {
-            name: name,
-            cls: cls,
-            lvl: 1,
-            exp: 0,
-            maxExp: 2,
-            maxHp: cls.base.hp, hp: cls.base.hp,
-            maxMp: cls.base.mp, mp: cls.base.mp,
-            atk: cls.base.atk, def: cls.base.def, spd: cls.base.spd,
-            critRate: 0, critDmg: 1.5,
-            shieldUsed: false,
-            uniqueCards: [],
-            hasHealKill: false,
-            hasLowHpSpd: false
-        };
-        gameLevel = 1;
-        killCount = 0;
-        stageCount = 0;
-        stageType = 'minion';
-        lastBossType = null;
-        
-        document.getElementById('pName').innerText = player.name;
-        document.getElementById('pVisual').innerHTML = cls.svg;
-        
-        saveGame();
-        log("冒险开始！", '#f39c12');
-        showRogueSelection(true); 
-    }
+    function initGame(name, cls) {
+        player = {
+            name: name,
+            cls: cls,
+            lvl: 1,
+            exp: 0,
+            maxExp: 2,
+            maxHp: cls.base.hp, hp: cls.base.hp,
+            maxMp: cls.base.mp, mp: cls.base.mp,
+            atk: cls.base.atk, def: cls.base.def, spd: cls.base.spd,
+            critRate: 0, critDmg: 1.5,
+            shieldUsed: false,
+            uniqueCards: [],
+            hasHealKill: false,
+            hasLowHpSpd: false
+        };
+        gameLevel = 1;
+        killCount = 0;
+        stageCount = 0;
+        stageType = 'minion';
+        lastBossType = null;
+        
+        document.getElementById('pName').innerText = player.name;
+        document.getElementById('pVisual').innerHTML = cls.svg;
+        
+        saveGame();
+        log("冒险开始！", '#f39c12');
+        showRogueSelection(true); 
+    }
 
-    function saveGame(manual = false) {
-        if (!player || currentSlotId === null) return;
-        const saveData = {
-            player: player,
-            clsId: player.cls.id, 
-            gameLevel: gameLevel,
-            killCount: killCount,
-            stageCount: stageCount,
-            stageType: stageType,
-            lastBossType: lastBossType,
-            timestamp: new Date().toLocaleString()
-        };
-        localStorage.setItem(`bigCatQuest_slot_${currentSlotId}`, JSON.stringify(saveData));
-        if (manual) { alert("存档成功！"); } 
-    }
+    function saveGame(manual = false) {
+        if (!player || currentSlotId === null) return;
+        const saveData = {
+            player: player,
+            clsId: player.cls.id, 
+            gameLevel: gameLevel,
+            killCount: killCount,
+            stageCount: stageCount,
+            stageType: stageType,
+            lastBossType: lastBossType,
+            timestamp: new Date().toLocaleString()
+        };
+        localStorage.setItem(`bigCatQuest_slot_${currentSlotId}`, JSON.stringify(saveData));
+        if (manual) { alert("存档成功！"); } 
+    }
 
-    function checkSave() {
-        let hasSave = false;
-        for(let i=0; i<3; i++) {
-            if(localStorage.getItem(`bigCatQuest_slot_${i}`)) hasSave = true;
-        }
-        document.getElementById('continueBtn').disabled = !hasSave;
-    }
-    
-    function loadGame() {
-        openSlotMenu('load');
-    }
+    function loadGame() {
+        openSlotMenu('load');
+    }
 
-    function loadGameFromSlot(data) {
-        // 读档保护
-        if (!data || !data.player) {
-            alert("存档数据损坏，无法读取！");
-            return;
-        }
-        
-        player = data.player;
-        player.cls = CLASSES.find(c => c.id === data.clsId);
-        
-        if (!player.cls) {
-            alert("职业数据丢失，存档不可用！");
-            return;
-        }
+    function loadGameFromSlot(data) {
+        player = data.player;
+        player.cls = CLASSES.find(c => c.id === data.clsId);
+        gameLevel = data.gameLevel;
+        killCount = data.killCount;
+        stageCount = data.stageCount;
+        stageType = data.stageType;
+        lastBossType = data.lastBossType || null;
+        
+        if(player.critRate === undefined) player.critRate = 0;
+        if(player.critDmg === undefined) player.critDmg = 1.5;
+        if(player.uniqueCards === undefined) player.uniqueCards = [];
+        
+        document.getElementById('pName').innerText = player.name;
+        document.getElementById('pVisual').innerHTML = player.cls.svg;
+        updateUI();
+        showLayer('battle');
+        log("【系统】欢迎回来，冒险继续！", '#27ae60');
+        startNextBattle();
+    }
 
-        gameLevel = data.gameLevel;
-        killCount = data.killCount;
-        stageCount = data.stageCount;
-        stageType = data.stageType;
-        lastBossType = data.lastBossType || null;
-        
-        if(player.critRate === undefined) player.critRate = 0;
-        if(player.critDmg === undefined) player.critDmg = 1.5;
-        if(player.uniqueCards === undefined) player.uniqueCards = [];
-        
-        if (player.hp <= 0) {
-            player.hp = player.maxHp;
-            log("⚠️ 检测到异常死亡存档，已自动复活。", "#e74c3c");
-        }
-        
-        document.getElementById('pName').innerText = player.name;
-        document.getElementById('pVisual').innerHTML = player.cls.svg;
-        updateUI();
-        showLayer('battle');
-        log("【系统】欢迎回来，冒险继续！", '#27ae60');
-        
-        if(battleLoopId) clearTimeout(battleLoopId);
-        if(bloodInterval) clearInterval(bloodInterval);
-        if(mechInterval) clearInterval(mechInterval);
-        
-        startNextBattle();
-    }
+    function goToMainMenu() {
+        if(confirm("确定要返回主菜单吗？进度将自动保存。")) {
+            saveGame();
+            isGameActive = false;
+            if(bloodInterval) clearInterval(bloodInterval);
+            if(mechInterval) clearInterval(mechInterval);
+            showLayer('start');
+        }
+    }
 
-    function goToMainMenu() {
-        if(confirm("确定要返回主菜单吗？进度将自动保存。")) {
-            saveGame();
-            isGameActive = false;
-            if(bloodInterval) clearInterval(bloodInterval);
-            if(mechInterval) clearInterval(mechInterval);
-            if(battleLoopId) clearTimeout(battleLoopId);
-            checkSave(); 
-            showLayer('start');
-        }
-    }
+    function startNextBattle() {
+        isGameActive = true;
+        if(bloodInterval) clearInterval(bloodInterval);
+        if(mechInterval) clearInterval(mechInterval);
 
-    function startNextBattle() {
-        isGameActive = true;
-        if(bloodInterval) clearInterval(bloodInterval);
-        if(mechInterval) clearInterval(mechInterval);
-        if(battleLoopId) clearTimeout(battleLoopId);
+        if (isPendingRogue) {
+            isPendingRogue = false;
+            showRogueSelection();
+            return;
+        }
 
-        if (isPendingRogue) {
-            isPendingRogue = false;
-            showRogueSelection();
-            return;
-        }
+        player.shieldUsed = false; 
+        generateEnemy();
+        updateUI();
+        
+        let titleColor = '#3498db';
+        if (stageType === 'evil_dragon') titleColor = '#c0392b';
+        log(`<br><strong style="color:${titleColor}">=== 第 ${gameLevel} 层 ===</strong>`);
+        log(`遭遇了 ${enemy.name}!`, '#e74c3c');
 
-        player.shieldUsed = false; 
-        generateEnemy();
-        updateUI();
-        
-        let titleColor = '#3498db';
-        if (stageType === 'evil_dragon') titleColor = '#c0392b';
-        log(`<br><strong style="color:${titleColor}">=== 第 ${gameLevel} 层 ===</strong>`);
-        log(`遭遇了 ${enemy.name}!`, '#e74c3c');
+        if (player.cls.id === 'blood') {
+            log("[魔血奔涌] 开启，每秒灼烧敌人！", "#8e44ad");
+            bloodInterval = setInterval(() => {
+                if (!isGameActive) return;
+                if (player.hp > 0 && enemy.hp > 0) {
+                    let dot = Math.floor(player.atk * 0.8 + player.hp * 0.2);
+                    enemy.hp -= dot;
+                    floatText(`-${dot}`, document.getElementById('enemyEl'), '#8e44ad', '20px');
+                    updateUI();
+                    if (enemy.hp <= 0) checkResult();
+                }
+            }, 1000);
+        }
 
-        if (player.cls.id === 'blood') {
-            log("[魔血奔涌] 开启，每秒灼烧敌人！", "#8e44ad");
-            bloodInterval = setInterval(() => {
-                if (!isGameActive) return;
-                if (player.hp > 0 && enemy.hp > 0) {
-                    let dot = Math.floor(player.atk * 0.8 + player.hp * 0.2);
-                    enemy.hp -= dot;
-                    floatText(`-${dot}`, document.getElementById('enemyEl'), '#8e44ad', '20px');
-                    updateUI();
-                    if (enemy.hp <= 0) checkResult();
-                }
-            }, 1000);
-        }
+        if (player.cls.id === 'mech') {
+            log("[CAAATΩ火箭弹] 启动，弹幕压制！", "#34495e");
+            mechInterval = setInterval(() => {
+                if (!isGameActive) return;
+                if (player.hp > 0 && enemy.hp > 0) {
+                    let cost = Math.floor(player.mp * 0.02); 
+                    if (player.mp > 0) {
+                        player.mp -= cost;
+                        if(player.mp < 0) player.mp = 0;
+                        
+                        let dmgBase = player.atk * 0.25 + player.mp * 0.75;
+                        let isCrit = Math.random() < player.critRate;
+                        let finalDmg = Math.max(1, Math.floor(dmgBase * (isCrit ? player.critDmg : 1)));
+                        enemy.hp -= finalDmg;
+                        let color = isCrit ? '#e74c3c' : '#fff';
+                        if(isCrit) log(`[Ω火箭] 暴击! 造成 ${finalDmg} 伤害`, '#c0392b'); 
+                        floatText(finalDmg, document.getElementById('enemyEl'), color, '16px');
+                        updateUI();
+                        if (enemy.hp <= 0) checkResult();
+                    } else {
+                        let charge = Math.max(1, Math.floor(player.maxMp * 0.05));
+                        player.mp += charge;
+                        log(`[系统] 能源耗尽，紧急充能 ${charge} 点`, '#2980b9');
+                        updateUI();
+                    }
+                }
+            }, 200);
+        }
 
-        if (player.cls.id === 'mech') {
-            log("[CAAATΩ火箭弹] 启动，弹幕压制！", "#34495e");
-            mechInterval = setInterval(() => {
-                if (!isGameActive) return;
-                if (player.hp > 0 && enemy.hp > 0) {
-                    let cost = Math.floor(player.mp * 0.02); 
-                    if (player.mp > 0) {
-                        player.mp -= cost;
-                        if(player.mp < 0) player.mp = 0;
-                        let dmgBase = player.atk * 0.25 + player.mp * 0.75;
-                        let isCrit = Math.random() < player.critRate;
-                        let finalDmg = Math.max(1, Math.floor(dmgBase * (isCrit ? player.critDmg : 1)));
-                        enemy.hp -= finalDmg;
-                        let color = isCrit ? '#e74c3c' : '#fff';
-                        if(isCrit) log(`[Ω火箭] 暴击! 造成 ${finalDmg} 伤害`, '#c0392b'); 
-                        floatText(finalDmg, document.getElementById('enemyEl'), color, '16px');
-                        updateUI();
-                        if (enemy.hp <= 0) checkResult();
-                    } else {
-                        let charge = Math.max(1, Math.floor(player.maxMp * 0.05));
-                        player.mp += charge;
-                        log(`[系统] 能源耗尽，紧急充能 ${charge} 点`, '#2980b9');
-                        updateUI();
-                    }
-                }
-            }, 200);
-        }
+        if (player.cls.id !== 'mech') {
+            let effectiveSpd = player.spd;
+            if (player.hasLowHpSpd) {
+                let missingPct = (player.maxHp - player.hp) / player.maxHp;
+                let boost = Math.min(0.6, missingPct);
+                effectiveSpd = Math.floor(player.spd * (1 + boost));
+            }
+            isPlayerTurn = effectiveSpd >= enemy.spd;
+            setTimeout(battleLoop, 800);
+        } else {
+            setTimeout(battleLoop, 800);
+        }
+    }
 
-        if (player.cls.id !== 'mech') {
-            let effectiveSpd = player.spd;
-            if (player.hasLowHpSpd) {
-                let missingPct = (player.maxHp - player.hp) / player.maxHp;
-                let boost = Math.min(0.6, missingPct);
-                effectiveSpd = Math.floor(player.spd * (1 + boost));
-            }
-            isPlayerTurn = effectiveSpd >= enemy.spd;
-            battleLoopId = setTimeout(battleLoop, 800);
-        } else {
-            battleLoopId = setTimeout(battleLoop, 800);
-        }
-    }
+    function generateEnemy() {
+        if (gameLevel % 100 === 0) {
+            stageType = 'evil_dragon';
+            stageCount = 0; 
+        } else if (stageCount >= 5) {
+            if (stageType === 'minion') stageType = 'elite'; 
+        } else { stageType = 'minion'; }
+        
+        if (stageType === 'boss' || stageType === 'evil_dragon') { stageType = 'minion'; stageCount = 0; }
+        if (!player.eliteKills) player.eliteKills = 0;
+        
+        if (gameLevel % 100 === 0) {
+            stageType = 'evil_dragon';
+        } else if (stageCount >= 5) {
+            if ((player.eliteKills + 1) % 5 === 0 && player.eliteKills > 0) stageType = 'boss';
+            else stageType = 'elite';
+        }
 
-    function generateEnemy() {
-        if (gameLevel % 100 === 0) {
-            stageType = 'evil_dragon';
-            stageCount = 0; 
-        } else if (stageCount >= 5) {
-            if (stageType === 'minion') stageType = 'elite'; 
-        } else { stageType = 'minion'; }
-        
-        if (stageType === 'boss' || stageType === 'evil_dragon') { stageType = 'minion'; stageCount = 0; }
-        if (!player.eliteKills) player.eliteKills = 0;
-        
-        if (gameLevel % 100 === 0) {
-            stageType = 'evil_dragon';
-        } else if (stageCount >= 5) {
-            if ((player.eliteKills + 1) % 5 === 0 && player.eliteKills > 0) stageType = 'boss';
-            else stageType = 'elite';
-        }
+        let baseHp = 80 + (gameLevel * 25);
+        let baseAtk = 15 + (gameLevel * 4);
+        let baseDef = 5 + (gameLevel * 1); 
+        let baseSpd = 10 + (gameLevel * 1.5); 
 
-        let baseHp = 80 + (gameLevel * 25);
-        let baseAtk = 15 + (gameLevel * 4);
-        let baseDef = 5 + (gameLevel * 1); 
-        let baseSpd = 10 + (gameLevel * 1.5); 
+        let typeName = '小怪';
+        let svg = SVGS.monster_slime;
+        let hpMult = 1.0, atkMult = 1.0, defMult = 1.0;
 
-        let typeName = '小怪';
-        let svg = SVGS.monster_slime;
-        let hpMult = 1.0, atkMult = 1.0, defMult = 1.0;
+        if (stageType === 'elite') { 
+            typeName = '【精英】'; svg = SVGS.monster_bat; hpMult = 2.5; atkMult = 1.3; defMult = 1.2; 
+        } else if (stageType === 'boss') { 
+            typeName = '【魔王】'; svg = SVGS.monster_dragon; hpMult = 5.5; atkMult = 1.5; defMult = 1.4; 
+        } else if (stageType === 'evil_dragon') {
+            typeName = '【邪龙】'; svg = SVGS.monster_evil_dragon; hpMult = 7.0; atkMult = 1.7; defMult = 1.6;
+            log("一股远古的邪恶气息扑面而来...", "#c0392b");
+        }
 
-        if (stageType === 'elite') { 
-            typeName = '【精英】'; svg = SVGS.monster_bat; hpMult = 2.5; atkMult = 1.3; defMult = 1.2; 
-        } else if (stageType === 'boss') { 
-            typeName = '【魔王】'; svg = SVGS.monster_dragon; hpMult = 5.5; atkMult = 1.5; defMult = 1.4; 
-        } else if (stageType === 'evil_dragon') {
-            typeName = '【邪龙】'; svg = SVGS.monster_evil_dragon; hpMult = 7.0; atkMult = 1.7; defMult = 1.6;
-            log("一股远古的邪恶气息扑面而来...", "#c0392b");
-        }
+        enemy = {
+            name: typeName,
+            type: stageType, 
+            maxHp: Math.floor(baseHp * hpMult * (0.9 + Math.random()*0.2)),
+            hp: 0,
+            atk: Math.floor(baseAtk * atkMult),
+            def: Math.floor(baseDef * defMult),
+            spd: Math.floor(baseSpd),
+            visual: svg
+        };
+        enemy.hp = enemy.maxHp;
+        
+        document.getElementById('eName').innerText = enemy.name;
+        document.getElementById('eVisual').innerHTML = enemy.visual;
+    }
 
-        enemy = {
-            name: typeName,
-            type: stageType, 
-            maxHp: Math.floor(baseHp * hpMult * (0.9 + Math.random()*0.2)),
-            hp: 0,
-            atk: Math.floor(baseAtk * atkMult),
-            def: Math.floor(baseDef * defMult),
-            spd: Math.floor(baseSpd),
-            visual: svg
-        };
-        enemy.hp = enemy.maxHp;
-        
-        document.getElementById('eName').innerText = enemy.name;
-        document.getElementById('eVisual').innerHTML = enemy.visual;
-    }
+    function battleLoop() {
+        if (!isGameActive) return;
+        if (!isTestingDamage && (player.hp <= 0 || enemy.hp <= 0)) return;
+        if (isTestingDamage && enemy.hp <= 0) enemy.hp = enemy.maxHp;
+        if (isTestingDamage && player.hp <= 0) player.hp = 1; 
 
-    function battleLoop() {
-        if (!isGameActive) return;
-        if (!isTestingDamage && (player.hp <= 0 || enemy.hp <= 0)) return;
-        
-        if (enemy.hp <= 0) { checkResult(); return; }
-        if (player.hp <= 0) { checkResult(); return; }
+        if (player.cls.id === 'mech') {
+            performEnemyAttack();
+        } else {
+            if (isPlayerTurn) performPlayerAttack();
+            else performEnemyAttack();
+        }
+    }
 
-        if (player.cls.id === 'mech') {
-            performEnemyAttack();
-        } else {
-            if (isPlayerTurn) performPlayerAttack();
-            else performEnemyAttack();
-        }
-    }
+    function performPlayerAttack() {
+        const pEl = document.getElementById('playerEl');
+        pEl.style.transform = 'translateX(30px)';
+        setTimeout(() => pEl.style.transform = 'translateX(0)', 200);
+        showSlash(document.getElementById('enemyEl'));
 
-    function performPlayerAttack() {
-        const pEl = document.getElementById('playerEl');
-        pEl.style.transform = 'translateX(30px)';
-        battleLoopId = setTimeout(() => pEl.style.transform = 'translateX(0)', 200);
-        showSlash(document.getElementById('enemyEl'));
+        if (player.cls.id === 'wise') {
+            let rec = Math.ceil(player.maxMp * 0.05);
+            player.mp = Math.min(player.maxMp, player.mp + rec);
+        }
 
-        if (player.cls.id === 'wise') {
-            let rec = Math.ceil(player.maxMp * 0.05);
-            player.mp = Math.min(player.maxMp, player.mp + rec);
-        }
+        let dmgMult = 1.0;
+        let extraDmg = 0;
+        let selfDmg = 0;
+        
+        if (player.cls.id === 'wise') {
+            let cost = Math.floor(player.mp * 0.1);
+            if (cost > 0) { player.mp -= cost; dmgMult += cost * 0.01; if(!isTestingDamage) log(`[奥术] 耗 ${cost} 能, 增伤 ${(cost*1).toFixed(0)}%`, '#9b59b6'); }
+        }
+        if (player.cls.id === 'berserk') {
+            let cost = Math.floor(player.hp * 0.2);
+            selfDmg = cost;
+            let missingPct = (player.maxHp - player.hp)/player.maxHp * 100;
+            dmgMult += missingPct * 0.01;
+            if(!isTestingDamage) log(`[血怒] 耗 ${cost} 血, 增伤 ${missingPct.toFixed(0)}%`, '#c0392b');
+        }
+        if (player.cls.id === 'agile') {
+            extraDmg += player.spd * (1 + Math.floor(player.lvl/10)*0.2);
+        }
 
-        let dmgMult = 1.0;
-        let extraDmg = 0;
-        let selfDmg = 0;
-        
-        if (player.cls.id === 'wise') {
-            let cost = Math.floor(player.mp * 0.1);
-            if (cost > 0) { player.mp -= cost; dmgMult += cost * 0.01; if(!isTestingDamage) log(`[奥术] 耗 ${cost} 能, 增伤 ${(cost*1).toFixed(0)}%`, '#9b59b6'); }
-        }
-        if (player.cls.id === 'berserk') {
-            let cost = Math.floor(player.hp * 0.2);
-            selfDmg = cost;
-            let missingPct = (player.maxHp - player.hp)/player.maxHp * 100;
-            dmgMult += missingPct * 0.01;
-            if(!isTestingDamage) log(`[血怒] 耗 ${cost} 血, 增伤 ${missingPct.toFixed(0)}%`, '#c0392b');
-        }
-        if (player.cls.id === 'agile') {
-            extraDmg += player.spd * (1 + Math.floor(player.lvl/10)*0.2);
-        }
+        let isCrit = Math.random() < player.critRate;
+        let finalMult = dmgMult;
+        if (isCrit) finalMult *= player.critDmg;
 
-        let isCrit = Math.random() < player.critRate;
-        let finalMult = dmgMult;
-        if (isCrit) finalMult *= player.critDmg;
+        let dmg = Math.max(1, Math.floor(player.atk * finalMult - enemy.def + extraDmg));
+        enemy.hp -= dmg;
+        
+        if(isTestingDamage) testTotalDamage += dmg;
 
-        let dmg = Math.max(1, Math.floor(player.atk * finalMult - enemy.def + extraDmg));
-        enemy.hp -= dmg;
-        
-        if(isTestingDamage) testTotalDamage += dmg;
+        let floatColor = isCrit ? '#e74c3c' : '#fff';
+        let floatSize = isCrit ? '32px' : '22px';
+        let floatMsg = isCrit ? `暴击! ${dmg}` : dmg;
+        floatText(floatMsg, document.getElementById('enemyEl'), floatColor, floatSize);
+        
+        if(!isTestingDamage) log(isCrit ? `⚡【暴击】造成了 ${dmg} 点巨额伤害!` : `你对 ${enemy.name} 造成 ${dmg} 点伤害。`);
 
-        let floatColor = isCrit ? '#e74c3c' : '#fff';
-        let floatSize = isCrit ? '32px' : '22px';
-        let floatMsg = isCrit ? `暴击! ${dmg}` : dmg;
-        floatText(floatMsg, document.getElementById('enemyEl'), floatColor, floatSize);
-        
-        if(!isTestingDamage) log(isCrit ? `⚡【暴击】造成了 ${dmg} 点巨额伤害!` : `你对 ${enemy.name} 造成 ${dmg} 点伤害。`);
+        if (enemy.hp <= 0 && !isTestingDamage) {
+            checkResult();
+            return;
+        }
 
-        if (enemy.hp <= 0 && !isTestingDamage) {
-            checkResult();
-            return;
-        }
+        if (player.cls.id === 'agile' && enemy.hp > 0) {
+            let spdCoef = 1.0 + Math.floor(player.lvl/10)*0.2;
+            let extra = Math.floor(player.spd * spdCoef);
+            setTimeout(() => {
+                if(enemy.hp <= 0) return;
+                enemy.hp -= extra;
+                if(isTestingDamage) testTotalDamage += extra;
+                floatText("+" + extra, document.getElementById('enemyEl'), '#f1c40f', '28px');
+                if(!isTestingDamage) log(`[迅捷] 追加 ${extra} 真伤`);
+                updateUI();
+                if (!isTestingDamage && enemy.hp <= 0) checkResult();
+                else checkMultiHit(); 
+            }, 300);
+        } else {
+            if (selfDmg > 0) {
+                player.hp -= selfDmg;
+                let drain = Math.floor(dmg * 0.1);
+                player.hp += drain;
+                if(!isTestingDamage) floatText(`+${drain}`, document.getElementById('playerEl'), '#2ecc71', '16px');
+                if(!isTestingDamage) log(`吸血恢复 ${drain} 猫血`, '#2ecc71');
+            }
+            updateUI();
+            if (enemy.hp > 0) checkMultiHit();
+            else if (!isTestingDamage) checkResult();
+        }
+    }
+    
+    function checkMultiHit() {
+        let effectiveSpd = player.spd;
+        if (player.hasLowHpSpd) {
+             let missingPct = (player.maxHp - player.hp) / player.maxHp;
+             effectiveSpd = Math.floor(player.spd * (1 + Math.min(0.6, missingPct)));
+        }
 
-        if (player.cls.id === 'agile' && enemy.hp > 0) {
-            let spdCoef = 1.0 + Math.floor(player.lvl/10)*0.2;
-            let extra = Math.floor(player.spd * spdCoef);
-            battleLoopId = setTimeout(() => {
-                if(enemy.hp <= 0) return;
-                enemy.hp -= extra;
-                if(isTestingDamage) testTotalDamage += extra;
-                floatText("+" + extra, document.getElementById('enemyEl'), '#f1c40f', '28px');
-                if(!isTestingDamage) log(`[迅捷] 追加 ${extra} 真伤`);
-                updateUI();
-                if (!isTestingDamage && enemy.hp <= 0) checkResult();
-                else checkMultiHit(); 
-            }, 300);
-        } else {
-            if (selfDmg > 0) {
-                player.hp -= selfDmg;
-                let drain = Math.floor(dmg * 0.1);
-                player.hp += drain;
-                if(!isTestingDamage) floatText(`+${drain}`, document.getElementById('playerEl'), '#2ecc71', '16px');
-                if(!isTestingDamage) log(`吸血恢复 ${drain} 猫血`, '#2ecc71');
-            }
-            updateUI();
-            if (enemy.hp > 0) checkMultiHit();
-            else if (!isTestingDamage) checkResult();
-        }
-    }
-    
-    function checkMultiHit() {
-        let effectiveSpd = player.spd;
-        if (player.hasLowHpSpd) {
-             let missingPct = (player.maxHp - player.hp) / player.maxHp;
-             effectiveSpd = Math.floor(player.spd * (1 + Math.min(0.6, missingPct)));
-        }
+        if (effectiveSpd >= enemy.spd * 2 && Math.random() > 0.4) {
+            if(!isTestingDamage) log(">>> [猫速]碾压！发动连击！ <<<", '#f39c12');
+            setTimeout(performPlayerAttack, 600);
+        } else {
+            isPlayerTurn = false;
+            setTimeout(battleLoop, 1000);
+        }
+    }
 
-        if (effectiveSpd >= enemy.spd * 2 && Math.random() > 0.4) {
-            if(!isTestingDamage) log(">>> [猫速]碾压！发动连击！ <<<", '#f39c12');
-            battleLoopId = setTimeout(performPlayerAttack, 600);
-        } else {
-            isPlayerTurn = false;
-            battleLoopId = setTimeout(battleLoop, 1000);
-        }
-    }
+    function performEnemyAttack() {
+        const eEl = document.getElementById('enemyEl');
+        eEl.style.transform = 'translateX(-30px)';
+        setTimeout(() => eEl.style.transform = 'translateX(0)', 200);
+        showSlash(document.getElementById('playerEl'));
 
-    function performEnemyAttack() {
-        const eEl = document.getElementById('enemyEl');
-        eEl.style.transform = 'translateX(-30px)';
-        battleLoopId = setTimeout(() => eEl.style.transform = 'translateX(0)', 200);
-        showSlash(document.getElementById('playerEl'));
+        let rawDmg = enemy.atk - player.def;
+        let minRate = 0.1; 
+        if(stageType === 'elite') minRate = 0.25;
+        if(stageType === 'boss') minRate = 0.40;
+        if(stageType === 'evil_dragon') minRate = 0.40;
 
-        // [Ver3.06] 穿透机制调整
-        let rawDmg = enemy.atk - player.def;
-        let minRate = 0.1; 
-        if(stageType === 'elite') minRate = 0.25;
-        if(stageType === 'boss') minRate = 0.40;
-        if(stageType === 'evil_dragon') minRate = 0.40;
+        let minDmg = Math.floor(enemy.atk * minRate);
+        let dmg = Math.max(minDmg, rawDmg);
+        dmg = Math.max(1, dmg);
+        
+        if (player.hp - dmg <= 0 && player.cls.id === 'wise' && player.mp > 0 && !player.shieldUsed) {
+            let needBlock = dmg - (player.hp - 1);
+            let manaCost = Math.ceil(needBlock / 2);
+            if (player.mp >= manaCost) {
+                player.mp -= manaCost;
+                dmg -= needBlock;
+                player.shieldUsed = true; 
+                if(!isTestingDamage) log("🛡️ [奥术超载] 护盾抵挡了致命伤! (本战限1次)", '#3498db');
+            }
+        }
 
-        let minDmg = Math.floor(enemy.atk * minRate);
-        let dmg = Math.max(minDmg, rawDmg);
-        dmg = Math.max(1, dmg);
-        
-        if (player.hp - dmg <= 0 && player.cls.id === 'wise' && player.mp > 0 && !player.shieldUsed) {
-            let needBlock = dmg - (player.hp - 1);
-            let manaCost = Math.ceil(needBlock / 2);
-            if (player.mp >= manaCost) {
-                player.mp -= manaCost;
-                dmg -= needBlock;
-                player.shieldUsed = true; 
-                if(!isTestingDamage) log("🛡️ [奥术超载] 护盾抵挡了致命伤! (本战限1次)", '#3498db');
-            }
-        }
+        player.hp -= dmg;
+        floatText(dmg, document.getElementById('playerEl'), '#c0392b');
+        if(!isTestingDamage) log(`受到 ${dmg} 伤害。`);
+        
+        updateUI();
 
-        player.hp -= dmg;
-        floatText(dmg, document.getElementById('playerEl'), '#c0392b');
-        if(!isTestingDamage) log(`受到 ${dmg} 伤害。`);
-        
-        updateUI();
+        if (stageType === 'evil_dragon' && player.hp > 0) {
+            let dragonBreathDmg = Math.floor(player.maxHp * 0.07);
+            if (dragonBreathDmg > 0) {
+                setTimeout(() => {
+                    player.hp -= dragonBreathDmg;
+                    floatText(dragonBreathDmg, document.getElementById('playerEl'), '#f1c40f', '24px'); 
+                    if(!isTestingDamage) log(`🔥 [龙息] 邪龙喷吐龙息，造成 ${dragonBreathDmg} 点真实伤害!`, '#c0392b');
+                    updateUI();
+                    if (!isTestingDamage && player.hp <= 0) checkResult();
+                }, 400);
+            }
+        }
+        
+        if (player.cls.id === 'resolute' && player.hp > 0) {
+            let reflect = 0;
+            if (player.def >= player.atk * 5) {
+                reflect = player.def * 2 + player.hp * 0.2;
+                if(!isTestingDamage) log(`[荆棘甲壳] 触发高阶反伤!`, '#f1c40f');
+            } else if (player.def >= player.atk * 2) {
+                reflect = player.def;
+                if(!isTestingDamage) log(`[荆棘甲壳] 触发反伤!`, '#f1c40f');
+            }
+            if (reflect > 0) {
+                let isCrit = Math.random() < player.critRate;
+                let finalReflect = reflect * (isCrit ? player.critDmg : 1);
+                let actualDmg = Math.max(1, Math.floor(finalReflect - enemy.def));
+                
+                setTimeout(() => {
+                    enemy.hp -= actualDmg;
+                    if(isTestingDamage) testTotalDamage += actualDmg;
+                    let color = isCrit ? '#e74c3c' : '#e67e22';
+                    let msg = isCrit ? `反伤暴击! ${actualDmg}` : `反伤${actualDmg}`;
+                    floatText(msg, document.getElementById('enemyEl'), color);
+                    if(!isTestingDamage) log(`[荆棘] 反弹造成 ${actualDmg} 伤害!`, color);
+                    updateUI();
+                    if (!isTestingDamage) checkResult();
+                }, 300);
+            } else {
+                if (!isTestingDamage) checkResult();
+            }
+        } else {
+            if (!isTestingDamage && player.hp > 0) checkResult();
+        }
 
-        // 立即检查死亡，阻断后续
-        if (player.hp <= 0 && !isTestingDamage) {
-            checkResult();
-            return; 
-        }
+        if (player.hp > 0 && enemy.hp > 0) {
+            isPlayerTurn = true;
+            setTimeout(battleLoop, 800);
+        }
+    }
 
-        if (stageType === 'evil_dragon' && player.hp > 0) {
-            let dragonBreathDmg = Math.floor(player.maxHp * 0.07);
-            if (dragonBreathDmg > 0) {
-                battleLoopId = setTimeout(() => {
-                    player.hp -= dragonBreathDmg;
-                    floatText(dragonBreathDmg, document.getElementById('playerEl'), '#f1c40f', '24px'); 
-                    if(!isTestingDamage) log(`🔥 [龙息] 邪龙喷吐龙息，造成 ${dragonBreathDmg} 点真实伤害!`, '#c0392b');
-                    updateUI();
-                    if (!isTestingDamage && player.hp <= 0) checkResult();
-                }, 400);
-            }
-        }
-        
-        if (player.cls.id === 'resolute' && player.hp > 0) {
-            let reflect = 0;
-            if (player.def >= player.atk * 5) {
-                reflect = player.def * 2 + player.hp * 0.2;
-                if(!isTestingDamage) log(`[荆棘甲壳] 触发高阶反伤!`, '#f1c40f');
-            } else if (player.def >= player.atk * 2) {
-                reflect = player.def;
-                if(!isTestingDamage) log(`[荆棘甲壳] 触发反伤!`, '#f1c40f');
-            }
-            if (reflect > 0) {
-                let isCrit = Math.random() < player.critRate;
-                let finalReflect = reflect * (isCrit ? player.critDmg : 1);
-                let actualDmg = Math.max(1, Math.floor(finalReflect - enemy.def));
-                
-                battleLoopId = setTimeout(() => {
-                    enemy.hp -= actualDmg;
-                    if(isTestingDamage) testTotalDamage += actualDmg;
-                    let color = isCrit ? '#e74c3c' : '#e67e22';
-                    let msg = isCrit ? `反伤暴击! ${actualDmg}` : `反伤${actualDmg}`;
-                    floatText(msg, document.getElementById('enemyEl'), color);
-                    if(!isTestingDamage) log(`[荆棘] 反弹造成 ${actualDmg} 伤害!`, color);
-                    updateUI();
-                    if (!isTestingDamage) checkResult();
-                }, 300);
-            } else {
-                if (!isTestingDamage) checkResult();
-            }
-        } else {
-            if (!isTestingDamage) checkResult();
-        }
+    function checkResult() {
+        if(enemy.hp <= 0 && document.getElementById('eName').innerText !== "已击败") {
+            if(bloodInterval) clearInterval(bloodInterval);
+            if(mechInterval) clearInterval(mechInterval);
 
-        if (player.hp > 0 && enemy.hp > 0) {
-            isPlayerTurn = true;
-            battleLoopId = setTimeout(battleLoop, 800);
-        }
-    }
+            let rawName = enemy.name;
+            document.getElementById('eName').innerText = "已击败";
+            log(`${rawName} 倒下了!`, '#27ae60');
+            killCount++;
+            stageCount++; 
+            
+            let gainExp = player.lvl + 1;
+            player.exp += gainExp;
+            while (player.exp >= player.maxExp) {
+                player.exp -= player.maxExp;
+                levelUp();
+            }
+            
+            let healHp = Math.floor(player.maxHp * 0.1);
+            if(player.hasHealKill) {
+                 healHp += Math.floor((player.maxHp - player.hp) * 0.6);
+                 let healMp = Math.floor((player.maxMp - player.mp) * 0.6);
+                 player.mp += healMp;
+            }
+            player.hp = Math.min(player.maxHp, player.hp + healHp);
+            log(`胜利恢复状态`, '#2ecc71');
 
-    function checkResult() {
-        if(enemy.hp <= 0 && document.getElementById('eName').innerText !== "已击败") {
-            if(bloodInterval) clearInterval(bloodInterval);
-            if(mechInterval) clearInterval(mechInterval);
-            if(battleLoopId) clearTimeout(battleLoopId);
+            gameLevel++;
+            
+            if (stageType === 'boss') lastBossType = 'boss';
+            else if (stageType === 'evil_dragon') lastBossType = 'evil_dragon';
+            else lastBossType = null;
 
-            let rawName = enemy.name;
-            document.getElementById('eName').innerText = "已击败";
-            log(`${rawName} 倒下了!`, '#27ae60');
-            killCount++;
-            stageCount++; 
-            
-            let gainExp = player.lvl + 1;
-            player.exp += gainExp;
-            while (player.exp >= player.maxExp) {
-                player.exp -= player.maxExp;
-                levelUp();
-            }
-            
-            let healHp = Math.floor(player.maxHp * 0.1);
-            if(player.hasHealKill) {
-                 healHp += Math.floor((player.maxHp - player.hp) * 0.6);
-                 let healMp = Math.floor((player.maxMp - player.mp) * 0.6);
-                 player.mp += healMp;
-            }
-            player.hp = Math.min(player.maxHp, player.hp + healHp);
-            log(`胜利恢复状态`, '#2ecc71');
+            if (!isTestingDamage) saveGame();
+            updateUI();
 
-            gameLevel++;
-            
-            if (stageType === 'boss') lastBossType = 'boss';
-            else if (stageType === 'evil_dragon') lastBossType = 'evil_dragon';
-            else lastBossType = null;
+            if (stageType === 'elite' || stageType === 'boss' || stageType === 'evil_dragon') {
+                if (stageType !== 'evil_dragon') {
+                    player.eliteKills = (player.eliteKills || 0) + 1;
+                }
+                isPendingRogue = true; 
+                stageCount = 0; 
+            }
 
-            if (!isTestingDamage) saveGame();
-            updateUI();
+            setTimeout(startNextBattle, 1500);
 
-            if (stageType === 'elite' || stageType === 'boss' || stageType === 'evil_dragon') {
-                if (stageType !== 'evil_dragon') {
-                    player.eliteKills = (player.eliteKills || 0) + 1;
-                }
-                isPendingRogue = true; 
-                stageCount = 0; 
-            }
+        } else if (player.hp <= 0) {
+            if(bloodInterval) clearInterval(bloodInterval);
+            if(mechInterval) clearInterval(mechInterval);
+            player.hp = 0;
+            updateUI();
+            document.getElementById('goReason').innerText = `在第 ${gameLevel} 层被 ${enemy.name} 击败`;
+            showLayer('over');
+        }
+    }
 
-            battleLoopId = setTimeout(startNextBattle, 1500);
+    function levelUp() {
+        player.lvl++;
+        player.maxExp = player.lvl * 2; 
+        const g = player.cls.growth;
+        player.atk += g.atk;
+        player.mp += g.mp; player.maxMp += g.mp;
+        player.def += g.def;
+        player.hp += g.hp; player.maxHp += g.hp;
+        player.spd += g.spd;
+        floatText("LV UP!", document.getElementById('playerEl'), '#f1c40f', '32px');
+        log(`升级! 等级 ${player.lvl}`, '#f1c40f');
+    }
 
-        } else if (player.hp <= 0) {
-            // 死亡判定：立刻停止所有循环
-            if(bloodInterval) clearInterval(bloodInterval);
-            if(mechInterval) clearInterval(mechInterval);
-            if(battleLoopId) clearTimeout(battleLoopId);
-            
-            player.hp = 0;
-            isGameActive = false;
-            updateUI();
-            
-            log(`💔 力竭倒下... 3秒后自动复活`, '#c0392b');
-            
-            // 3秒后自动复活，不再需要点击
-            setTimeout(revivePlayer, 3000);
-        }
-    }
+    function revivePlayer() {
+        gameLevel = Math.max(1, gameLevel - 5);
+        player.hp = player.maxHp;
+        player.mp = player.maxMp;
+        stageCount = 0;
+        lastBossType = null;
+        log("=== 时光倒流，重新开始 ===", '#3498db');
+        saveGame();
+        showLayer('battle');
+        startNextBattle();
+    }
+
+    function showRogueSelection(first = false) {
+        selectedRogueCard = null;
+        const container = document.getElementById('rogueContainer');
+        const btn = document.getElementById('confirmCardBtn');
+        btn.disabled = true;
+        btn.innerText = "请选择一项";
+        container.innerHTML = '';
+        
+        let pool = CARDS.filter(c => {
+            if (c.unique && player.uniqueCards && player.uniqueCards.includes(c.id)) return false;
+            if (c.minLvl && gameLevel < c.minLvl) return false;
+            return true;
+        });
+        
+        if (lastBossType === 'boss') {
+            pool = pool.filter(c => c.type !== 'white');
+        } else if (lastBossType === 'evil_dragon') {
+            pool = pool.filter(c => c.type !== 'white' && c.type !== 'green');
+        }
+        
+        const shuffled = pool.sort(() => 0.5 - Math.random());
+        const choices = shuffled.slice(0, 3);
+
+        choices.forEach(card => {
+            const el = document.createElement('div');
+            el.className = `rogue-card card-${card.type}`;
+            el.innerHTML = `
+                <div class="card-icon">${card.icon}</div>
+                <h3>${card.title}</h3>
+                <p>${card.desc}</p>
+            `;
+            el.onclick = () => {
+                Array.from(container.children).forEach(c => c.classList.remove('selected'));
+                el.classList.add('selected');
+                selectedRogueCard = card;
+                btn.disabled = false;
+                btn.innerText = "确认选择";
+            };
+            container.appendChild(el);
+        });
+        showLayer('card');
+    }
+
+    function confirmRogueSelection() {
+        if (!selectedRogueCard) return;
+        selectedRogueCard.effect(player);
+        if (selectedRogueCard.unique) {
+            if(!player.uniqueCards) player.uniqueCards = [];
+            player.uniqueCards.push(selectedRogueCard.id);
+        }
+        log(`选择了 [${selectedRogueCard.title}]`, '#8e44ad');
+        if(selectedRogueCard.type !== 'green' && !selectedRogueCard.unique) {
+             player.hp = Math.min(player.maxHp, player.hp + player.maxHp * 0.3);
+             player.mp = Math.min(player.maxMp, player.mp + player.maxMp * 0.3);
+        }
+        updateUI();
+        showLayer('battle');
+        startNextBattle();
+    }
+
+    function showAttrPanel() {
+        if(!player) return;
+        document.getElementById('attrName').innerText = player.name;
+        document.getElementById('attrClass').innerText = player.cls.name;
+        document.getElementById('attrLvl').innerText = player.lvl;
+        document.getElementById('attrHp').innerText = Math.floor(player.hp) + "/" + player.maxHp;
+        
+        let displayMp = (Math.floor(player.mp * 10) / 10).toFixed(1);
+        if(player.cls.id !== 'mech') displayMp = Math.floor(player.mp);
+
+        document.getElementById('attrMp').innerText = displayMp + "/" + player.maxMp;
+        document.getElementById('attrAtk').innerText = player.atk;
+        document.getElementById('attrDef').innerText = player.def;
+        document.getElementById('attrSpd').innerText = player.spd;
+        document.getElementById('attrCrit').innerText = Math.floor(player.critRate * 100) + "%";
+        document.getElementById('attrCritDmg').innerText = Math.floor(player.critDmg * 100) + "%";
+        showLayer('attr');
+    }
+
+    function closeAttrPanel() { showLayer('battle'); }
+
+    function startDamageTest() {
+        if(!player || isTestingDamage) return;
+        
+        isTestingDamage = true;
+        testTotalDamage = 0;
+        testTimer = 10;
+        
+        player.hp = player.maxHp;
+        player.mp = player.maxMp;
+        
+        let originalEnemy = JSON.parse(JSON.stringify(enemy));
+        
+        let dummyHp = 9999999;
+        let dummyAtk = enemy.atk; 
+        let dummyDef = enemy.def;
+        let dummySpd = enemy.spd;
+        
+        enemy = {
+            name: "训练木桩",
+            maxHp: dummyHp,
+            hp: dummyHp,
+            atk: dummyAtk,
+            def: dummyDef,
+            spd: dummySpd,
+            visual: SVGS.stake
+        };
+        
+        document.getElementById('eName').innerText = enemy.name;
+        document.getElementById('eVisual').innerHTML = enemy.visual;
+        updateUI();
+        
+        log("=== 开始伤害测试 (10s) ===", '#3498db');
+        log("木桩已生成，属性同当前怪物。", '#7f8c8d');
+        
+        if(player.cls.id === 'blood') {
+             bloodInterval = setInterval(() => {
+                let dot = Math.floor(player.atk * 0.8 + player.hp * 0.2);
+                testTotalDamage += dot;
+                floatText(`-${dot}`, document.getElementById('enemyEl'), '#8e44ad', '20px');
+             }, 1000);
+        }
+        if(player.cls.id === 'mech') {
+             mechInterval = setInterval(() => {
+                let cost = Math.floor(player.mp * 0.02);
+                if (player.mp > 0) {
+                    player.mp -= cost;
+                    if(player.mp < 0) player.mp = 0;
+                    let dmgBase = player.atk * 0.25 + player.mp * 0.75;
+                    let isCrit = Math.random() < player.critRate;
+                    let finalDmg = Math.max(1, Math.floor(dmgBase * (isCrit ? player.critDmg : 1)));
+                    testTotalDamage += finalDmg;
+                    floatText(finalDmg, document.getElementById('enemyEl'), isCrit?'#e74c3c':'#fff');
+                } else {
+                     let charge = Math.max(1, Math.floor(player.maxMp * 0.05));
+                     player.mp += charge;
+                }
+             }, 200);
+        }
+
+        testInterval = setInterval(() => {
+            testTimer--;
+            if (testTimer <= 0) { endDamageTest(originalEnemy); } 
+            else { log(`测试剩余: ${testTimer}s`, '#bdc3c7'); }
+        }, 1000);
+    }
+
+    function endDamageTest(original) {
+        clearInterval(testInterval);
+        if(bloodInterval) clearInterval(bloodInterval);
+        if(mechInterval) clearInterval(mechInterval);
+        isTestingDamage = false;
+        
+        let dps = (testTotalDamage / 10).toFixed(1);
+        alert(`=== 伤害测试报告 ===\n总伤害: ${testTotalDamage}\n秒伤(DPS): ${dps}`);
+        log(`总伤害: ${testTotalDamage}`, '#e67e22');
+        
+        enemy = original;
+        document.getElementById('eName').innerText = enemy.name;
+        document.getElementById('eVisual').innerHTML = enemy.visual;
+        
+        player.hp = player.maxHp;
+        player.mp = player.maxMp; 
+        updateUI();
+        
+        if (enemy.hp <= 0) { 
+            startNextBattle(); 
+        } else {
+             if(player.cls.id !== 'mech') {
+                isPlayerTurn = player.spd >= enemy.spd; 
+                setTimeout(battleLoop, 1000); 
+            } else {
+                startNextBattle(); 
+            }
+        }
+    }
+
+    function updateUI() {
+        if(!player) return;
+        const setBar = (id, cur, max) => { document.getElementById(id).style.width = Math.min(100, Math.max(0, cur/max*100)) + '%'; };
+        setBar('pHpBar', player.hp, player.maxHp);
+        setBar('pMpBar', player.mp, player.maxMp);
+        setBar('eHpBar', enemy ? enemy.hp : 0, enemy ? enemy.maxHp : 1);
+        setBar('expFill', player.exp, player.maxExp);
+        document.getElementById('expText').innerText = `${player.exp}/${player.maxExp}`;
+        document.getElementById('levelText').innerText = gameLevel;
+        document.getElementById('killText').innerText = killCount;
+        document.getElementById('pLvVal').innerText = player.lvl;
+        
+        let displayMp = (Math.floor(player.mp * 10) / 10).toFixed(1);
+        if(player.cls.id !== 'mech') displayMp = Math.floor(player.mp);
+        document.getElementById('pMpVal').innerText = `MP: ${displayMp}`;
+    }
 </script>
 </body>
 </html>

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>大猫猫斗恶龙 Ver3.09.12122501beta</title>
+    <title>大猫猫斗恶龙 Ver3.22.12122501beta</title>
     <style>
         /* --- 全局样式 --- */
         body {
@@ -68,8 +68,9 @@
         
         .btn-blue { background: #3498db; box-shadow: 0 4px 0 #2980b9; }
         .btn-blue:active { transform: translateY(4px); box-shadow: 0 0 0 #2980b9; }
-        .btn-green { background: #2ecc71; box-shadow: 0 4px 0 #27ae60; width: 80%; } /* 保持Ver3.08样式 */
+        .btn-green { background: #2ecc71; box-shadow: 0 4px 0 #27ae60; width: 80%; }
         .btn-green:active { transform: translateY(4px); box-shadow: 0 0 0 #27ae60; }
+        .btn-gray { background: #95a5a6; box-shadow: 0 4px 0 #7f8c8d; font-size: 14px; padding: 8px 20px; }
         
         .btn-home {
             position: absolute; top: 10px; left: 10px; width: 36px; height: 36px; border-radius: 50%;
@@ -100,7 +101,7 @@
         .slot-detail { font-size: 12px; color: #7f8c8d; margin-top: 5px; }
         .slot-icon { width: 30px; height: 30px; }
         .delete-btn {
-            padding: 5px 10px; font-size: 12px; background: #e74c3c; border-radius: 5px; margin-left: 10px; z-index: 5; color: white;
+            padding: 5px 10px; font-size: 12px; background: #e74c3c; border-radius: 5px; margin-left: 10px; z-index: 5; color: white; width: auto; box-shadow: none;
         }
 
         /* --- 日志 & 属性 --- */
@@ -125,7 +126,7 @@
         .log-list { padding-left: 20px; margin: 0; }
         .log-list li { font-size: 13px; color: #34495e; margin-bottom: 6px; line-height: 1.5; }
         .highlight { color: #c0392b; font-weight: bold; }
-
+        
         .attr-row { display: flex; justify-content: space-between; border-bottom: 1px solid #eee; padding: 8px 0; font-size: 14px; color: #34495e; }
         .attr-val { color: #2980b9; font-family: monospace; font-size: 16px; }
 
@@ -192,7 +193,7 @@
     
     <div id="startLayer" class="layer active layer-scroll">
         <h1>大猫猫斗恶龙</h1>
-        <div class="version">Ver3.09.12122501beta</div>
+        <div class="version">Ver3.22.12122501beta</div>
         <svg width="150" height="150" viewBox="0 0 100 100">
             <circle cx="50" cy="50" r="40" fill="#f1c40f" stroke="#e67e22" stroke-width="3"/>
             <path d="M30 30 L40 10 L55 30 Z" fill="#f1c40f" stroke="#e67e22" stroke-width="2"/>
@@ -207,7 +208,7 @@
         <br>
         <button class="btn-blue" onclick="openSlotMenu('new')" style="width:70%">新游戏</button>
         <br>
-        <button onclick="showLayer('changelog')" style="width:70%; margin-top:5px; background:#95a5a6">更新日志</button>
+        <button class="btn-gray" onclick="showLayer('changelog')" style="width:70%">更新日志</button>
     </div>
 
     <div id="slotLayer" class="layer layer-scroll">
@@ -215,110 +216,62 @@
         <div id="slotList" class="slot-container"></div>
         <button onclick="showLayer('start')" style="margin-top:20px; background:#95a5a6;">返回</button>
     </div>
-
+    
     <div id="nameInputLayer" class="layer">
         <h2>创建角色</h2>
         <input type="text" id="playerNameInput" placeholder="请输入你的勇者名" maxlength="8">
         <button onclick="goToClassSelection()">下一步</button>
-        <button onclick="showLayer('start')" style="background:#95a5a6;">取消</button>
+        <button onclick="showLayer('slot')" style="background:#95a5a6;">取消</button>
     </div>
 
     <div id="changelogLayer" class="layer layer-scroll">
-        <h2>更新日志</h2>
+        <h2>编年史 (更新日志)</h2>
         <div class="scroll-box" id="changelogBox">
-             <div class="log-block">
-                <div class="log-ver">Ver 3.09.12122501beta</div>
-                <div class="log-date">核心Bug修复</div>
+            <div class="log-block">
+                <div class="log-ver">Ver 3.22.12122501beta</div>
+                <div class="log-date">稳定重构版</div>
                 <ul class="log-list">
-                    <li><span class="highlight">全自动复活</span>：修复了战斗死亡后卡死的问题。现在死亡后无需操作，3秒后自动回退层数并重开战斗，彻底解放双手。</li>
-                    <li><span class="highlight">稳定性</span>：基于Ver3.08稳定内核重构，确保存档与UI交互的绝对稳定。</li>
+                    <li><span class="highlight">稳定回归</span>：UI与交互逻辑已完全回滚至3.08稳定版本（双按钮+直接点击槽位）。</li>
+                    <li><span class="highlight">卡死修复</span>：修复了死亡后游戏卡死的BUG。现在死亡3秒后自动回退层数并复活，解放双手。</li>
+                    <li><span class="highlight">机械猫加强</span>：浮点数扣蓝逻辑，系数提升至0.25/0.75，永不卡死。</li>
+                    <li><span class="highlight">邪龙BOSS</span>：每100层出现，必掉蓝卡。</li>
                 </ul>
             </div>
-             <div class="log-block">
+            <div class="log-block">
+                <div class="log-ver">Ver 3.09~3.21</div>
+                <div class="log-date">修复历程</div>
+                <ul class="log-list">
+                    <li>经历了UI逻辑的反复调试，最终决定回滚至最稳定的交互逻辑。</li>
+                    <li>彻底重构了死亡判定循环。</li>
+                </ul>
+            </div>
+            <div class="log-block">
                 <div class="log-ver">Ver 3.08</div>
                 <div class="log-date">稳定基准</div>
                 <ul class="log-list">
-                    <li><span class="highlight">稳定锚点</span>：确立了最稳定的UI与存取档逻辑版本。</li>
-                    <li><span class="highlight">界面优化</span>：采用双按钮主界面，逻辑清晰。</li>
-                </ul>
-            </div>
-             <div class="log-block">
-                <div class="log-ver">Ver 3.06</div>
-                <div class="log-date">逻辑优化</div>
-                <ul class="log-list">
-                    <li>机械猫修复：空蓝不再卡死，移除取整，改为浮点运算。</li>
-                    <li>机械猫火箭弹伤害倍率上调 (0.25/0.75)。</li>
-                </ul>
-            </div>
-            <div class="log-block">
-                <div class="log-ver">Ver 3.05</div>
-                <div class="log-date">邪龙降临</div>
-                <ul class="log-list">
-                    <li>新增百层BOSS【邪龙】，拥有真实伤害龙息。</li>
-                    <li>新增怪物穿透机制(小怪10%/精英25%/BOSS 40%)。</li>
-                    <li>掉落优化：BOSS战后不再掉落白卡。</li>
-                </ul>
-            </div>
-            <div class="log-block">
-                <div class="log-ver">Ver 3.04</div>
-                <div class="log-date">资源整合</div>
-                <ul class="log-list">
-                    <li>修复版本号混乱，整合美术资源。</li>
-                    <li>伤害数字显示位置优化。</li>
+                    <li>确立了最稳定的存取档交互逻辑。</li>
                 </ul>
             </div>
             <div class="log-block">
                 <div class="log-ver">Ver 3.0</div>
                 <div class="log-date">职业觉醒</div>
                 <ul class="log-list">
-                    <li>新增血骑猫(烧血流)、机械猫(弹幕流)。</li>
-                    <li>卡牌池重构，新增暴击/爆伤/回蓝及唯一卡。</li>
+                    <li>新增血骑猫、机械猫。</li>
+                    <li>卡牌池重构。</li>
                 </ul>
             </div>
             <div class="log-block">
-                <div class="log-ver">Ver 2.1</div>
-                <div class="log-date">多存档</div>
-                <ul class="log-list">
-                    <li>支持3个独立存档槽位。</li>
-                </ul>
-            </div>
-            <div class="log-block">
-                <div class="log-ver">Ver 2.0</div>
+                <div class="log-ver">Ver 2.0~2.1</div>
                 <div class="log-date">存档系统</div>
                 <ul class="log-list">
-                    <li>新增自动/手动存档功能。</li>
+                    <li>多存档槽位实装。</li>
                 </ul>
             </div>
              <div class="log-block">
-                <div class="log-ver">Ver 1.8</div>
-                <div class="log-date">系统扩充</div>
-                <ul class="log-list">
-                    <li>坚毅猫加强。</li>
-                    <li>新增伤害测试(打桩)。</li>
-                    <li>魔王形象重绘。</li>
-                </ul>
-            </div>
-            <div class="log-block">
-                <div class="log-ver">Ver 1.7</div>
-                <div class="log-date">数值平衡</div>
-                <ul class="log-list">
-                    <li>怪物速度提升。</li>
-                    <li>新增暴击系统(绿卡)。</li>
-                </ul>
-            </div>
-             <div class="log-block">
-                <div class="log-ver">Ver 1.6</div>
-                <div class="log-date">战斗修正</div>
-                <ul class="log-list">
-                    <li>修复天赋多段伤害丢失。</li>
-                </ul>
-            </div>
-             <div class="log-block">
-                <div class="log-ver">Ver 1.0~1.5</div>
+                <div class="log-ver">Ver 1.0~1.9</div>
                 <div class="log-date">早期版本</div>
                 <ul class="log-list">
-                    <li>基础玩法构建，职业天赋实装。</li>
-                    <li>SVG美术升级，经验条实装。</li>
+                    <li>基础玩法与职业构建。</li>
                 </ul>
             </div>
         </div>
@@ -328,7 +281,7 @@
     <div id="classLayer" class="layer layer-scroll">
         <h2 style="color:#2c3e50; font-size: 20px;">请选择你的职业</h2>
         <div class="card-container" id="classContainer"></div>
-        <button onclick="showLayer('nameInputLayer')" style="margin-top:20px; background:#95a5a6;">返回</button>
+        <button onclick="showLayer('name')" style="margin-top:20px; background:#95a5a6;">返回</button>
     </div>
 
     <div id="battleLayer" class="layer">
@@ -427,9 +380,11 @@
 </div>
 
 <script>
-    // ... [SVG 和 常量定义 保持 Ver3.08 的内容不变] ...
-    // 为了节省篇幅，此处省略 SVG 和 CLASSES/CARDS 定义，请使用上一版代码中的这部分
-    // 关键修复在下方的 JavaScript 逻辑
+    // [SVG & CLASSES & CARDS 保持 Ver3.08 不变]
+    // 篇幅原因省略 SVG/CLASSES/CARDS 定义，请确保复制时包含它们
+    // 此处仅展示修复后的关键逻辑函数
+    
+    // --- 0. SVG 绘图库 (继承Ver3.08) ---
     const SVGS = {
         cat_resolute: `<svg viewBox="0 0 100 100"><g transform="translate(10,10)"><circle cx="40" cy="40" r="30" fill="#bdc3c7" stroke="#2c3e50" stroke-width="2"/><path d="M20 20 L10 0 L35 15 Z" fill="#bdc3c7" stroke="#2c3e50" stroke-width="2"/><path d="M60 20 L70 0 L45 15 Z" fill="#bdc3c7" stroke="#2c3e50" stroke-width="2"/><rect x="30" y="15" width="20" height="25" rx="5" fill="none" stroke="#2c3e50" stroke-width="2"/><line x1="40" y1="15" x2="40" y2="40" stroke="#2c3e50" stroke-width="1"/><line x1="30" y1="27" x2="50" y2="27" stroke="#2c3e50" stroke-width="1"/><path d="M65 40 L90 10" stroke="#95a5a6" stroke-width="6"/><path d="M65 40 L90 10" stroke="#2c3e50" stroke-width="2"/><line x1="60" y1="45" x2="70" y2="35" stroke="#f1c40f" stroke-width="4"/></g></svg>`,
         cat_agile: `<svg viewBox="0 0 100 100"><g transform="translate(10,10)"><circle cx="40" cy="40" r="30" fill="#f1c40f" stroke="#2c3e50" stroke-width="2"/><path d="M20 20 L10 0 L35 15 Z" fill="#f1c40f" stroke="#2c3e50" stroke-width="2"/><path d="M60 20 L70 0 L45 15 Z" fill="#f1c40f" stroke="#2c3e50" stroke-width="2"/><circle cx="30" cy="35" r="3" fill="#2c3e50"/><circle cx="50" cy="35" r="3" fill="#2c3e50"/><path d="M35 45 Q40 50 45 45" stroke="#2c3e50" stroke-width="2" fill="none"/><path d="M70 40 L85 25" stroke="#3498db" stroke-width="4"/><path d="M10 40 L-5 25" stroke="#3498db" stroke-width="4"/></g></svg>`,
@@ -479,7 +434,7 @@
             id: 'mech', name: '机械猫', svg: SVGS.cat_mech, color: '#34495e',
             base: { atk: 30, mp: 12, def: 25, hp: 120, spd: 0 },
             growth: { atk: 15, mp: 4, def: 3, hp: 20, spd: 0 },
-            talent: '【CAAATΩ火箭弹】无法普攻/享受猫速。每0.2秒消耗3%当前[猫能]造成[猫威]x0.25+剩余[猫能]x0.75伤害，可爆击。'
+            talent: '【CAAATΩ火箭弹】无法普攻/享受猫速。每0.2秒消耗2%当前[猫能]造成[猫威]x0.25+剩余[猫能]x0.75伤害，可爆击。'
         }
     ];
 
@@ -519,7 +474,7 @@
     let selectedRogueCard = null;
     let isFirstRogue = false;
     let isGameActive = false;
-    let currentSlotId = null; 
+    let currentSlotId = null;
     let lastBossType = null;
     
     let bloodInterval = null;
@@ -544,7 +499,6 @@
     };
     const logs = document.getElementById('battleLog');
 
-    // --- 0. 初始化检测存档 ---
     window.onload = function() {
         const legacySave = localStorage.getItem('bigCatQuestSave');
         const slot0 = localStorage.getItem('bigCatQuest_slot_0');
@@ -645,7 +599,7 @@
                     } else {
                         if(confirm("该槽位已有存档，确定覆盖吗？")) {
                             currentSlotId = i;
-                            showLayer('name'); // nameInputLayer -> name
+                            showLayer('name'); // nameInputLayer defined as 'name'
                         }
                     }
                 };
@@ -654,7 +608,7 @@
                 el.innerHTML = '<div>+ 空槽位</div>';
                 el.onclick = () => {
                     currentSlotId = i;
-                    showLayer('name'); // nameInputLayer -> name
+                    showLayer('name'); 
                 };
             }
             container.appendChild(el);

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>大猫猫斗恶龙 Ver3.20</title>
+    <title>大猫猫斗恶龙 Ver3.21</title>
     <style>
         /* --- 全局样式 --- */
         body {
@@ -120,14 +120,14 @@
             min-height: 200px;
         }
         .scroll-box:active { cursor: grabbing; }
-        .log-block { margin-bottom: 20px; border-bottom: 1px dashed #eee; padding-bottom: 15px; }
+        .log-block { margin-bottom: 25px; border-bottom: 1px dashed #bbb; padding-bottom: 15px; }
         .log-ver { color: #e67e22; font-weight: 900; font-size: 16px; margin-bottom: 5px; }
-        .log-date { color: #95a5a6; font-size: 12px; margin-bottom: 8px; }
+        .log-date { color: #95a5a6; font-size: 12px; margin-bottom: 8px; font-style: italic; }
         .log-list { padding-left: 20px; margin: 0; }
-        .log-list li { font-size: 13px; color: #34495e; margin-bottom: 4px; line-height: 1.5; }
+        .log-list li { font-size: 13px; color: #34495e; margin-bottom: 6px; line-height: 1.5; }
         .highlight { color: #c0392b; font-weight: bold; }
         .apology { color: #c0392b; font-weight: bold; background: #fadbd8; padding: 10px; border-radius: 5px; margin-top: 5px; border: 1px solid #e6b0aa; font-size: 13px; line-height: 1.5; }
-
+        
         .attr-row { display: flex; justify-content: space-between; border-bottom: 1px solid #eee; padding: 8px 0; font-size: 14px; color: #34495e; }
         .attr-val { color: #2980b9; font-family: monospace; font-size: 16px; }
 
@@ -194,7 +194,7 @@
     
     <div id="startLayer" class="layer active layer-scroll">
         <h1>大猫猫斗恶龙</h1>
-        <div class="version">Ver3.20.12122501beta</div>
+        <div class="version">Ver3.21.12122501beta</div>
         <svg width="150" height="150" viewBox="0 0 100 100">
             <circle cx="50" cy="50" r="40" fill="#f1c40f" stroke="#e67e22" stroke-width="3"/>
             <path d="M30 30 L40 10 L55 30 Z" fill="#f1c40f" stroke="#e67e22" stroke-width="2"/>
@@ -226,13 +226,21 @@
     <div id="changelogLayer" class="layer layer-scroll">
         <h2>更新日志</h2>
         <div class="scroll-box" id="changelogBox">
-             <div class="log-block">
-                <div class="log-ver">Ver 3.20.12122501beta</div>
-                <div class="log-date">终极UI修正</div>
+            <div class="log-block">
+                <div class="log-ver">Ver 3.21.12122501beta</div>
+                <div class="log-date">终极修复</div>
                 <ul class="log-list">
-                    <li><span class="highlight">界面重构</span>：因Ver3.19的界面代码错误回滚，导致多存档入口丢失。现已完全恢复Ver3.08的双按钮（读取/新游戏）稳定布局。</li>
-                    <li><span class="highlight">逻辑修正</span>：重新连接了按钮与多存档系统的逻辑，现在可以正常进行游戏了。</li>
+                    <li><span class="highlight">逻辑回滚</span>：存档选择逻辑已回滚至最稳定的Ver3.08版本（点击槽位直接生效，移除确认按钮），彻底修复了无法开始游戏的问题。</li>
+                    <li><span class="highlight">内容保留</span>：保留了所有新职业、新BOSS和数值平衡调整。</li>
                 </ul>
+            </div>
+            <div class="log-block">
+                <div class="log-ver">Ver 3.20 (撤销)</div>
+                <div class="log-date">事故说明</div>
+                <div class="apology">
+                    致各位勇者：<br>
+                    此前版本因过度设计交互逻辑导致游戏无法运行，现已完全回滚至稳定版交互逻辑。大猫猫深表歉意！
+                </div>
             </div>
             <div class="log-block">
                 <div class="log-ver">Ver 3.12</div>
@@ -250,7 +258,7 @@
                     <li>重构了死亡判定逻辑，确保血条归零时立即触发结算。</li>
                 </ul>
             </div>
-             <div class="log-block">
+            <div class="log-block">
                 <div class="log-ver">Ver 3.06~3.10</div>
                 <div class="log-date">稳定性优化</div>
                 <ul class="log-list">
@@ -462,7 +470,7 @@
             id: 'mech', name: '机械猫', svg: SVGS.cat_mech, color: '#34495e',
             base: { atk: 30, mp: 12, def: 25, hp: 120, spd: 0 },
             growth: { atk: 15, mp: 4, def: 3, hp: 20, spd: 0 },
-            talent: '【CAAATΩ火箭弹】无法普攻/享受猫速。每0.2秒消耗2%当前[猫能]造成[猫威]x0.25+剩余[猫能]x0.75伤害，可爆击。'
+            talent: '【CAAATΩ火箭弹】无法普攻/享受猫速。每0.2秒消耗3%当前[猫能]造成[猫威]x0.25+剩余[猫能]x0.75伤害，可爆击。'
         }
     ];
 
@@ -502,7 +510,7 @@
     let selectedRogueCard = null;
     let isFirstRogue = false;
     let isGameActive = false;
-    let currentSlotId = null; 
+    let currentSlotId = null;
     let lastBossType = null;
     
     let bloodInterval = null;
@@ -533,6 +541,7 @@
         if (legacySave && !slot0) {
             localStorage.setItem('bigCatQuest_slot_0', legacySave);
         }
+        checkSave();
         
         const slider = document.getElementById('changelogBox');
         let isDown = false; let startY; let scrollTop;
@@ -636,16 +645,12 @@
                 el.innerHTML = '<div>+ 空槽位</div>';
                 el.onclick = () => {
                     currentSlotId = i;
-                    if (mode === 'load') {
-                        showLayer('name'); 
-                    } else {
-                        showLayer('name');
-                    }
+                    showLayer('name'); 
                 };
             }
             container.appendChild(el);
         }
-        showLayer('slot');
+        showLayer('slot'); 
     }
 
     function goToClassSelection() {
@@ -718,6 +723,14 @@
         localStorage.setItem(`bigCatQuest_slot_${currentSlotId}`, JSON.stringify(saveData));
         if (manual) { alert("存档成功！"); } 
     }
+
+    function checkSave() {
+        let hasSave = false;
+        for(let i=0; i<3; i++) {
+            if(localStorage.getItem(`bigCatQuest_slot_${i}`)) hasSave = true;
+        }
+        document.getElementById('continueBtn').disabled = !hasSave;
+    }
     
     function loadGame() {
         openSlotMenu('load');
@@ -748,7 +761,6 @@
         if(player.critDmg === undefined) player.critDmg = 1.5;
         if(player.uniqueCards === undefined) player.uniqueCards = [];
         
-        // 关键修复：读档时如果血量<=0，视为坏档，自动复活
         if (player.hp <= 0) {
             player.hp = player.maxHp;
             log("⚠️ 检测到异常死亡存档，已自动复活。", "#e74c3c");
@@ -774,6 +786,7 @@
             if(bloodInterval) clearInterval(bloodInterval);
             if(mechInterval) clearInterval(mechInterval);
             if(battleLoopId) clearTimeout(battleLoopId);
+            checkSave(); 
             showLayer('start');
         }
     }
@@ -822,6 +835,7 @@
                     if (player.mp > 0) {
                         player.mp -= cost;
                         if(player.mp < 0) player.mp = 0;
+                        
                         let dmgBase = player.atk * 0.25 + player.mp * 0.75;
                         let isCrit = Math.random() < player.critRate;
                         let finalDmg = Math.max(1, Math.floor(dmgBase * (isCrit ? player.critDmg : 1)));
@@ -981,7 +995,7 @@
                 enemy.hp -= extra;
                 if(isTestingDamage) testTotalDamage += extra;
                 floatText("+" + extra, document.getElementById('enemyEl'), '#f1c40f', '28px');
-                if(!isTestingDamage) log(`[迅捷] 追加 ${extra} 真伤`);
+                if(!isTestingDamage) log(`[迅捷] 追加 ${extra} 真伤`, '#f1c40f');
                 updateUI();
                 if (!isTestingDamage && enemy.hp <= 0) checkResult();
                 else checkMultiHit(); 

@@ -3,35 +3,36 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>大猫猫斗恶龙 Ver4.04</title>
+    <title>大猫猫斗恶龙 Ver4.05</title>
     <style>
-        /* --- 1. 全局与基础 (完全恢复 Ver3.08) --- */
+        /* --- 全局样式 --- */
         body { margin: 0; padding: 0; background-color: #2c3e50; display: flex; justify-content: center; align-items: center; height: 100vh; font-family: "Microsoft YaHei", sans-serif; overflow: hidden; touch-action: none; user-select: none; }
         #gameContainer { position: relative; width: 100%; height: 100%; max-width: 480px; max-height: 900px; background: #fff; box-shadow: 0 0 30px rgba(0,0,0,0.5); overflow: hidden; display: flex; flex-direction: column; }
         
+        /* --- 界面层级 --- */
         .layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: none; flex-direction: column; align-items: center; justify-content: center; background: rgba(255,255,255,0.98); z-index: 10; padding: 20px; box-sizing: border-box; overflow-y: auto; -webkit-overflow-scrolling: touch; }
         .active { display: flex; }
         .layer-scroll { justify-content: flex-start; padding-top: 40px; padding-bottom: 60px; }
 
+        /* --- 基础组件 --- */
         h1 { color: #e67e22; text-shadow: 2px 2px #f1c40f; margin-bottom: 5px; text-align: center; flex-shrink: 0;}
-        h2 { color: #2c3e50; margin-bottom: 20px; text-align: center; }
+        h2 { color: #2c3e50; margin-bottom: 10px; text-align: center; }
         .version { color: #7f8c8d; font-size: 12px; margin-bottom: 20px; flex-shrink: 0;}
         input { padding: 12px; border: 2px solid #3498db; border-radius: 8px; width: 70%; text-align: center; font-size: 16px; margin-bottom: 20px; flex-shrink: 0;}
-        
-        button { padding: 10px 25px; background: #e67e22; color: white; border: none; border-radius: 20px; font-size: 16px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 0 #d35400; transition: all 0.1s; margin: 5px; flex-shrink: 0;}
-        button:active { transform: translateY(4px); box-shadow: 0 0 0 #d35400; }
+        button { padding: 10px 15px; background: #e67e22; color: white; border: none; border-radius: 15px; font-size: 14px; font-weight: bold; cursor: pointer; box-shadow: 0 3px 0 #d35400; transition: all 0.1s; margin: 5px; flex-shrink: 0;}
+        button:active { transform: translateY(3px); box-shadow: 0 0 0 #d35400; }
         button:disabled { background: #bdc3c7; box-shadow: none; cursor: not-allowed; transform: none; color: #fff; }
         
-        .btn-blue { background: #3498db; box-shadow: 0 4px 0 #2980b9; }
-        .btn-blue:active { transform: translateY(4px); box-shadow: 0 0 0 #2980b9; }
-        .btn-green { background: #2ecc71; box-shadow: 0 4px 0 #27ae60; width: 70%; }
-        .btn-green:active { transform: translateY(4px); box-shadow: 0 0 0 #27ae60; }
-        .btn-gray { background: #95a5a6; box-shadow: 0 4px 0 #7f8c8d; font-size: 14px; padding: 8px 20px; width: 70%; }
-        .btn-purple { background: #9b59b6; box-shadow: 0 4px 0 #8e44ad; } /* V4新增 */
-
+        .btn-blue { background: #3498db; box-shadow: 0 3px 0 #2980b9; }
+        .btn-blue:active { transform: translateY(3px); box-shadow: 0 0 0 #2980b9; }
+        .btn-green { background: #2ecc71; box-shadow: 0 3px 0 #27ae60; }
+        .btn-green:active { transform: translateY(3px); box-shadow: 0 0 0 #27ae60; }
+        .btn-gray { background: #95a5a6; box-shadow: 0 3px 0 #7f8c8d; font-size: 14px; padding: 8px 20px; width: 70%; }
+        .btn-purple { background: #9b59b6; box-shadow: 0 3px 0 #8e44ad; }
+        
         .btn-home { position: absolute; top: 10px; left: 10px; width: 36px; height: 36px; border-radius: 50%; background: #fff; border: 2px solid #bdc3c7; color: #7f8c8d; font-size: 20px; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 20; padding: 0; margin: 0; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
 
-        /* --- 存档槽位 (Strict Ver3.08) --- */
+        /* --- 存档槽位 --- */
         .slot-container { width: 100%; display: flex; flex-direction: column; gap: 15px; }
         .save-slot { background: #fff; border: 2px solid #bdc3c7; border-radius: 10px; padding: 15px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; box-shadow: 0 2px 5px rgba(0,0,0,0.05); transition: all 0.2s; position: relative; }
         .save-slot:hover { border-color: #3498db; transform: scale(1.01); }
@@ -42,40 +43,37 @@
         .slot-icon { width: 30px; height: 30px; }
         .delete-btn { padding: 5px 10px; font-size: 12px; background: #e74c3c; border-radius: 5px; margin-left: 10px; z-index: 5; color: white; width: auto; box-shadow: none; margin: 5px; }
 
-        /* --- 战斗界面 --- */
+        /* --- 战斗 --- */
         #battleLayer { background: linear-gradient(to bottom, #87CEEB 0%, #87CEEB 70%, #90EE90 70%, #90EE90 100%); justify-content: space-between; padding: 0; overflow: hidden;}
         .cloud { position: absolute; background: white; border-radius: 50px; opacity: 0.8; animation: floatCloud 20s linear infinite; }
         @keyframes floatCloud { from { left: -100px; } to { left: 100%; } }
-        .battle-hud { width: 100%; background: rgba(0,0,0,0.6); color: white; padding: 8px 15px; padding-left: 50px; box-sizing: border-box; display: flex; justify-content: space-between; font-size: 14px; z-index: 5; box-shadow: 0 2px 5px rgba(0,0,0,0.3); }
-        
-        .battle-scene { flex-grow: 1; width: 100%; position: relative; display: flex; justify-content: space-around; align-items: flex-end; padding-bottom: 25%; z-index: 2; }
-        .fighter { width: 120px; height: 120px; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; position: relative; transition: transform 0.2s; }
+        .battle-hud { width: 100%; background: rgba(0,0,0,0.6); color: white; padding: 5px 10px; padding-left: 50px; box-sizing: border-box; display: flex; justify-content: space-between; font-size: 12px; z-index: 5; box-shadow: 0 2px 5px rgba(0,0,0,0.3); }
+        .battle-scene { flex-grow: 1; width: 100%; position: relative; display: flex; justify-content: space-around; align-items: flex-end; padding-bottom: 35%; z-index: 2; }
+        .fighter { width: 100px; height: 100px; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; position: relative; transition: transform 0.2s; }
         .fighter-svg { width: 100%; height: 100%; filter: drop-shadow(0 5px 2px rgba(0,0,0,0.2)); }
-        .status-box { position: absolute; top: -40px; width: 100%; text-align: center; }
-        .fighter-name { background: rgba(0,0,0,0.5); color: #fff; padding: 2px 8px; border-radius: 10px; font-size: 12px; display: inline-block; margin-bottom: 2px; }
-        .bar-bg { width: 80px; height: 8px; background: #333; border-radius: 4px; margin: 1px auto; overflow: hidden; border:1px solid #fff;}
+        .status-box { position: absolute; top: -45px; width: 120%; text-align: center; }
+        .fighter-name { background: rgba(0,0,0,0.5); color: #fff; padding: 1px 6px; border-radius: 8px; font-size: 10px; display: inline-block; margin-bottom: 2px; }
+        .bar-bg { width: 100%; height: 6px; background: #333; border-radius: 3px; margin: 1px auto; overflow: hidden; border:1px solid #fff;}
         .hp-fill { height: 100%; background: #e74c3c; width: 100%; transition: width 0.3s; }
         .mp-fill { height: 100%; background: #3498db; width: 100%; transition: width 0.3s; }
-
-        .toolbar { position: absolute; bottom: 140px; width: 100%; display: flex; justify-content: center; gap: 10px; z-index: 6; padding: 0 5px; flex-wrap: wrap; }
-        .tool-btn { width: 40px; height: 40px; background: #fff; border: 2px solid #bdc3c7; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 5px rgba(0,0,0,0.2); cursor: pointer; transition: transform 0.1s; }
+        .toolbar { position: absolute; bottom: 130px; width: 100%; display: flex; justify-content: center; gap: 8px; z-index: 6; padding: 0 5px; flex-wrap: wrap; }
+        .tool-btn { width: 36px; height: 36px; background: #fff; border: 2px solid #bdc3c7; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 5px rgba(0,0,0,0.2); cursor: pointer; transition: transform 0.1s; }
         .tool-btn:active { transform: scale(0.9); }
-        .tool-btn svg { width: 22px; height: 22px; }
-
+        .tool-btn svg { width: 20px; height: 20px; }
         .bottom-panel { width: 100%; background: #fff; padding: 10px; box-sizing: border-box; border-top: 4px solid #f1c40f; z-index: 5; }
         .exp-container { width: 100%; height: 15px; background: #bdc3c7; border-radius: 8px; overflow: hidden; position: relative; box-shadow: inset 0 2px 5px rgba(0,0,0,0.2); }
         .exp-fill { height: 100%; background: linear-gradient(90deg, #f1c40f, #f39c12); width: 0%; transition: width 0.5s; }
         .exp-text { position: absolute; top: 0; left: 0; width: 100%; height: 100%; text-align: center; font-size: 10px; line-height: 15px; color: #333; font-weight: bold; }
-
-        .floating-text { position: absolute; font-weight: 900; font-size: 28px; animation: floatUp 0.8s ease-out forwards; text-shadow: 2px 2px 0 #fff; z-index: 20; white-space: nowrap; left: 50%; transform: translateX(-50%); top: -40px; pointer-events: none;}
-        @keyframes floatUp { 0% { top: -40px; opacity: 1; transform: translateX(-50%) scale(1); } 100% { top: -90px; opacity: 0; transform: translateX(-50%) scale(1.2); } }
-        .slash-effect { position: absolute; width: 150px; height: 150px; background: transparent; border: 2px solid transparent; z-index: 15; left: 50%; top: 50%; transform: translate(-50%, -50%); pointer-events: none; }
+        .log-box { width: 100%; height: 100px; background: #f8f9fa; overflow-y: auto; padding: 5px; box-sizing: border-box; font-size: 11px; border-top: 1px solid #ccc; }
+        .log-entry { margin-bottom: 2px; border-bottom: 1px dashed #eee; padding-bottom: 1px; line-height: 1.3;}
+        
+        .floating-text { position: absolute; font-weight: 900; font-size: 24px; animation: floatUp 0.8s ease-out forwards; text-shadow: 1px 1px 0 #fff; z-index: 20; white-space: nowrap; }
+        @keyframes floatUp { 0% { transform: translateY(0) scale(1); opacity: 1; } 50% { transform: translateY(-30px) scale(1.2); opacity: 1; } 100% { transform: translateY(-60px) scale(1); opacity: 0; } }
+        .slash-effect { position: absolute; width: 100px; height: 100px; background: transparent; border: 2px solid transparent; z-index: 15; left: 50%; top: 50%; transform: translate(-50%, -50%); pointer-events: none; }
         .slash-effect::before { content: ''; position: absolute; left: 0; top: 50%; width: 100%; height: 4px; background: #e74c3c; transform: rotate(-45deg); box-shadow: 0 0 10px #c0392b; animation: slashAnim 0.3s forwards; }
         @keyframes slashAnim { 0% { width: 0; opacity: 0; } 50% { width: 100%; opacity: 1; } 100% { width: 100%; opacity: 0; } }
-        .log-box { width: 100%; height: 120px; background: #f8f9fa; overflow-y: auto; padding: 10px; box-sizing: border-box; font-size: 12px; border-top: 1px solid #ccc; }
-        .log-entry { margin-bottom: 3px; border-bottom: 1px dashed #eee; padding-bottom: 2px; line-height: 1.4;}
 
-        /* --- V4.0 新增: 背包与商店样式 --- */
+        /* --- Ver4.0 背包与商店 --- */
         .equip-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; padding: 10px; background: #ecf0f1; border-radius: 8px; margin-bottom: 10px; }
         .item-slot { width: 100%; padding-bottom: 100%; position: relative; background: #bdc3c7; border-radius: 5px; cursor: pointer; border: 2px solid #95a5a6; }
         .item-slot.active { border-color: #f1c40f; background: #fff; }
@@ -104,7 +102,7 @@
         .shop-row { display: flex; justify-content: space-between; align-items: center; padding: 10px; background: #fff; border: 1px solid #bdc3c7; margin-bottom: 5px; border-radius: 5px; }
         .currency { color: #f1c40f; font-weight: bold; text-shadow: 1px 1px 0 #d35400; margin-right: 10px; }
 
-        /* 其他 */
+        /* --- 其他 --- */
         .scroll-box { width: 100%; flex-grow: 1; background: #f9f9f9; border: 2px solid #bdc3c7; border-radius: 10px; padding: 15px; box-sizing: border-box; overflow-y: auto; margin-bottom: 20px; text-align: left; }
         .log-block { margin-bottom: 20px; border-bottom: 1px dashed #eee; padding-bottom: 15px; }
         .highlight { color: #c0392b; font-weight: bold; }
@@ -129,7 +127,7 @@
 <div id="gameContainer">
     <div id="startLayer" class="layer active layer-scroll">
         <h1>大猫猫斗恶龙</h1>
-        <div class="version">Ver4.04.12172505beta</div>
+        <div class="version">Ver4.05.12172506beta</div>
         <svg width="150" height="150" viewBox="0 0 100 100">
             <circle cx="50" cy="50" r="40" fill="#f1c40f" stroke="#e67e22" stroke-width="3"/>
             <path d="M30 30 L40 10 L55 30 Z" fill="#f1c40f" stroke="#e67e22" stroke-width="2"/>
@@ -137,10 +135,9 @@
             <circle cx="35" cy="45" r="5" fill="#2c3e50"/>
             <circle cx="65" cy="45" r="5" fill="#2c3e50"/>
             <path d="M45 60 Q50 70 55 60" stroke="#c0392b" stroke-width="3" fill="none"/>
-            <path d="M10 50 L90 50" stroke="#bdc3c7" stroke-width="5" opacity="0.5"/>
         </svg>
         <br>
-        <button class="btn-green" onclick="openSlotMenu('load')" style="width:70%">读取存档</button>
+        <button class="btn-green" id="continueBtn" onclick="openSlotMenu('load')" disabled>读取存档</button>
         <button class="btn-blue" onclick="openSlotMenu('new')" style="width:70%">新游戏</button>
         <button class="btn-gray" onclick="showLayer('changelog')" style="width:70%">更新日志</button>
     </div>
@@ -148,14 +145,14 @@
     <div id="slotLayer" class="layer layer-scroll">
         <h2 id="slotTitle">选择存档</h2>
         <div id="slotList" class="slot-container"></div>
-        <button onclick="showLayer('start')" style="margin-top:20px; background:#95a5a6;">返回</button>
+        <button onclick="showLayer('startLayer')" style="margin-top:20px; background:#95a5a6;">返回</button>
     </div>
 
     <div id="nameInputLayer" class="layer">
         <h2>创建角色</h2>
         <input type="text" id="playerNameInput" placeholder="请输入你的勇者名" maxlength="8">
         <button onclick="goToClassSelection()">下一步</button>
-        <button onclick="showLayer('start')" style="background:#95a5a6;">取消</button>
+        <button onclick="showLayer('startLayer')" style="background:#95a5a6;">取消</button>
     </div>
 
     <div id="classLayer" class="layer layer-scroll">
@@ -166,7 +163,6 @@
 
     <div id="battleLayer" class="layer">
         <div class="cloud" style="top:20px; width:80px; height:30px; animation-duration:25s;"></div>
-        <div class="cloud" style="top:60px; width:120px; height:40px; animation-duration:35s; animation-delay:-10s"></div>
         
         <button class="btn-home" onclick="goToMainMenu()" title="返回主菜单">🏠</button>
         <div style="position:absolute; top:10px; right:10px; color:#f1c40f; font-weight:bold; text-shadow:1px 1px 0 #000;">
@@ -276,25 +272,25 @@
     <div id="changelogLayer" class="layer layer-scroll">
         <h2>编年史</h2>
         <div class="scroll-box" id="changelogBox"></div>
-        <button onclick="showLayer('start')">返回</button>
+        <button onclick="showLayer('startLayer')">返回</button>
     </div>
 
 </div>
 
 <script>
-    // --- 常量定义 (保持 V4.03) ---
+    // --- 常量定义 ---
     const SVGS = {
-        cat_resolute: `<svg viewBox="0 0 100 100"><g transform="translate(10,10)"><circle cx="40" cy="40" r="30" fill="#bdc3c7" stroke="#2c3e50" stroke-width="2"/><path d="M20 20 L10 0 L35 15 Z" fill="#bdc3c7" stroke="#2c3e50" stroke-width="2"/><path d="M60 20 L70 0 L45 15 Z" fill="#bdc3c7" stroke="#2c3e50" stroke-width="2"/><rect x="30" y="15" width="20" height="25" rx="5" fill="none" stroke="#2c3e50" stroke-width="2"/><line x1="40" y1="15" x2="40" y2="40" stroke="#2c3e50" stroke-width="1"/><line x1="30" y1="27" x2="50" y2="27" stroke="#2c3e50" stroke-width="1"/><path d="M65 40 L90 10" stroke="#95a5a6" stroke-width="6"/><path d="M65 40 L90 10" stroke="#2c3e50" stroke-width="2"/><line x1="60" y1="45" x2="70" y2="35" stroke="#f1c40f" stroke-width="4"/></g></svg>`,
-        cat_agile: `<svg viewBox="0 0 100 100"><g transform="translate(10,10)"><circle cx="40" cy="40" r="30" fill="#f1c40f" stroke="#2c3e50" stroke-width="2"/><path d="M20 20 L10 0 L35 15 Z" fill="#f1c40f" stroke="#2c3e50" stroke-width="2"/><path d="M60 20 L70 0 L45 15 Z" fill="#f1c40f" stroke="#2c3e50" stroke-width="2"/><circle cx="30" cy="35" r="3" fill="#2c3e50"/><circle cx="50" cy="35" r="3" fill="#2c3e50"/><path d="M35 45 Q40 50 45 45" stroke="#2c3e50" stroke-width="2" fill="none"/><path d="M70 40 L85 25" stroke="#3498db" stroke-width="4"/><path d="M10 40 L-5 25" stroke="#3498db" stroke-width="4"/></g></svg>`,
-        cat_wise: `<svg viewBox="0 0 100 100"><g transform="translate(10,10)"><circle cx="40" cy="40" r="30" fill="#9b59b6" stroke="#2c3e50" stroke-width="2"/><path d="M20 20 L10 0 L35 15 Z" fill="#9b59b6" stroke="#2c3e50" stroke-width="2"/><path d="M60 20 L70 0 L45 15 Z" fill="#9b59b6" stroke="#2c3e50" stroke-width="2"/><circle cx="30" cy="35" r="3" fill="#2c3e50"/><circle cx="50" cy="35" r="3" fill="#2c3e50"/><path d="M35 45 Q40 50 45 45" stroke="#2c3e50" stroke-width="2" fill="none"/><line x1="75" y1="20" x2="75" y2="80" stroke="#8e44ad" stroke-width="4"/><circle cx="75" cy="20" r="8" fill="#e74c3c"/></g></svg>`,
-        cat_berserk: `<svg viewBox="0 0 100 100"><g transform="translate(10,10)"><circle cx="40" cy="40" r="30" fill="#c0392b" stroke="#2c3e50" stroke-width="2"/><path d="M20 20 L10 0 L35 15 Z" fill="#c0392b" stroke="#2c3e50" stroke-width="2"/><path d="M60 20 L70 0 L45 15 Z" fill="#c0392b" stroke="#2c3e50" stroke-width="2"/><line x1="25" y1="30" x2="35" y2="38" stroke="#000" stroke-width="2"/><line x1="55" y1="30" x2="45" y2="38" stroke="#000" stroke-width="2"/><path d="M35 50 Q40 45 45 50" stroke="#2c3e50" stroke-width="2" fill="none"/><path d="M80 40 L80 70 M70 40 L90 40 L80 50 Z" fill="#7f8c8d" stroke="#000" stroke-width="1"/><path d="M0 40 L0 70 M-10 40 L10 40 L0 50 Z" fill="#7f8c8d" stroke="#000" stroke-width="1"/></g></svg>`,
-        cat_blood: `<svg viewBox="0 0 100 100"><g transform="translate(10,10)"><circle cx="40" cy="40" r="30" fill="#2c3e50" stroke="#c0392b" stroke-width="2"/><path d="M20 20 L10 0 L35 15 Z" fill="#2c3e50" stroke="#c0392b" stroke-width="2"/><path d="M60 20 L70 0 L45 15 Z" fill="#2c3e50" stroke="#c0392b" stroke-width="2"/><path d="M25 35 Q30 25 35 35" stroke="#e74c3c" stroke-width="3" fill="none"/><path d="M45 35 Q50 25 55 35" stroke="#e74c3c" stroke-width="3" fill="none"/><circle cx="30" cy="38" r="2" fill="#e74c3c"/><circle cx="50" cy="38" r="2" fill="#e74c3c"/><path d="M70 50 Q80 20 50 10" stroke="#c0392b" stroke-width="4" fill="none"/><line x1="70" y1="50" x2="80" y2="80" stroke="#95a5a6" stroke-width="3"/></g></svg>`,
-        cat_mech: `<svg viewBox="0 0 100 100"><g transform="translate(10,10)"><path d="M15 20 L65 20 L75 35 L75 70 L50 80 L25 70 L5 70 L5 35 Z" fill="#7f8c8d" stroke="#34495e" stroke-width="2"/><rect x="15" y="35" width="50" height="10" fill="#3498db"/><line x1="10" y1="20" x2="5" y2="0" stroke="#34495e" stroke-width="3"/><line x1="70" y1="20" x2="75" y2="0" stroke="#34495e" stroke-width="3"/><rect x="75" y="50" width="20" height="10" fill="#2c3e50"/><circle cx="95" cy="55" r="3" fill="#e74c3c"/></g></svg>`,
-        monster_slime: `<svg viewBox="0 0 100 100"><path d="M20 80 Q20 20 50 20 Q80 20 80 80 Z" fill="#2ecc71" stroke="#27ae60" stroke-width="2"/><circle cx="40" cy="50" r="5" fill="#000"/><circle cx="60" cy="50" r="5" fill="#000"/></svg>`,
-        monster_bat: `<svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="15" fill="#34495e"/><path d="M35 50 Q10 20 10 50 Q20 70 35 55" fill="#34495e"/><path d="M65 50 Q90 20 90 50 Q80 70 65 55" fill="#34495e"/><circle cx="45" cy="50" r="2" fill="#e74c3c"/><circle cx="55" cy="50" r="2" fill="#e74c3c"/></svg>`,
-        monster_dragon: `<svg viewBox="0 0 100 100"><path d="M30 60 Q30 30 50 20 Q70 30 70 60" fill="#e74c3c" stroke="#c0392b" stroke-width="2"/><path d="M50 20 L50 5" stroke="#e74c3c" stroke-width="4"/><circle cx="40" cy="45" r="4" fill="#f1c40f"/><circle cx="60" cy="45" r="4" fill="#f1c40f"/><path d="M40 70 Q50 80 60 70" stroke="#000" stroke-width="2" fill="none"/></svg>`,
-        monster_evil_dragon: `<svg viewBox="0 0 100 100"><path d="M20 70 Q40 20 80 30 Q90 50 70 80 Q50 90 20 70 Z" fill="#2c3e50" stroke="#000" stroke-width="2"/><path d="M80 30 Q95 10 90 5 Q70 15 60 35" fill="#c0392b"/><path d="M30 40 Q40 50 30 60" stroke="#c0392b" stroke-width="3" fill="none"/><circle cx="65" cy="45" r="3" fill="#e74c3c"/><circle cx="75" cy="55" r="3" fill="#e74c3c"/><path d="M10 60 Q20 40 10 20" stroke="#2c3e50" stroke-width="4" fill="none"/></svg>`,
-        stake: `<svg viewBox="0 0 100 100"><rect x="35" y="20" width="30" height="70" fill="#d35400" stroke="#5d4037" stroke-width="2"/><circle cx="50" cy="40" r="8" fill="#fff" opacity="0.8"/><circle cx="50" cy="40" r="3" fill="#000"/><path d="M35 20 L50 5 L65 20 Z" fill="#d35400" stroke="#5d4037" stroke-width="2"/></svg>`
+        cat_resolute: `<svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="40" fill="#bdc3c7" stroke="#2c3e50" stroke-width="2"/><path d="M30 30 L40 10 L55 30" fill="#bdc3c7"/><path d="M70 30 L60 10 L45 30" fill="#bdc3c7"/><circle cx="35" cy="45" r="3"/><circle cx="65" cy="45" r="3"/><path d="M30 65 Q50 75 70 65" fill="none" stroke="#2c3e50" stroke-width="2"/></svg>`,
+        cat_agile: `<svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="40" fill="#f1c40f" stroke="#e67e22" stroke-width="2"/><path d="M30 30 L40 10 L55 30" fill="#f1c40f"/><path d="M70 30 L60 10 L45 30" fill="#f1c40f"/><circle cx="35" cy="45" r="3"/><circle cx="65" cy="45" r="3"/><path d="M40 60 L50 55 L60 60" fill="none" stroke="#2c3e50" stroke-width="2"/></svg>`,
+        cat_wise: `<svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="40" fill="#9b59b6" stroke="#8e44ad" stroke-width="2"/><path d="M30 30 L40 10 L55 30" fill="#9b59b6"/><path d="M70 30 L60 10 L45 30" fill="#9b59b6"/><circle cx="35" cy="45" r="3"/><circle cx="65" cy="45" r="3"/><rect x="40" y="55" width="20" height="5" fill="#333"/></svg>`,
+        cat_berserk: `<svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="40" fill="#c0392b" stroke="#922b21" stroke-width="2"/><path d="M30 30 L40 10 L55 30" fill="#c0392b"/><path d="M70 30 L60 10 L45 30" fill="#c0392b"/><path d="M30 40 L40 45" stroke="#000" stroke-width="2"/><path d="M70 40 L60 45" stroke="#000" stroke-width="2"/><path d="M35 65 Q50 55 65 65" fill="none" stroke="#000" stroke-width="2"/></svg>`,
+        cat_blood: `<svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="40" fill="#5b2c6f" stroke="#4a235a" stroke-width="2"/><circle cx="35" cy="45" r="2" fill="red"/><circle cx="65" cy="45" r="2" fill="red"/><path d="M45 60 Q50 70 55 60" stroke="red" stroke-width="2" fill="none"/></svg>`,
+        cat_mech: `<svg viewBox="0 0 100 100"><rect x="20" y="20" width="60" height="60" rx="10" fill="#34495e" stroke="#2c3e50"/><circle cx="35" cy="45" r="5" fill="#f1c40f"/><circle cx="65" cy="45" r="5" fill="#f1c40f"/><rect x="30" y="60" width="40" height="5" fill="#e74c3c"/></svg>`,
+        monster_slime: `<svg viewBox="0 0 100 100"><path d="M20 80 Q20 20 50 20 Q80 20 80 80 Z" fill="#2ecc71"/></svg>`,
+        monster_bat: `<svg viewBox="0 0 100 100"><path d="M10 40 Q50 10 90 40 L50 80 Z" fill="#34495e"/><circle cx="40" cy="40" r="2" fill="red"/><circle cx="60" cy="40" r="2" fill="red"/></svg>`,
+        monster_dragon: `<svg viewBox="0 0 100 100"><path d="M20 80 Q50 10 80 80 Q50 60 20 80" fill="#e74c3c"/><circle cx="40" cy="50" r="3" fill="yellow"/><circle cx="60" cy="50" r="3" fill="yellow"/></svg>`,
+        monster_evil_dragon: `<svg viewBox="0 0 100 100"><path d="M10 80 Q50 0 90 80 Q50 50 10 80" fill="#2c3e50"/><circle cx="35" cy="45" r="4" fill="red"/><circle cx="65" cy="45" r="4" fill="red"/></svg>`,
+        stake: `<svg viewBox="0 0 100 100"><rect x="40" y="20" width="20" height="70" fill="#d35400"/></svg>`
     };
 
     const CLASSES = [
@@ -317,7 +313,7 @@
         { type: 'blue', unique:true, id:'low_hp_spd', title: '背水一战', effect: p=>p.hasLowHpSpd=true }
     ];
 
-    // [Ver4.0] 数据字典
+    // [Ver4.01] 装备与词条库 (扩容)
     const EQUIP_SLOTS = ['weapon', 'offhand', 'helm', 'shoulders', 'armor', 'belt', 'boots', 'accessory', 'ringL', 'ringR'];
     const QUALITIES = {
         white: { name:'破旧', color:'#95a5a6', statMod:1.0, affixes:0 },
@@ -367,17 +363,16 @@
     let isGameActive = false;
     let currentSlotId = null; 
     
-    // 定时器
     let bloodInterval = null;
     let mechInterval = null;
     let battleLoopId = null; 
     let testInterval = null;
 
-    // UI 映射
+    // UI 映射 [Fix: strict match to HTML IDs]
     const layers = {
         start: document.getElementById('startLayer'),
         slot: document.getElementById('slotLayer'),
-        name: document.getElementById('nameInputLayer'),
+        name: document.getElementById('nameInputLayer'), // KEY 'name'
         select: document.getElementById('classLayer'),
         battle: document.getElementById('battleLayer'),
         card: document.getElementById('cardLayer'),
@@ -388,27 +383,29 @@
         shop: document.getElementById('shopLayer')
     };
 
-    // --- 初始化 ---
     window.onload = function() {
         checkSave();
         renderChangelog();
     };
 
     function showLayer(name) {
-        Object.values(layers).forEach(l => l.classList.remove('active'));
+        Object.values(layers).forEach(l => { if(l) l.classList.remove('active'); });
         if(layers[name]) layers[name].classList.add('active');
+        else { console.error("Layer missing: " + name); alert("界面跳转错误: " + name); }
     }
 
     // --- 存档系统 ---
     function migrateSaveData(p) {
-        // V4.0兼容
+        // 数据迁移：确保旧存档不崩
         if(!p.gold) p.gold = 0;
         if(!p.inventory) p.inventory = [];
-        if(!p.equips) p.equips = { weapon:null, offhand:null, helm:null, shoulders:null, armor:null, belt:null, boots:null, accessory:null, ringL:null, ringR:null };
-        // 确保字段补全
-        if(!p.equips.shoulders) p.equips.shoulders = null;
-        if(!p.equips.ringL) p.equips.ringL = null;
-        if(!p.equips.ringR) p.equips.ringR = null;
+        if(!p.equips) p.equips = {}; 
+        
+        // 补全所有装备槽位
+        EQUIP_SLOTS.forEach(slot => {
+            if(!p.equips[slot]) p.equips[slot] = null;
+        });
+        
         p.maxInventory = 160; 
         return p;
     }
@@ -429,8 +426,11 @@
 
     function loadGameFromSlot(data) {
         try {
+            // 先尝试迁移数据
             player = migrateSaveData(data.player);
             player.cls = CLASSES.find(c => c.id === data.clsId);
+            if(!player.cls) throw new Error("职业数据丢失");
+            
             gameLevel = data.gameLevel;
             killCount = data.killCount;
             stageCount = data.stageCount;
@@ -444,7 +444,10 @@
             startNextBattle();
         } catch(e) {
             console.error(e);
-            alert("存档数据异常，可能需要重置。");
+            if(confirm("该存档已损坏，是否重置？")) {
+                localStorage.removeItem(`bigCatQuest_slot_${currentSlotId}`);
+                openSlotMenu('load');
+            }
         }
     }
 
@@ -457,7 +460,6 @@
             el.className = 'save-slot';
             
             if(saveStr) {
-                // 读取存档预览 (Ver3.08 logic)
                 try {
                     const d = JSON.parse(saveStr);
                     const cls = CLASSES.find(c => c.id === d.clsId);
@@ -480,15 +482,18 @@
                     el.onclick = () => {
                         currentSlotId = i;
                         if(mode==='load') loadGameFromSlot(d); 
-                        else if(confirm("覆盖?")) showLayer('nameInputLayer');
+                        else if(confirm("覆盖?")) showLayer('name'); // Fix: use 'name' key
                     };
                 } catch(e) {
                     el.innerHTML = '<div>存档损坏</div>';
-                    el.onclick = () => { if(confirm("覆盖损坏存档?")) { currentSlotId = i; showLayer('nameInputLayer'); } };
+                    el.onclick = () => { if(confirm("覆盖损坏存档?")) { currentSlotId = i; showLayer('name'); } };
                 }
             } else {
                 el.innerHTML = '<div>+ 空槽位</div>'; el.className += ' empty';
-                el.onclick = () => { currentSlotId = i; showLayer('nameInputLayer'); };
+                el.onclick = () => { 
+                    currentSlotId = i; 
+                    showLayer('name'); // Fix: use 'name' key
+                };
             }
             container.appendChild(el);
         }
@@ -512,6 +517,7 @@
     }
 
     function initGame(name, cls) {
+        // 新游戏完全初始化
         player = {
             name: name, cls: cls, lvl: 1, exp: 0, maxExp: 2,
             maxHp: cls.base.hp, hp: cls.base.hp, maxMp: cls.base.mp, mp: cls.base.mp,
@@ -532,7 +538,6 @@
         isGameActive = true;
         clearAllTimers();
 
-        // 商店逻辑 (每8层)
         if (gameLevel > 1 && gameLevel % 8 === 0 && stageCount === 0 && !isPendingRogue) {
             isGameActive = false;
             openShop();
@@ -551,7 +556,10 @@
         
         let titleColor = '#3498db';
         if (stageType === 'evil_dragon') titleColor = '#c0392b';
-        log(`<br><strong style="color:${titleColor}">=== 第 ${gameLevel} 层 ===</strong>`);
+        const div = document.createElement('div');
+        div.className = 'log-entry';
+        div.innerHTML = `<br><strong style="color:${titleColor}">=== 第 ${gameLevel} 层 ===</strong>`;
+        document.getElementById('battleLog').appendChild(div);
         
         // 职业被动
         if (player.cls.id === 'blood') {
@@ -726,7 +734,6 @@
     function performEnemyAttack() {
         if(enemy.hp <= 0) return;
         
-        // V3.11 穿透逻辑
         let penRate = 0.1;
         if(enemy.type === 'elite') penRate = 0.25;
         if(enemy.type === 'boss') penRate = 0.40;
@@ -738,7 +745,6 @@
         if(player.hp - dmg <= 0 && player.cls.id === 'wise' && player.mp > dmg/2 && !player.shieldUsed) {
             player.mp -= Math.ceil(dmg/2);
             dmg = 0; player.shieldUsed = true;
-            log("护盾抵挡!", "#3498db");
         }
 
         player.hp -= dmg;
@@ -780,12 +786,11 @@
             
             let gain = player.lvl + 1;
             player.exp += gain;
-            while(player.exp >= player.maxExp) { player.lvl++; player.maxExp = player.lvl * 2; log("升级!", "#f1c40f"); }
+            while(player.exp >= player.maxExp) { player.lvl++; player.maxExp = player.lvl * 2; }
             
             let gold = gameLevel * 5 + Math.floor(Math.random()*10);
             if(enemy.type !== 'minion') gold *= 3;
             player.gold += gold;
-            log(`获得 ${gold} 金币`, '#f1c40f');
             
             let dropRate = 0.01;
             if(enemy.type === 'elite') dropRate = 0.1;
@@ -793,7 +798,6 @@
             
             if(Math.random() < dropRate) generateLoot(enemy.type);
 
-            // [Ver4.03] 专属续航
             let healPct = 0.1;
             if (Object.values(player.equips).some(eq => eq && eq.quality === 'red')) healPct += 0.1;
             player.hp = Math.min(player.maxHp, player.hp + player.maxHp * healPct);
@@ -834,14 +838,14 @@
 
     // --- Ver4.0 装备系统 ---
     function generateLoot(type) {
+        let lootItems = [];
         let oreChance = type === 'minion' ? 0.2 : (type === 'elite' ? 0.5 : 1.0);
         if(Math.random() < oreChance) {
              let qty = Math.floor(Math.random() * 3) + 1;
              pushMaterial('ore', qty);
-             log(`获得 魔铁矿 x${qty}`, '#7f8c8d');
         }
-        if(type === 'boss' && Math.random() < 0.5) { pushMaterial('stone', 1); log(`获得 解封石 x1`, '#9b59b6'); }
-        if(type === 'evil_dragon') { pushMaterial('stone', 2); log(`获得 解封石 x2`, '#9b59b6'); }
+        if(type === 'boss' && Math.random() < 0.5) { pushMaterial('stone', 1); }
+        if(type === 'evil_dragon') { pushMaterial('stone', 2); }
 
         let q = 'white';
         let r = Math.random();
@@ -852,9 +856,6 @@
         let item = createItem(gameLevel, q);
         if(player.inventory.length < player.maxInventory) {
             player.inventory.push(item);
-            log(`获得: [${QUALITIES[q].name}] ${item.name}`, QUALITIES[q].color);
-        } else {
-            log(`背包满，丢弃装备`, '#7f8c8d');
         }
     }
     
@@ -950,7 +951,7 @@
         
         if(it.type === 'material') {
              document.getElementById('itemDetailBox').innerHTML = `<div class="item-title" style="color:${it.color}">${it.name}</div><div class="item-desc">${it.desc}</div>`;
-             document.getElementById('btnEquip').disabled = true;
+             btnEq.disabled = true;
              return;
         }
         
@@ -1074,12 +1075,9 @@
     
     // 合成 (3合1)
     function trySynthesize() {
-        // 简单合并逻辑：遍历背包，找到3个同品质同类型的
         let counts = {};
         let toRemove = [];
         let crafted = false;
-
-        // 1. 统计
         for(let i=0; i<player.inventory.length; i++) {
             let it = player.inventory[i];
             if(!it || it.type === 'material' || it.quality === 'orange' || it.quality === 'red') continue;
@@ -1087,28 +1085,22 @@
             if(!counts[key]) counts[key] = [];
             counts[key].push(i);
         }
-
-        // 2. 合成
         for(let key in counts) {
             let idxs = counts[key];
             while(idxs.length >= 3) {
                 let quality = key.split('_')[0];
                 let nextQ = { white:'green', green:'blue', blue:'purple', purple:'orange' }[quality];
                 if(nextQ) {
-                    // 标记删除前3个
                     let consumed = idxs.splice(0, 3);
                     toRemove.push(...consumed);
-                    // 生成新物品
                     let newItem = createItem(gameLevel, nextQ);
                     player.inventory.push(newItem);
                     crafted = true;
                 } else break;
             }
         }
-
-        // 3. 清理
         if(crafted) {
-            toRemove.sort((a,b)=>b-a); // 从后往前删
+            toRemove.sort((a,b)=>b-a);
             toRemove.forEach(idx => player.inventory.splice(idx, 1));
             alert("合成完成！");
             renderBag();

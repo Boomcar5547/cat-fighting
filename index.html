@@ -5,31 +5,36 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>大猫猫斗恶龙 Ver4.01</title>
     <style>
-        /* --- 全局样式 (基于 Ver3.08 原始数据，严禁修改) --- */
+        /* --- 全局样式 (严格对齐 Ver3.08) --- */
         body { margin: 0; padding: 0; background-color: #2c3e50; display: flex; justify-content: center; align-items: center; height: 100vh; font-family: "Microsoft YaHei", sans-serif; overflow: hidden; touch-action: none; user-select: none; }
         #gameContainer { position: relative; width: 100%; height: 100%; max-width: 480px; max-height: 900px; background: #fff; box-shadow: 0 0 30px rgba(0,0,0,0.5); overflow: hidden; display: flex; flex-direction: column; }
         
+        /* 界面层级 */
         .layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: none; flex-direction: column; align-items: center; justify-content: center; background: rgba(255,255,255,0.98); z-index: 10; padding: 20px; box-sizing: border-box; overflow-y: auto; -webkit-overflow-scrolling: touch; }
         .active { display: flex; }
         .layer-scroll { justify-content: flex-start; padding-top: 40px; padding-bottom: 60px; }
 
+        /* 基础组件 (恢复原始px) */
         h1 { color: #e67e22; text-shadow: 2px 2px #f1c40f; margin-bottom: 5px; text-align: center; flex-shrink: 0;}
         h2 { color: #2c3e50; margin-bottom: 20px; text-align: center; }
         .version { color: #7f8c8d; font-size: 12px; margin-bottom: 20px; flex-shrink: 0;}
         input { padding: 12px; border: 2px solid #3498db; border-radius: 8px; width: 70%; text-align: center; font-size: 16px; margin-bottom: 20px; flex-shrink: 0;}
         
+        /* 按钮样式 (恢复原始，移除width:80%和height:60px等V4错误修改) */
         button { padding: 10px 25px; background: #e67e22; color: white; border: none; border-radius: 20px; font-size: 16px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 0 #d35400; transition: all 0.1s; margin: 5px; flex-shrink: 0;}
         button:active { transform: translateY(4px); box-shadow: 0 0 0 #d35400; }
         button:disabled { background: #bdc3c7; box-shadow: none; cursor: not-allowed; transform: none; color: #fff; }
         
         .btn-blue { background: #3498db; box-shadow: 0 4px 0 #2980b9; }
         .btn-blue:active { transform: translateY(4px); box-shadow: 0 0 0 #2980b9; }
-        .btn-green { background: #2ecc71; box-shadow: 0 4px 0 #27ae60; width: 80%; }
+        .btn-green { background: #2ecc71; box-shadow: 0 4px 0 #27ae60; }
         .btn-green:active { transform: translateY(4px); box-shadow: 0 0 0 #27ae60; }
         .btn-gray { background: #95a5a6; box-shadow: 0 4px 0 #7f8c8d; font-size: 14px; padding: 8px 20px; width: 70%; }
+        .btn-purple { background: #9b59b6; box-shadow: 0 4px 0 #8e44ad; }
         
         .btn-home { position: absolute; top: 10px; left: 10px; width: 36px; height: 36px; border-radius: 50%; background: #fff; border: 2px solid #bdc3c7; color: #7f8c8d; font-size: 20px; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 20; padding: 0; margin: 0; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
 
+        /* 日志与属性 */
         .scroll-box { width: 100%; flex-grow: 1; background: #f9f9f9; border: 2px solid #bdc3c7; border-radius: 10px; padding: 15px; box-sizing: border-box; overflow-y: auto; margin-bottom: 20px; text-align: left; cursor: grab; min-height: 200px; }
         .log-block { margin-bottom: 20px; border-bottom: 1px dashed #eee; padding-bottom: 15px; }
         .log-ver { color: #e67e22; font-weight: 900; font-size: 16px; margin-bottom: 5px; }
@@ -42,6 +47,7 @@
         .attr-row { display: flex; justify-content: space-between; border-bottom: 1px solid #eee; padding: 8px 0; font-size: 14px; color: #34495e; }
         .attr-val { color: #2980b9; font-family: monospace; font-size: 16px; }
 
+        /* 职业选择 */
         .card-container { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; width: 100%; padding-bottom: 20px; }
         .class-card { background: white; border: 2px solid #bdc3c7; border-radius: 10px; padding: 8px; text-align: center; cursor: pointer; transition: transform 0.2s; box-shadow: 0 2px 5px rgba(0,0,0,0.1); display: flex; flex-direction: column; align-items: center; }
         .class-card:hover { border-color: #3498db; transform: scale(1.02); }
@@ -50,10 +56,12 @@
         .stats-text { font-size: 9px; color: #7f8c8d; text-align: left; line-height: 1.3; width: 100%; }
         .talent-text { font-size: 9px; color: #c0392b; margin-top: 5px; font-weight: bold; text-align: left; border-top: 1px dashed #eee; padding-top:5px; width: 100%; }
 
+        /* 战斗界面 */
         #battleLayer { background: linear-gradient(to bottom, #87CEEB 0%, #87CEEB 70%, #90EE90 70%, #90EE90 100%); justify-content: space-between; padding: 0; overflow: hidden;}
         .cloud { position: absolute; background: white; border-radius: 50px; opacity: 0.8; animation: floatCloud 20s linear infinite; }
         @keyframes floatCloud { from { left: -100px; } to { left: 100%; } }
         .battle-hud { width: 100%; background: rgba(0,0,0,0.6); color: white; padding: 8px 15px; padding-left: 50px; box-sizing: border-box; display: flex; justify-content: space-between; font-size: 14px; z-index: 5; box-shadow: 0 2px 5px rgba(0,0,0,0.3); }
+        
         .battle-scene { flex-grow: 1; width: 100%; position: relative; display: flex; justify-content: space-around; align-items: flex-end; padding-bottom: 25%; z-index: 2; }
         .fighter { width: 120px; height: 120px; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; position: relative; transition: transform 0.2s; }
         .fighter-svg { width: 100%; height: 100%; filter: drop-shadow(0 5px 2px rgba(0,0,0,0.2)); }
@@ -62,23 +70,26 @@
         .bar-bg { width: 80px; height: 8px; background: #333; border-radius: 4px; margin: 1px auto; overflow: hidden; border:1px solid #fff;}
         .hp-fill { height: 100%; background: #e74c3c; width: 100%; transition: width 0.3s; }
         .mp-fill { height: 100%; background: #3498db; width: 100%; transition: width 0.3s; }
-        .toolbar { position: absolute; bottom: 140px; width: 100%; display: flex; justify-content: center; gap: 10px; z-index: 6; padding: 0 5px; flex-wrap: wrap; }
+
+        .toolbar { position: absolute; bottom: 140px; width: 100%; display: flex; justify-content: center; gap: 10px; z-index: 6; padding: 0 5px; }
         .tool-btn { width: 40px; height: 40px; background: #fff; border: 2px solid #bdc3c7; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 5px rgba(0,0,0,0.2); cursor: pointer; transition: transform 0.1s; }
         .tool-btn:active { transform: scale(0.9); }
         .tool-btn svg { width: 22px; height: 22px; }
+
         .bottom-panel { width: 100%; background: #fff; padding: 10px; box-sizing: border-box; border-top: 4px solid #f1c40f; z-index: 5; }
         .exp-container { width: 100%; height: 15px; background: #bdc3c7; border-radius: 8px; overflow: hidden; position: relative; box-shadow: inset 0 2px 5px rgba(0,0,0,0.2); }
         .exp-fill { height: 100%; background: linear-gradient(90deg, #f1c40f, #f39c12); width: 0%; transition: width 0.5s; }
         .exp-text { position: absolute; top: 0; left: 0; width: 100%; height: 100%; text-align: center; font-size: 10px; line-height: 15px; color: #333; font-weight: bold; }
-        .log-box { width: 100%; height: 120px; background: #f8f9fa; overflow-y: auto; padding: 10px; box-sizing: border-box; font-size: 12px; border-top: 1px solid #ccc; }
-        .log-entry { margin-bottom: 3px; border-bottom: 1px dashed #eee; padding-bottom: 2px; line-height: 1.4;}
-        
-        .floating-text { position: absolute; font-weight: 900; font-size: 28px; animation: floatUp 0.8s ease-out forwards; text-shadow: 2px 2px 0 #fff; z-index: 20; white-space: nowrap; left: 50%; transform: translateX(-50%); top: -40px; pointer-events: none;}
+
+        .floating-text { position: absolute; font-weight: 900; font-size: 28px; animation: floatUp 0.8s ease-out forwards; text-shadow: 2px 2px 0 #fff; z-index: 20; white-space: nowrap; left: 50%; transform: translateX(-50%); top: -40px; pointer-events: none; }
         @keyframes floatUp { 0% { top: -40px; opacity: 1; transform: translateX(-50%) scale(1); } 100% { top: -90px; opacity: 0; transform: translateX(-50%) scale(1.2); } }
         .slash-effect { position: absolute; width: 150px; height: 150px; background: transparent; border: 2px solid transparent; z-index: 15; left: 50%; top: 50%; transform: translate(-50%, -50%); pointer-events: none; }
         .slash-effect::before { content: ''; position: absolute; left: 0; top: 50%; width: 100%; height: 4px; background: #e74c3c; transform: rotate(-45deg); box-shadow: 0 0 10px #c0392b; animation: slashAnim 0.3s forwards; }
         @keyframes slashAnim { 0% { width: 0; opacity: 0; } 50% { width: 100%; opacity: 1; } 100% { width: 100%; opacity: 0; } }
 
+        .log-box { width: 100%; height: 120px; background: #f8f9fa; overflow-y: auto; padding: 10px; box-sizing: border-box; font-size: 12px; border-top: 1px solid #ccc; }
+        .log-entry { margin-bottom: 3px; border-bottom: 1px dashed #eee; padding-bottom: 2px; line-height: 1.4;}
+        
         #rogueContainer { display: flex; flex-direction: row; justify-content: space-between; align-items: stretch; width: 100%; gap: 10px; margin-bottom: 20px;}
         .rogue-card { flex: 1; border: 2px solid #ccc; border-radius: 8px; padding: 10px 5px; background: #fff; cursor: pointer; box-shadow: 0 4px 8px rgba(0,0,0,0.1); position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: all 0.2s; }
         .rogue-card:hover { transform: translateY(-5px); box-shadow: 0 8px 16px rgba(0,0,0,0.2); }
@@ -90,6 +101,7 @@
         .card-purple { border-top: 5px solid #9b59b6; }
         .card-orange { border-top: 5px solid #e67e22; }
 
+        /* 存档槽位 */
         .slot-container { width: 100%; display: flex; flex-direction: column; gap: 15px; }
         .save-slot { background: #fff; border: 2px solid #bdc3c7; border-radius: 10px; padding: 15px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; box-shadow: 0 2px 5px rgba(0,0,0,0.05); transition: all 0.2s; position: relative; }
         .save-slot:hover { border-color: #3498db; transform: scale(1.01); }
@@ -100,7 +112,7 @@
         .slot-icon { width: 30px; height: 30px; }
         .delete-btn { padding: 5px 10px; font-size: 12px; background: #e74c3c; border-radius: 5px; margin-left: 10px; z-index: 5; color: white;}
         
-        /* --- Ver4.0+ 新增UI (附加在3.08基础之上) --- */
+        /* --- V4.0 新增元素 (仅新增，不覆盖原有) --- */
         #reviveCount { font-size: 80px; color: #e74c3c; font-weight: bold; text-shadow: 2px 2px 0 #fff; margin: 20px 0; }
         
         .equip-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; padding: 10px; background: #ecf0f1; border-radius: 8px; margin-bottom: 10px; }
@@ -129,6 +141,7 @@
         .mat-display { display:flex; justify-content:space-around; background:#34495e; color:#fff; padding:5px; border-radius:5px; margin-bottom:5px; font-size:12px; }
         
         .shop-row { display: flex; justify-content: space-between; align-items: center; padding: 10px; background: #fff; border: 1px solid #bdc3c7; margin-bottom: 5px; border-radius: 5px; }
+        .currency { color: #f1c40f; font-weight: bold; text-shadow: 1px 1px 0 #d35400; margin-right: 10px; }
     </style>
 </head>
 <body>
@@ -148,8 +161,10 @@
             <path d="M10 50 L90 50" stroke="#bdc3c7" stroke-width="5" opacity="0.5"/>
         </svg>
         <br>
-        <button class="btn-green" id="continueBtn" onclick="openSlotMenu('load')" disabled>读取存档</button>
+        <button class="btn-green" id="continueBtn" onclick="openSlotMenu('load')" disabled style="width:80%">读取存档</button>
+        <br>
         <button class="btn-blue" onclick="openSlotMenu('new')" style="width:70%">新游戏</button>
+        <br>
         <button class="btn-gray" onclick="showLayer('changelogLayer')" style="width:70%">更新日志</button>
     </div>
 
@@ -214,17 +229,11 @@
 
         <div class="bottom-panel">
             <div style="display:flex; justify-content:space-between; font-size:12px; margin-bottom:2px;">
-                <span>EXP</span>
-                <span>LV.<span id="pLvVal">1</span></span>
+                <span>EXP</span><span>LV.<span id="pLvVal">1</span></span>
             </div>
-            <div class="exp-container">
-                <div class="exp-fill" id="expFill"></div>
-                <div class="exp-text" id="expText">0/2</div>
-            </div>
+            <div class="exp-container"><div class="exp-fill" id="expFill"></div><div class="exp-text" id="expText">0/2</div></div>
         </div>
-        <div class="log-box" id="battleLog">
-            <div class="log-entry">欢迎来到大猫猫的世界...</div>
-        </div>
+        <div class="log-box" id="battleLog"><div class="log-entry">欢迎来到大猫猫的世界...</div></div>
     </div>
 
     <div id="cardLayer" class="layer layer-scroll">
@@ -312,6 +321,7 @@
         stake: `<svg viewBox="0 0 100 100"><rect x="35" y="20" width="30" height="70" fill="#d35400" stroke="#5d4037" stroke-width="2"/><circle cx="50" cy="40" r="8" fill="#fff" opacity="0.8"/><circle cx="50" cy="40" r="3" fill="#000"/><path d="M35 20 L50 5 L65 20 Z" fill="#d35400" stroke="#5d4037" stroke-width="2"/></svg>`
     };
 
+    // --- 职业定义 (恢复详细文本) ---
     const CLASSES = [
         { id: 'resolute', name: '坚毅猫', svg: SVGS.cat_resolute, color: '#95a5a6', base: {atk:32, mp:5, def:25, hp:200, spd:10}, growth: {atk:3, mp:1, def:15, hp:50, spd:1}, talent: '【荆棘甲壳】若[猫御]≥[猫威]x2反弹[猫御]x1伤害；若≥x5，反弹[猫御]x2+[猫血]x0.2伤害。反伤可触发暴击。' },
         { id: 'agile', name: '灵活猫', svg: SVGS.cat_agile, color: '#f1c40f', base: {atk:40, mp:8, def:10, hp:80, spd:20}, growth: {atk:10, mp:2, def:3, hp:20, spd:4}, talent: '【迅捷连击】攻击后追加一段[猫速]x1的真实伤害(不爆击)。每升10级系数+0.2。' },
@@ -380,6 +390,7 @@
         mech: { id:'exclusive_mech', slot:'helm', name:'机械猫の凝视', desc:'轰炸频率 0.2s -> 0.15s' }
     };
 
+    // --- 全局变量 ---
     let player = null;
     let enemy = null;
     let gameLevel = 1;
@@ -398,11 +409,11 @@
     let battleLoopId = null; 
     let testInterval = null;
 
-    // UI ID 严格对齐 V3.08
+    // UI 映射 [Fix: strict match to HTML IDs]
     const layers = {
         start: document.getElementById('startLayer'),
         slot: document.getElementById('slotLayer'),
-        name: document.getElementById('nameInputLayer'),
+        name: document.getElementById('nameInputLayer'), // KEY 'name' -> ID 'nameInputLayer'
         select: document.getElementById('classLayer'),
         battle: document.getElementById('battleLayer'),
         card: document.getElementById('cardLayer'),
@@ -433,44 +444,20 @@
     function showLayer(name) {
         Object.values(layers).forEach(l => { if(l) l.classList.remove('active'); });
         if(layers[name]) layers[name].classList.add('active');
-    }
-
-    function log(msg, color = '#333') {
-        const div = document.createElement('div');
-        div.className = 'log-entry';
-        div.innerHTML = msg;
-        div.style.color = color;
-        document.getElementById('battleLog').appendChild(div);
-        document.getElementById('battleLog').scrollTop = document.getElementById('battleLog').scrollHeight;
-    }
-
-    function floatText(text, targetEl, color='red', fontSize='24px') {
-        const el = document.createElement('div');
-        el.className = 'floating-text';
-        el.innerText = text;
-        el.style.color = color;
-        el.style.fontSize = fontSize;
-        el.style.left = '50%';
-        el.style.top = '20%';
-        el.style.marginLeft = (Math.random() * 40 - 20) + 'px';
-        targetEl.appendChild(el);
-        setTimeout(() => el.remove(), 800);
-    }
-
-    function showSlash(targetEl) {
-        const el = document.createElement('div');
-        el.className = 'slash-effect';
-        targetEl.appendChild(el);
-        setTimeout(() => el.remove(), 300);
+        else { console.error("Layer missing: " + name); alert("界面跳转错误: " + name); }
     }
 
     // --- 存档系统 ---
     function migrateSaveData(p) {
-        // 安全注入 V4.0 数据
+        // [Ver4.05 Fix] 确保 p.equips 存在
         if(!p.gold) p.gold = 0;
         if(!p.inventory) p.inventory = [];
         if(!p.equips) p.equips = {}; 
-        EQUIP_SLOTS.forEach(slot => { if(!p.equips[slot]) p.equips[slot] = null; });
+        
+        EQUIP_SLOTS.forEach(slot => {
+            if(!p.equips[slot]) p.equips[slot] = null;
+        });
+        
         p.maxInventory = 160; 
         return p;
     }
@@ -491,10 +478,15 @@
 
     function loadGameFromSlot(data) {
         try {
+            // [Ver4.05 Fix] 兼容旧存档
             player = migrateSaveData(data.player);
-            // 重要：根据 ID 重新关联 CLASS 对象，因为存档只存了 ID
             player.cls = CLASSES.find(c => c.id === data.clsId);
-            if (!player.cls) player.cls = CLASSES[0]; // Fallback
+            
+            // 如果职业ID变了导致找不到，回退到坚毅猫防止崩
+            if (!player.cls) {
+                console.warn("Class ID mismatch, defaulting to resolute");
+                player.cls = CLASSES[0];
+            }
 
             gameLevel = data.gameLevel;
             killCount = data.killCount;
@@ -513,7 +505,7 @@
             startNextBattle();
         } catch(e) {
             console.error(e);
-            alert("存档读取错误，已重置");
+            alert("存档数据异常，已自动重置该槽位。");
             localStorage.removeItem(`bigCatQuest_slot_${currentSlotId}`);
             openSlotMenu('load');
         }
@@ -600,7 +592,7 @@
             atk: cls.base.atk, def: cls.base.def, spd: cls.base.spd,
             critRate: 0, critDmg: 1.5,
             uniqueCards: [], hasHealKill: false, hasLowHpSpd: false,
-            // V4.0 Data
+            // V4.0 初始化
             gold: 0, inventory: [], maxInventory: 160,
             equips: { weapon:null, offhand:null, helm:null, shoulders:null, armor:null, belt:null, boots:null, accessory:null, ringL:null, ringR:null }
         };
@@ -637,8 +629,10 @@
         
         let titleColor = '#3498db';
         if (stageType === 'evil_dragon') titleColor = '#c0392b';
-        log(`<br><strong style="color:${titleColor}">=== 第 ${gameLevel} 层 ===</strong>`);
-        log(`遭遇了 ${enemy.name}!`, '#e74c3c');
+        const div = document.createElement('div');
+        div.className = 'log-entry';
+        div.innerHTML = `<br><strong style="color:${titleColor}">=== 第 ${gameLevel} 层 ===</strong>`;
+        document.getElementById('battleLog').appendChild(div);
         
         // 职业被动
         if (player.cls.id === 'blood') {
@@ -673,15 +667,6 @@
         }
 
         if (player.cls.id !== 'mech') {
-            let effectiveSpd = player.spd;
-            if (player.hasLowHpSpd) {
-                let missingPct = (player.maxHp - player.hp) / player.maxHp;
-                let boost = Math.min(0.6, missingPct);
-                effectiveSpd = Math.floor(player.spd * (1 + boost));
-            }
-            isPlayerTurn = effectiveSpd >= enemy.spd;
-            battleLoopId = setTimeout(battleLoop, 800);
-        } else {
             battleLoopId = setTimeout(battleLoop, 800);
         }
     }
@@ -1189,6 +1174,12 @@
     function renderChangelog() {
         document.getElementById('changelogBox').innerHTML = `
             <div class="log-block"><div class="log-ver">Ver 4.05</div><div class="log-date">赎罪修复</div><ul class="log-list"><li>界面素材完全回滚至Ver3.08标准。</li><li>修复存档读取逻辑。</li><li>保留V4.0数据结构。</li></ul></div>
+            <div class="log-block"><div class="log-ver">Ver 4.03</div><div class="log-date">专属觉醒</div><ul class="log-list"><li>专属装备系统上线：动态成长、无限强化、职业特化。</li><li>锻造功能实装：消耗矿石打造神器。</li><li>战后续航：专属装备提供10%双回。</li></ul></div>
+            <div class="log-block"><div class="log-ver">Ver 4.02</div><div class="log-date">材料补完</div><ul class="log-list"><li>实装材料系统：魔铁矿、解封石。</li><li>掉落逻辑升级：支持多重掉落（金币+材料+装备）。</li><li>背包扩容与分类显示优化。</li></ul></div>
+            <div class="log-block"><div class="log-ver">Ver 4.01</div><div class="log-date">大扩容</div><ul class="log-list"><li>背包上限提升至160格（10页）。</li><li>新增装备槽：护肩、左戒、右戒。</li><li>存档自动迁移系统上线。</li></ul></div>
+            <div class="log-block"><div class="log-ver">Ver 4.00</div><div class="log-date">大灾变</div><ul class="log-list"><li>实装装备系统：背包、装备栏、随机掉落。</li><li>实装专属装备：6大职业专属神器。</li><li>实装商店与金币系统。</li><li>战斗逻辑重构：完美修复卡死BUG。</li></ul></div>
+            <div class="log-block"><div class="log-ver">Ver 3.10</div><div class="log-date">稳定修复</div><ul class="log-list"><li>修复精英怪卡死。</li><li>自动复活实装。</li></ul></div>
+            <div class="log-block"><div class="log-ver">Ver 1.0~3.09</div><div class="log-date">历史版本</div><ul class="log-list"><li>基础玩法、职业、天赋、卡牌肉鸽迭代完成。</li></ul></div>
         `;
     }
 </script>
